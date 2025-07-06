@@ -17,7 +17,7 @@
 		"development": {
 			"name": "reai-email-worker-dev",
 			"vars": {
-				"VOUCHER_API_BASE": "https://20fc-2a01-4f9-2a-7e1-00-2.ngrok-free.app/api/voucher-reception"
+				"VOUCHER_API_BASE": "https://67a8-2001-41d0-203-cdd-00.ngrok-free.app/api/voucher-reception"
 			}
 		},
 		"production": {

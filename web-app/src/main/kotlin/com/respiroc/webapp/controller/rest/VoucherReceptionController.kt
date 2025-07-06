@@ -35,6 +35,17 @@ class VoucherReceptionController(
         val company = companyInternalApi.findCompanyBySlug(companySlug)
             ?: return ResponseEntity.badRequest().body(mapOf("error" to "Company not found"))
         
+        // Log company information
+        println("=== EMAIL RECEIVED FOR COMPANY ===")
+        println("Company Slug: $companySlug")
+        println("Company ID: ${company.id}")
+        println("Company Name: ${company.name}")
+        println("Tenant ID: ${company.tenant.id}")
+        println("Tenant Name: ${company.tenant.name}")
+        println("Sender Email: ${request.senderEmail}")
+        println("File: ${request.fileData} ")
+        println("===================================")
+        
         TenantContextHolder.setTenantId(company.tenant.id!!)
         
         if (request.fileSize > 25 * 1024 * 1024) {
@@ -47,7 +58,9 @@ class VoucherReceptionController(
         } catch (e: Exception) {
             return ResponseEntity.badRequest().body(mapOf("error" to "Invalid base64 data"))
         }
-        
+        println("File: $fileData ")
+        println("===================================")
+
         val document = VoucherDocument().apply {
             this.company = company
             this.tenant = company.tenant
