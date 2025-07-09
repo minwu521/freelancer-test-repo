@@ -20,15 +20,13 @@ class VoucherDocument {
     @JoinColumn(name = "company_id", nullable = false)
     lateinit var company: Company
     
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
     @Column(name = "file_data", columnDefinition = "BYTEA")
     var fileData: ByteArray? = null
     
     @Column(name = "file_size")
     var fileSize: Long? = null
     
-    @Column(nullable = false)
+    @Column(name = "filename", nullable = false)
     lateinit var filename: String
     
     @Column(name = "mime_type")
