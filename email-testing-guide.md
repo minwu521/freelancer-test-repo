@@ -6,22 +6,6 @@
 - [ ] Ngrok installed (`brew install ngrok` or download from ngrok.com)
 - [ ] Domain `ea.reai.no` added to Cloudflare
 
-## Step 1: Start Local REAI Application
-```bash
-cd /home/darkhorse/Documents/reai
-./gradlew bootRun
-```
-✅ Verify: Visit http://localhost:8080 - should see your app
-
-## Step 2: Create Test Company
-```bash
-# Create a company in your database
-# Either through your app UI or directly:
-psql -U postgres -d reai -c "
-INSERT INTO companies (name, tenant_id, organization_number, country_code) 
-VALUES ('Test Company', 1, '123456789', 'NO');"
-```
-
 ## Step 3: Start Ngrok Tunnel
 ```bash
 # In a new terminal

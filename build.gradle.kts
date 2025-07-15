@@ -33,12 +33,6 @@ subprojects {
         }
     }
 
-    configure<JavaPluginExtension> {
-        toolchain {
-            languageVersion.set(JavaLanguageVersion.of(24))
-        }
-    }
-
 
     dependencies {
         "implementation"("org.jetbrains.kotlin:kotlin-reflect")
