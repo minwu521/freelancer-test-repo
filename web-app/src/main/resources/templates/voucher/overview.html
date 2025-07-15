@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" layout:decorate="~{layout/base}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<main layout:fragment="content">
+    <div class="wa-container">
+        <div class="wa-stack wa-gap-l">
+            <table>
+                <thead>
+                <tr>
+                    <th th:text="#{number}"/>
+                    <th th:text="#{description}"/>
+                    <th th:text="#{date}"/>
+                    <th th:text="#{postings}"/>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="voucher : ${vouchers}">
+                    <td>
+                        <a style="color: var(--wa-color-blue-50); text-decoration: none;"
+                           th:href="'/voucher/' + ${voucher.id} + '?tenantId=' + ${user.ctx.currentTenant?.id}">
+                            <strong th:text="${voucher.number}"/>
+                        </a>
+                    </td>
+                    <td th:text="${voucher.description ?: '-'}"/>
+                    <td th:text="${#temporals.format(voucher.date, 'dd.MM.yyyy')}"/>
+                    <td>
+                        <wa-badge variant="neutral">
+                            <span th:text="${voucher.postingCount}">0</span> postings
+                        </wa-badge>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="wa-center" th:if="${#lists.isEmpty(vouchers)}">
+                <div class="wa-stack wa-gap-m wa-center">
+                    <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
+                    <h2 class="wa-heading-m" th:text="#{no_vouchers_found}"/>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+</body>
+</html> 

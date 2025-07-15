@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <title th:text="#{tenant.not.found.page.title}" />
+</head>
+<body>
+    <main layout:fragment="content">
+        <div class="container py-4">
+            <div class="justify-content-center">
+                <div>
+                    <wa-card>
+                        <div style="text-align: center; padding: 3rem 2rem;">
+                            <!-- Error Icon -->
+                            <wa-icon name="building-slash" size="x-large" style="color: var(--wa-color-danger-500); margin-bottom: 1.5rem;"></wa-icon>
+                            
+                            <!-- Error Message -->
+                            <h2 style="color: var(--wa-color-neutral-700); margin-bottom: 0.75rem; font-size: 1.5rem;" th:text="#{tenant.not.found.title}" />
+
+                            <p style="color: var(--wa-color-neutral-500); margin-bottom: 1rem; font-size: 1rem;" th:text="${errorMessage}" />
+
+                            <p style="color: var(--wa-color-neutral-500); margin-bottom: 2rem; font-size: 1rem;" th:text="#{tenant.not.found.instruction}" />
+
+                            
+                            <!-- Actions -->
+                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                                <wa-button variant="primary" size="small" onclick="window.location.href='/dashboard'">
+                                    <wa-icon name="house" slot="prefix"></wa-icon>
+                                    Home
+                                </wa-button>
+                                
+                                <wa-button variant="success" size="small" onclick="window.location.href='/tenant/create'">
+                                    <wa-icon name="plus" slot="prefix"></wa-icon>
+                                    Create New Company
+                                </wa-button>
+                            </div>
+                        </div>
+                    </wa-card>
+                </div>
+            </div>
+        </div>
+    </main>
+
+ 
+</body>
+</html> 

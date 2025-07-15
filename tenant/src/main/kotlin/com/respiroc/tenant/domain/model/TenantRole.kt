@@ -36,7 +36,7 @@ open class TenantRole : Serializable {
     @Column(name = "updated_at", nullable = false)
     open lateinit var updatedAt: Instant
 
-    @ManyToMany(targetEntity = TenantPermission::class, fetch = FetchType.EAGER)
+    @ManyToMany(targetEntity = TenantPermission::class, fetch = FetchType.LAZY)
     @JoinTable(name = "tenant_role_permission", joinColumns = [JoinColumn(name = "tenant_role_id")], inverseJoinColumns = [JoinColumn(name = "tenant_permission_id")])
     open var tenantPermissions: Set<TenantPermission> = HashSet()
 }

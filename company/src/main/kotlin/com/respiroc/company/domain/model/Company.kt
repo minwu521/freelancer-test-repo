@@ -1,6 +1,5 @@
 package com.respiroc.company.domain.model
 
-import com.respiroc.tenant.domain.model.Tenant
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.CreationTimestamp
@@ -18,13 +17,6 @@ open class Company : Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     open var id: Long = -1
-
-    @Column(name = "tenant_id", nullable = false, updatable = false, insertable = false)
-    open var tenantId: Long = -1
-
-    @OneToOne(fetch = FetchType.EAGER, optional = false)
-    @JoinColumn(name = "tenant_id", nullable = false)
-    open lateinit var tenant: Tenant
 
     @Size(max = 36)
     @Column(name = "organization_number", nullable = false, length = 36)
@@ -45,4 +37,7 @@ open class Company : Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     open lateinit var updatedAt: Instant
+
+    @Transient
+    open lateinit var currencyCode: String
 }

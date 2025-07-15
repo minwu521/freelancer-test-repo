@@ -1,0 +1,63 @@
+vatCodes:
+  # Not liable to VAT
+  - code: "0"
+    description: "Not liable to VAT"
+    rate: 0.0
+    vatType: "EXEMPT"
+    vatCategory: "EXEMPT"
+
+  # Deductible input VAT, high rate (25%)
+  - code: "1"
+    description: "Deductible input VAT, high rate"
+    rate: 25.0
+    vatType: "INPUT_VAT"
+    vatCategory: "STANDARD"
+
+  # Deductible input VAT, low rate (12%)
+  - code: "13"
+    description: "Deductible input VAT, low rate"
+    rate: 12.0
+    vatType: "INPUT_VAT"
+    vatCategory: "LOW"
+
+  # Base amount, no input VAT on imports
+  - code: "20"
+    description: "Base amount, no input VAT on imports"
+    rate: 0.0
+    vatType: "EXEMPT"
+    vatCategory: "EXEMPT"
+
+  # Basis for input VAT on imports, high rate
+  - code: "21"
+    description: "Basis for input VAT on imports, high rate"
+    rate: 0.0
+    vatType: "INPUT_VAT"
+    vatCategory: "STANDARD"
+
+  # Deductible input VAT, high rate, 50% proportional VAT
+  - code: "93"
+    description: "Deductible input VAT, high rate, 50% proportional VAT"
+    rate: 25.0
+    vatType: "INPUT_VAT"
+    vatCategory: "STANDARD"
+
+  # Deductible input VAT, high rate, 95% proportional VAT
+  - code: "99"
+    description: "Deductible input VAT, high rate, 95% proportional VAT"
+    rate: 25.0
+    vatType: "INPUT_VAT"
+    vatCategory: "STANDARD"
+
+  # Deductible input VAT for services purchased abroad, high rate (25%)
+  - code: "86"
+    description: "Deductible input VAT for services purchased abroad, high rate"
+    rate: 25.0
+    vatType: "INPUT_VAT"
+    vatCategory: "STANDARD"
+
+  # Deductible input VAT for services purchased abroad, low rate (12%)
+  - code: "88"
+    description: "Deductible input VAT for services purchased abroad, low rate"
+    rate: 12.0
+    vatType: "INPUT_VAT"
+    vatCategory: "LOW"

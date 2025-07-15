@@ -3,9 +3,9 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
 plugins {
-    kotlin("jvm") version "2.2.0-RC" apply false
-    kotlin("plugin.spring") version "2.2.0-RC" apply false
-    id("org.springframework.boot") version "3.5.0" apply false
+    kotlin("jvm") version "2.2.0" apply false
+    kotlin("plugin.spring") version "2.2.0" apply false
+    id("org.springframework.boot") version "3.5.3" apply false
     id("io.spring.dependency-management") version "1.1.7" apply false
 }
 
@@ -43,7 +43,7 @@ subprojects {
     dependencies {
         "implementation"("org.jetbrains.kotlin:kotlin-reflect")
         "implementation"("com.fasterxml.jackson.module:jackson-module-kotlin")
-        "implementation"("org.apache.commons:commons-lang3:3.17.0")
+        "implementation"("org.apache.commons:commons-lang3:3.18.0")
         "implementation"("org.springframework.boot:spring-boot-starter-validation")
     }
 

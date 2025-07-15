@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS user_sessions
 (
-    id               BIGSERIAL PRIMARY KEY,
-    user_id          BIGINT    NOT NULL,
+    id               INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_id          INTEGER    NOT NULL,
     token            TEXT      NOT NULL UNIQUE,
     token_issue_at   TIMESTAMP NOT NULL,
     token_expire_at  TIMESTAMP NOT NULL,

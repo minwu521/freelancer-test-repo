@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- Fragment for including r-combobox dependencies -->
+<th:block th:fragment="r-combobox-dependencies">
+    <!-- Import maps for Lit - Only include once per page -->
+    <script type="importmap">
+        {
+            "imports": {
+                "lit": "https://cdn.jsdelivr.net/gh/lit/dist@3/core/lit-core.min.js",
+                "lit/": "https://cdn.jsdelivr.net/gh/lit/dist@3/"
+            }
+        }
+    </script>
+    
+    <!-- Include the r-combobox component -->
+    <script type="module" th:src="@{/assets/components/r-combobox.js}"></script>
+</th:block>
+
+<!-- Fragment for creating an r-combobox -->
+<th:block th:fragment="r-combobox(id, name, placeholder, value, cssClass)">
+    <r-combobox
+        th:id="${id}"
+        th:name="${name}"
+        th:placeholder="${placeholder ?: 'Search...'}"
+        th:value="${value}"
+        th:class="${cssClass}">
+    </r-combobox>
+</th:block>
+
+</html>

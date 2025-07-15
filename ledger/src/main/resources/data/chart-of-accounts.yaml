@@ -1,0 +1,1776 @@
+accounts:
+  # ASSETS
+  # 10 Intangible assets etc.
+  - noAccountNumber: "1000"
+    accountName: "Research and Development"
+    accountDescription: "Costs related to research and development activities"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1020"
+    accountName: "Concessions"
+    accountDescription: "Concession rights and licenses"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1030"
+    accountName: "Patents"
+    accountDescription: "Patent rights"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1040"
+    accountName: "Licenses"
+    accountDescription: "License agreements"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1050"
+    accountName: "Trademarks"
+    accountDescription: "Trademark rights"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1060"
+    accountName: "Other Rights"
+    accountDescription: "Other intangible rights"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1070"
+    accountName: "Deferred Tax Asset"
+    accountDescription: "Deferred tax benefits"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1080"
+    accountName: "Goodwill"
+    accountDescription: "Goodwill from acquisitions"
+    accountType: "ASSET"
+
+  # 11 Land, buildings and other real estate
+  - noAccountNumber: "1100"
+    accountName: "Buildings"
+    accountDescription: "Buildings and structures"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1120"
+    accountName: "Building Installations"
+    accountDescription: "Building installations and improvements"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1130"
+    accountName: "Assets Under Construction"
+    accountDescription: "Construction in progress"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1140"
+    accountName: "Agricultural and Forest Properties"
+    accountDescription: "Farm and forest land"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1150"
+    accountName: "Land and Ground Areas"
+    accountDescription: "Land and ground plots"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1160"
+    accountName: "Residential Properties"
+    accountDescription: "Housing including land"
+    accountType: "ASSET"
+
+  # 12 Means of transport, fixtures and machinery etc
+  - noAccountNumber: "1200"
+    accountName: "Machinery and Equipment"
+    accountDescription: "Production machinery and equipment"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1210"
+    accountName: "Machinery Under Construction"
+    accountDescription: "Machinery and equipment under installation"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1220"
+    accountName: "Ships, Rigs and Aircraft"
+    accountDescription: "Marine vessels, rigs and aircraft"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1230"
+    accountName: "Cars"
+    accountDescription: "Motor vehicles"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1240"
+    accountName: "Other Transportation Equipment"
+    accountDescription: "Other transport equipment"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1250"
+    accountName: "Inventory"
+    accountDescription: "Inventory of fixtures and fittings"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1260"
+    accountName: "Buildings – Alternative Depreciation"
+    accountDescription: "Buildings with non-standard depreciation schedules"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1270"
+    accountName: "Tools, etc."
+    accountDescription: "Tools and similar equipment"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1280"
+    accountName: "Office Machines"
+    accountDescription: "Office machines and computers"
+    accountType: "ASSET"
+
+  # 13 Financial assets
+  - noAccountNumber: "1300"
+    accountName: "Investments in Subsidiaries"
+    accountDescription: "Investments in subsidiary companies"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1310"
+    accountName: "Investments in Group Companies"
+    accountDescription: "Investments in other companies in the same group"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1320"
+    accountName: "Loans to Group Companies"
+    accountDescription: "Loans to companies within the same group"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1330"
+    accountName: "Investments in Associated Companies"
+    accountDescription: "Investments in associated companies"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1340"
+    accountName: "Loans to Associated Companies"
+    accountDescription: "Loans to associated companies"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1350"
+    accountName: "Investments in Shares and Other Assets"
+    accountDescription: "Investments in shares and other financial assets"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1360"
+    accountName: "Bonds"
+    accountDescription: "Long-term bond investments"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1370"
+    accountName: "Receivables from Owners and Board Members"
+    accountDescription: "Long-term receivables from owners and board members"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1380"
+    accountName: "Receivables from Employees"
+    accountDescription: "Long-term receivables from employees"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1390"
+    accountName: "Other Claims"
+    accountDescription: "Other long-term receivables"
+    accountType: "ASSET"
+
+  # 14 Inventories and advances to suppliers
+  - noAccountNumber: "1400"
+    accountName: "Raw Materials and Purchased Semi-finished Goods"
+    accountDescription: "Stock of raw materials and semi-finished goods"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1420"
+    accountName: "Goods Under Development"
+    accountDescription: "Goods in the course of manufacture"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1440"
+    accountName: "Finished Self-manufactured Goods"
+    accountDescription: "Finished goods produced by the company"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1460"
+    accountName: "Purchased Goods for Resale"
+    accountDescription: "Goods acquired for resale"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1480"
+    accountName: "Advance Payments to Suppliers"
+    accountDescription: "Prepayments made to suppliers"
+    accountType: "ASSET"
+
+  # 15 Short-term receivables
+  - noAccountNumber: "1500"
+    accountName: "Accounts Receivables"
+    accountDescription: "Receivables from customers"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1530"
+    accountName: "Earned Unbilled Revenue"
+    accountDescription: "Earned revenue not yet invoiced"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1550"
+    accountName: "Receivables from Group Companies"
+    accountDescription: "Accounts receivable from companies in the same group"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1560"
+    accountName: "Other Receivables from Group Companies"
+    accountDescription: "Other receivables from companies in the same group"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1580"
+    accountName: "Provision for Doubtful Receivables"
+    accountDescription: "Provision for bad debts"
+    accountType: "ASSET"
+
+  # 16 Value added tax, accrued government subsidies, etc.
+  - noAccountNumber: "1600"
+    accountName: "Output VAT"
+    accountDescription: "VAT on sales – control account"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1601"
+    accountName: "Output VAT – High Rate"
+    accountDescription: "Output VAT at the high rate"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1602"
+    accountName: "Output VAT – Purchases of Services Abroad"
+    accountDescription: "Output VAT on services purchased from abroad"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1603"
+    accountName: "Output VAT – Medium Rate"
+    accountDescription: "Output VAT at the medium rate"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1604"
+    accountName: "Output VAT – Low Rate"
+    accountDescription: "Output VAT at the low rate"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1610"
+    accountName: "Input VAT"
+    accountDescription: "VAT on purchases – control account"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1611"
+    accountName: "Input VAT – High Rate"
+    accountDescription: "Input VAT at the high rate"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1612"
+    accountName: "Input VAT – Purchases of Services Abroad"
+    accountDescription: "Input VAT on services purchased from abroad"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1613"
+    accountName: "Input VAT – Medium Rate"
+    accountDescription: "Input VAT at the medium rate"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1614"
+    accountName: "Input VAT – Low Rate"
+    accountDescription: "Input VAT at the low rate"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1620"
+    accountName: "Investment Tax"
+    accountDescription: "Investment tax payable/receivable"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1630"
+    accountName: "Investment Tax Base"
+    accountDescription: "Base for investment tax calculation"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1640"
+    accountName: "VAT Settlement Account"
+    accountDescription: "Settlement account for VAT payable/receivable"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1670"
+    accountName: "Claims for Government Grants"
+    accountDescription: "Requirements for public subsidies"
+    accountType: "ASSET"
+
+  # 17 Prepaid expenses, accrued income, etc.
+  - noAccountNumber: "1700"
+    accountName: "Prepaid Rent"
+    accountDescription: "Rent paid in advance"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1710"
+    accountName: "Prepaid Interest"
+    accountDescription: "Interest paid in advance"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1750"
+    accountName: "Accrued Rent"
+    accountDescription: "Rent incurred but not yet paid"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1760"
+    accountName: "Accrued Interest"
+    accountDescription: "Interest earned but not yet received"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1780"
+    accountName: "Claim for Paid-in Share Capital"
+    accountDescription: "Requirements for payment of company capital"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1790"
+    accountName: "Interim Account"
+    accountDescription: "Temporary suspense account"
+    accountType: "ASSET"
+
+  # 18 Short-term financial investments
+  - noAccountNumber: "1800"
+    accountName: "Shares and Units in Group Companies"
+    accountDescription: "Short-term investments in group companies"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1810"
+    accountName: "Marketable Shares"
+    accountDescription: "Market-based stocks"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1820"
+    accountName: "Other Shares"
+    accountDescription: "Investments in non-group shares"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1830"
+    accountName: "Marketable Bonds"
+    accountDescription: "Market-traded bonds"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1840"
+    accountName: "Other Bonds"
+    accountDescription: "Investments in other bonds"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1850"
+    accountName: "Marketable Certificates"
+    accountDescription: "Market-based bonds"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1860"
+    accountName: "Other Certificates"
+    accountDescription: "Investments in other certificates"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1870"
+    accountName: "Other Marketable Financial Instruments"
+    accountDescription: "Other short-term financial instruments"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1880"
+    accountName: "Other Financial Instruments"
+    accountDescription: "Other short-term financial assets"
+    accountType: "ASSET"
+
+  # 19 Bank deposits, cash and similar
+  - noAccountNumber: "1900"
+    accountName: "Cash"
+    accountDescription: "Cash on hand"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1910"
+    accountName: "Checkout"
+    accountDescription: "Cash in petty cash desk"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1920"
+    accountName: "Bank Deposits"
+    accountDescription: "Bank deposits"
+    accountType: "ASSET"
+
+  - noAccountNumber: "1950"
+    accountName: "Tax Withholding Bank Deposits"
+    accountDescription: "Bank deposits for tax deductions"
+    accountType: "ASSET"
+
+  # EQUITY AND LIABILITIES
+  # 20 Equity AS/ASA
+  - noAccountNumber: "2000"
+    accountName: "Share Capital"
+    accountDescription: "Registered share capital"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "2010"
+    accountName: "Treasury Shares"
+    accountDescription: "Own shares held by the company"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "2020"
+    accountName: "Share Premium Fund"
+    accountDescription: "Paid-in capital exceeding nominal share value"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "2040"
+    accountName: "Valuation Difference Reserve"
+    accountDescription: "Fund for valuation differences"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "2050"
+    accountName: "Other Equity"
+    accountDescription: "Other retained equity"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "2080"
+    accountName: "Accumulated Loss"
+    accountDescription: "Undistributed and Uncovered losses"
+    accountType: "EQUITY"
+
+  # 21 Provision for liabilities
+  - noAccountNumber: "2100"
+    accountName: "Pension Obligations"
+    accountDescription: "Long-term pension obligations"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2120"
+    accountName: "Deferred Tax Liability"
+    accountDescription: "Deferred tax liabilities"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2160"
+    accountName: "Unearned Income"
+    accountDescription: "Income received in advance for future periods"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2180"
+    accountName: "Other Provisions for Liabilities"
+    accountDescription: "Other long-term provisions"
+    accountType: "LIABILITY"
+
+  # 22 Other long-term debt
+  - noAccountNumber: "2200"
+    accountName: "Convertible Loans"
+    accountDescription: "Long-term convertible loans"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2210"
+    accountName: "Bond Loans"
+    accountDescription: "Long-term bond loans"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2220"
+    accountName: "Debt to Credit Institutions"
+    accountDescription: "Long-term loans from banks and credit institutions"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2240"
+    accountName: "Mortgage Loans"
+    accountDescription: "Loans secured by mortgage"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2260"
+    accountName: "Debt to Group Companies"
+    accountDescription: "Long-term debt to companies in the same group"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2270"
+    accountName: "Other Foreign Currency Loans"
+    accountDescription: "Long-term loans in foreign currency"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2280"
+    accountName: "Silent Partner Contributions and Subordinated Loan Capital"
+    accountDescription: "Subordinated loans and similar capital"
+    accountType: "LIABILITY"
+
+  # 23 Short-term convertible loans, bonds and debt to credit institutions
+  - noAccountNumber: "2300"
+    accountName: "Convertible Loans – Current Portion"
+    accountDescription: "Convertible loans due within one year"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2320"
+    accountName: "Certificate Loans"
+    accountDescription: "Short-term certificate loans"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2340"
+    accountName: "Other Foreign Currency Loans – Current"
+    accountDescription: "Short-term foreign currency loans"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2360"
+    accountName: "Construction Loans"
+    accountDescription: "Short-term construction loans"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2380"
+    accountName: "Overdraft Facility"
+    accountDescription: "Bank overdraft facility"
+    accountType: "LIABILITY"
+
+  # 24 Accounts payable
+  - noAccountNumber: "2400"
+    accountName: "Accounts Payable"
+    accountDescription: "Trade payables to suppliers"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2460"
+    accountName: "Accounts Payable to Group Companies"
+    accountDescription: "Trade payables to group companies"
+    accountType: "LIABILITY"
+
+  # 25 Tax payable
+  - noAccountNumber: "2500"
+    accountName: "Income Tax Payable – Non-assessed"
+    accountDescription: "Tax payable for the year – preliminary"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2510"
+    accountName: "Income Tax Payable – Assessed"
+    accountDescription: "Tax payable for the year – assessed"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2530"
+    accountName: "Tax Refund under Tax Act §31-5"
+    accountDescription: "Tax refund per Tax Act section 31, fifth paragraph"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2540"
+    accountName: "Prepaid Tax"
+    accountDescription: "Tax paid in advance"
+    accountType: "LIABILITY"
+
+  # 26 Tax deductions and other deductions
+  - noAccountNumber: "2600"
+    accountName: "Withholding Tax"
+    accountDescription: "Withheld payroll taxes"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2610"
+    accountName: "Overlays"
+    accountDescription: "Court-ordered wage attachments"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2620"
+    accountName: "Contribution Deductions"
+    accountDescription: "Withheld child support payments"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2630"
+    accountName: "Social Security Deductions"
+    accountDescription: "Withheld social security contributions"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2640"
+    accountName: "Insurance Deduction"
+    accountDescription: "Withheld insurance premiums"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2650"
+    accountName: "Union Dues Withholdings"
+    accountDescription: "Withheld union dues"
+    accountType: "LIABILITY"
+
+  # 27 Public fees due
+  - noAccountNumber: "2700"
+    accountName: "Output VAT"
+    accountDescription: "VAT on sales – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2701"
+    accountName: "Output VAT – High Rate"
+    accountDescription: "Output VAT at the high rate – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2702"
+    accountName: "Output VAT – Purchases of Services Abroad"
+    accountDescription: "Output VAT on foreign services – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2703"
+    accountName: "Output VAT – Medium Rate"
+    accountDescription: "Output VAT at the medium rate – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2704"
+    accountName: "Output VAT – Low Rate"
+    accountDescription: "Output VAT at the low rate – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2710"
+    accountName: "Input VAT"
+    accountDescription: "VAT on purchases – deductible – payable side"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2711"
+    accountName: "Input VAT – High Rate"
+    accountDescription: "Input VAT at the high rate – payable side"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2712"
+    accountName: "Input VAT – Purchases of Services Abroad"
+    accountDescription: "Input VAT on foreign services – payable side"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2713"
+    accountName: "Input VAT – Medium Rate"
+    accountDescription: "Input VAT at the medium rate – payable side"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2714"
+    accountName: "Input VAT – Low Rate"
+    accountDescription: "Input VAT at the low rate – payable side"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2720"
+    accountName: "Investment Tax"
+    accountDescription: "Investment tax – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2730"
+    accountName: "Investment Tax Base"
+    accountDescription: "Base for investment tax – payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2740"
+    accountName: "VAT Settlement Account"
+    accountDescription: "Settlement account – payable side"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2770"
+    accountName: "Employer's National Insurance Contributions Payable"
+    accountDescription: "Employer's NIC payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2780"
+    accountName: "Accrued Employer's National Insurance Contributions"
+    accountDescription: "Employer's NIC incurred but not yet paid"
+    accountType: "LIABILITY"
+
+  # 28 Dividend
+  - noAccountNumber: "2800"
+    accountName: "Proposed Dividend"
+    accountDescription: "Dividend proposed for distribution"
+    accountType: "LIABILITY"
+
+  # 29 Other current liabilities
+  - noAccountNumber: "2900"
+    accountName: "Advances from Customers"
+    accountDescription: "Customer prepayments"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2910"
+    accountName: "Debt to Employees and Owners"
+    accountDescription: "Short-term debt to employees and owners"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2920"
+    accountName: "Debt to Group Companies"
+    accountDescription: "Short-term debt to group companies"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2930"
+    accountName: "Wages Payable"
+    accountDescription: "Accrued salaries payable"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2940"
+    accountName: "Holiday Pay Accrued"
+    accountDescription: "Accrued holiday pay"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2950"
+    accountName: "Accrued Interest"
+    accountDescription: "Interest expense incurred but not yet paid"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2960"
+    accountName: "Accrued Expense and Deferred Income"
+    accountDescription: "Accrued expenses and deferred income"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2970"
+    accountName: "Unearned Income"
+    accountDescription: "Income received but not earned"
+    accountType: "LIABILITY"
+
+  - noAccountNumber: "2980"
+    accountName: "Provisions and Liabilities"
+    accountDescription: "Short-term provisions"
+    accountType: "LIABILITY"
+
+  # 3 SALES AND OPERATING INCOME
+  # 30 Sales income, taxable
+  - noAccountNumber: "3000"
+    accountName: "Sales – Goods – High VAT Rate"
+    accountDescription: "Sales of merchandise subject to high VAT rate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3010"
+    accountName: "Sales – Manufactured Goods – High VAT Rate"
+    accountDescription: "Sales of self-manufactured goods – high VAT rate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3020"
+    accountName: "Sales – Services – High VAT Rate"
+    accountDescription: "Sales of services – high VAT rate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3030"
+    accountName: "Sales – Goods – Medium VAT Rate"
+    accountDescription: "Sales of merchandise – medium VAT rate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3040"
+    accountName: "Sales – Manufactured Goods – Medium VAT Rate"
+    accountDescription: "Sales of self-manufactured goods – medium VAT rate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3050"
+    accountName: "Sales – Services – Low VAT Rate"
+    accountDescription: "Sales of services – low VAT rate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3060"
+    accountName: "Withdrawal of Goods – High VAT Rate"
+    accountDescription: "Internal withdrawal of goods subject to high VAT"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3063"
+    accountName: "Withdrawal of Goods – Medium VAT Rate"
+    accountDescription: "Internal withdrawal of goods – medium VAT"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3070"
+    accountName: "Withdrawal of Services – High VAT Rate"
+    accountDescription: "Internal withdrawal of services – high VAT"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3074"
+    accountName: "Withdrawal of Services – Low VAT Rate"
+    accountDescription: "Internal withdrawal of services – low VAT"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3080"
+    accountName: "Sales Discounts and Reductions – VAT"
+    accountDescription: "Discounts and reductions on taxable sales"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3090"
+    accountName: "Reimbursable Expenses – VAT"
+    accountDescription: "Refundable expenses at the buyer's expense, tax schedule"
+    accountType: "REVENUE"
+
+  # 31 Sales revenue, tax-free
+  - noAccountNumber: "3100"
+    accountName: "Sales – Goods – VAT-free"
+    accountDescription: "Sales revenue of trade goods, duty-free"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3110"
+    accountName: "Sales – Manufactured Goods – VAT-free"
+    accountDescription: "Sales revenue from self-manufactured goods, tax-free"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3120"
+    accountName: "Sales – Services – VAT-free"
+    accountDescription: "Sales revenue services tax-free"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3160"
+    accountName: "Withdrawal of Goods – VAT-free"
+    accountDescription: "Withdrawing goods duty-free"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3180"
+    accountName: "Sales Discounts and Reductions – VAT-free"
+    accountDescription: "Discounts and other sales revenue reductions tax-free"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3190"
+    accountName: "Reimbursable Expenses – VAT-free"
+    accountDescription: "Refundable expenses at the buyer's expense, tax-free"
+    accountType: "REVENUE"
+
+  # 32 Sales income, outside the tax area
+  - noAccountNumber: "3200"
+    accountName: "Sales – Goods – Outside VAT Area"
+    accountDescription: "Sales revenue of merchandise outside the tax area"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3210"
+    accountName: "Sales – Manufactured Goods – Outside VAT Area"
+    accountDescription: "Sales revenue from self-manufactured goods outside the tax area"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3220"
+    accountName: "Sales – Services – Outside VAT Area"
+    accountDescription: "Sales revenue from services outside the tax area"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3260"
+    accountName: "Withdrawal of Goods – Outside VAT Area"
+    accountDescription: "Withdrawal of goods outside the tax area"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3280"
+    accountName: "Sales Discounts and Reductions – Outside VAT Area"
+    accountDescription: "Discounts and other sales revenue reductions"
+    accountType: "REVENUE"
+
+  # 33 Public tax on turnover
+  - noAccountNumber: "3300"
+    accountName: "Special Government Duty – Taxable Goods"
+    accountDescription: "Special official tax on goods sold/taxable goods"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3301"
+    accountName: "Special Government Duty – Exempt Goods"
+    accountDescription: "Special official tax on goods sold/freely"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3302"
+    accountName: "Environmental Duty – Taxable Goods"
+    accountDescription: "Environmental tax for production/sold goods subject to tax"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3303"
+    accountName: "Environmental Duty – Exempt Goods"
+    accountDescription: "Environmental tax for goods produced/sold tax-free"
+    accountType: "REVENUE"
+
+  # 34 Public subsidy/refund
+  - noAccountNumber: "3400"
+    accountName: "Government Grants – Goods"
+    accountDescription: "Special public subsidy for goods produced/sold"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3440"
+    accountName: "Government Grants – Services"
+    accountDescription: "Special public subsidy for service"
+    accountType: "REVENUE"
+
+  # 35 Unearned income
+  - noAccountNumber: "3500"
+    accountName: "Warranty Income"
+    accountDescription: "Income from warranty obligations"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3510"
+    accountName: "Service Income"
+    accountDescription: "Income from service contracts"
+    accountType: "REVENUE"
+
+  # 36 Rental income
+  - noAccountNumber: "3600"
+    accountName: "Rental Income – Real Estate"
+    accountDescription: "Rental income from real estate"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3610"
+    accountName: "Rental Income – Other Assets"
+    accountDescription: "Rental income from other fixed assets"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3620"
+    accountName: "Other Rental Income"
+    accountDescription: "Other rental income"
+    accountType: "REVENUE"
+
+  # 37 Commission income
+  - noAccountNumber: "3700"
+    accountName: "Commission Income"
+    accountDescription: "Income from commissions"
+    accountType: "REVENUE"
+
+  # 38 Gain on disposal of fixed assets
+  - noAccountNumber: "3800"
+    accountName: "Gain on Disposal of Fixed Assets"
+    accountDescription: "Gain on sale of fixed assets"
+    accountType: "REVENUE"
+
+  # 39 Other operating income
+  - noAccountNumber: "3900"
+    accountName: "Other Operating Income – Taxable"
+    accountDescription: "Other operating income subject to VAT"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3910"
+    accountName: "Outgoing Postage – Taxable"
+    accountDescription: "Postage recharged to customer – VATable"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3920"
+    accountName: "Outgoing Fees – Taxable"
+    accountDescription: "Fees recharged to customer – VATable"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3950"
+    accountName: "Other Operating Income – Tax-free"
+    accountDescription: "Other operating income – VAT-exempt"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3960"
+    accountName: "Outgoing Postage – Tax-free"
+    accountDescription: "Postage recharged – VAT-exempt"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "3970"
+    accountName: "Outgoing Fees – Tax-free"
+    accountDescription: "Fees recharged – VAT-exempt"
+    accountType: "REVENUE"
+
+  # 4 COST OF GOODS
+  # 40 Consumption of raw materials and purchased semi-finished products
+  - noAccountNumber: "4000"
+    accountName: "Purchase of Raw Materials – High VAT Rate"
+    accountDescription: "Raw materials and semi-finished goods – high VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4030"
+    accountName: "Purchase of Raw Materials – Medium VAT Rate"
+    accountDescription: "Raw materials – medium VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4060"
+    accountName: "Freight, Customs and Forwarding"
+    accountDescription: "Transportation and customs costs on purchases"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4070"
+    accountName: "Purchase Price Reductions"
+    accountDescription: "Purchase discounts received"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4090"
+    accountName: "Inventory Change – Raw Materials"
+    accountDescription: "Change in inventory of raw materials"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  # 41 Consumption of goods in process
+  - noAccountNumber: "4100"
+    accountName: "Purchase of Goods Under Manufacture – High VAT Rate"
+    accountDescription: "Goods under manufacture – high VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4130"
+    accountName: "Purchase of Goods Under Manufacture – Medium VAT Rate"
+    accountDescription: "Goods under manufacture – medium VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4160"
+    accountName: "Freight, Customs and Forwarding"
+    accountDescription: "Transportation costs for goods under manufacture"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4170"
+    accountName: "Purchase Price Reductions"
+    accountDescription: "Discounts on purchases of goods under manufacture"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4190"
+    accountName: "Inventory Change – Goods Under Manufacture"
+    accountDescription: "Change in inventory of goods under manufacture"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  # 42 Consumption of finished goods
+  - noAccountNumber: "4200"
+    accountName: "Purchase of Finished Goods – High VAT Rate"
+    accountDescription: "Finished goods – high VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4230"
+    accountName: "Purchase of Finished Goods – Medium VAT Rate"
+    accountDescription: "Finished goods – medium VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4260"
+    accountName: "Freight, Customs and Forwarding"
+    accountDescription: "Transportation costs for finished goods"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4270"
+    accountName: "Purchase Price Reductions – Taxable"
+    accountDescription: "Discounts on purchases of finished goods – VATable"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4290"
+    accountName: "Inventory Change – Finished Goods"
+    accountDescription: "Change in inventory of finished goods"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  # 43 Consumption of purchased goods for resale
+  - noAccountNumber: "4300"
+    accountName: "Purchase of Goods for Resale – High VAT Rate"
+    accountDescription: "Goods for resale – high VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4330"
+    accountName: "Purchase of Goods for Resale – Medium VAT Rate"
+    accountDescription: "Goods for resale – medium VAT"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4360"
+    accountName: "Freight, Customs and Forwarding"
+    accountDescription: "Transportation costs for goods for resale"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4370"
+    accountName: "Purchase Price Reductions"
+    accountDescription: "Discounts on purchases of goods for resale"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4390"
+    accountName: "Inventory Change – Goods for Resale"
+    accountDescription: "Change in inventory of goods for resale"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  # 45 Foreign performance and subcontracting
+  - noAccountNumber: "4500"
+    accountName: "Subcontracted Services and Outsourcing"
+    accountDescription: "Foreign benefits and subcontracting"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4590"
+    accountName: "Inventory Change – Subcontracted Work"
+    accountDescription: "Change in inventory related to subcontracted work"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  # 49 Other accruals
+  - noAccountNumber: "4900"
+    accountName: "Other Accruals"
+    accountDescription: "Other cost accruals"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  - noAccountNumber: "4990"
+    accountName: "Inventory Change – Other"
+    accountDescription: "Change in other inventories"
+    accountType: "COST_OF_GOODS_SOLD"
+
+  # 5 WAGE COSTS
+  # 50 Employee salaries
+  - noAccountNumber: "5000"
+    accountName: "Salaries and Wages"
+    accountDescription: "Gross salaries and wages"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5090"
+    accountName: "Salaries Accrual Account"
+    accountDescription: "Accruals related to salaries"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5180"
+    accountName: "Holiday Pay Accrued"
+    accountDescription: "Holiday pay earned during the year"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5182"
+    accountName: "Employer's NIC on Accrued Holiday Pay"
+    accountDescription: "Employer's NIC on accrued holiday pay"
+    accountType: "EXPENSE"
+
+  # 52 Employment advantage
+  - noAccountNumber: "5200"
+    accountName: "Company Car Benefit"
+    accountDescription: "Taxable benefit – company car"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5210"
+    accountName: "Telephone Benefit"
+    accountDescription: "Taxable benefit – telephone"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5220"
+    accountName: "Newspaper Benefit"
+    accountDescription: "Taxable benefit – newspaper"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5230"
+    accountName: "Lodging and Housing Benefit"
+    accountDescription: "Taxable benefit – lodging and housing"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5240"
+    accountName: "Interest Benefit"
+    accountDescription: "Taxable benefit – interest advantage"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5280"
+    accountName: "Other Employee Benefits"
+    accountDescription: "Other taxable benefits in kind"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5290"
+    accountName: "Contra Account for Group 52"
+    accountDescription: "Contra entries for benefits in group 52"
+    accountType: "EXPENSE"
+
+  # 53 Other reportable remuneration
+  - noAccountNumber: "5300"
+    accountName: "Profit Sharing (Tantieme)"
+    accountDescription: "Profit-sharing remuneration"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5330"
+    accountName: "Board and Corporate Assembly Remuneration"
+    accountDescription: "Fees to board and corporate assembly"
+    accountType: "EXPENSE"
+
+  # 54 Employer contributions and pension costs
+  - noAccountNumber: "5400"
+    accountName: "Employer's National Insurance Contributions"
+    accountDescription: "Employer's NIC on salaries"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5420"
+    accountName: "Pension Costs – Reportable"
+    accountDescription: "Reportable pension expenses"
+    accountType: "EXPENSE"
+
+  # 55 Other cost reimbursement
+  - noAccountNumber: "5500"
+    accountName: "Other Expense Allowances"
+    accountDescription: "Other allowances to employees"
+    accountType: "EXPENSE"
+
+  # 56 Compensation for owners etc.
+  - noAccountNumber: "5600"
+    accountName: "Compensation to Owners in Partnerships"
+    accountDescription: "Compensation to owners in ANS etc."
+    accountType: "EXPENSE"
+
+  # 57 Public subsidies for labor
+  - noAccountNumber: "5700"
+    accountName: "Apprentice Subsidy"
+    accountDescription: "Public subsidy for apprentices"
+    accountType: "EXPENSE"
+
+  # 58 Public reimbursement for labor
+  - noAccountNumber: "5800"
+    accountName: "Reimbursement of Sick Pay"
+    accountDescription: "Reimbursement of sickness benefits"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5820"
+    accountName: "Reimbursement of Employer's NIC"
+    accountDescription: "Reimbursement of employer's NIC"
+    accountType: "EXPENSE"
+
+  # 59 Other personnel costs
+  - noAccountNumber: "5900"
+    accountName: "Gifts to Employees"
+    accountDescription: "Gifts and benefits to employees"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5910"
+    accountName: "Canteen Costs"
+    accountDescription: "Canteen and catering expenses"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5920"
+    accountName: "Occupational Injury Insurance"
+    accountDescription: "Insurance against occupational injuries"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "5930"
+    accountName: "Other Insurance Costs"
+    accountDescription: "Other personnel insurance costs"
+    accountType: "EXPENSE"
+
+  # 6 OTHER OPERATING EXPENSES, DEPRECIATION AND IMPAIRMENT
+  # 60 Depreciation and impairment
+  - noAccountNumber: "6000"
+    accountName: "Depreciation – Buildings and Real Estate"
+    accountDescription: "Depreciation of buildings and real estate"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6010"
+    accountName: "Depreciation – Transport, Machinery, Inventory"
+    accountDescription: "Depreciation of transport equipment, machinery, inventory"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6020"
+    accountName: "Depreciation – Intangible Assets"
+    accountDescription: "Depreciation of intangible assets"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6050"
+    accountName: "Write-down of Fixed Assets"
+    accountDescription: "Impairment of fixed assets"
+    accountType: "EXPENSE"
+
+  # 61 Shipping and transportation costs related to sales
+  - noAccountNumber: "6100"
+    accountName: "Freight and Transport Costs – Sales"
+    accountDescription: "Freight and transport costs related to sales"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6110"
+    accountName: "Customs and Forwarding Costs – Sales"
+    accountDescription: "Customs and forwarding costs related to sales"
+    accountType: "EXPENSE"
+
+  # 62 Energy, fuel and water for production
+  - noAccountNumber: "6200"
+    accountName: "Electricity"
+    accountDescription: "Electricity costs"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6210"
+    accountName: "Gas"
+    accountDescription: "Gas for production"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6220"
+    accountName: "Fuel Oil"
+    accountDescription: "Fuel oil for production"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6230"
+    accountName: "Coal"
+    accountDescription: "Coal and coke for production"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6240"
+    accountName: "Firewood"
+    accountDescription: "Firewood and biomass"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6250"
+    accountName: "Petrol and Diesel"
+    accountDescription: "Petrol and diesel fuel"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6260"
+    accountName: "Water"
+    accountDescription: "Water consumption"
+    accountType: "EXPENSE"
+
+  # 63 Cost of premises
+  - noAccountNumber: "6300"
+    accountName: "Rent of Premises"
+    accountDescription: "Rental of premises"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6320"
+    accountName: "Waste, Water and Sewage"
+    accountDescription: "Costs for waste management, water, sewage"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6340"
+    accountName: "Lighting and Heating"
+    accountDescription: "Lighting and heating costs"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6360"
+    accountName: "Cleaning"
+    accountDescription: "Cleaning services and supplies"
+    accountType: "EXPENSE"
+
+  # 64 Rental of machinery, equipment, etc.
+  - noAccountNumber: "6400"
+    accountName: "Rental of Machinery"
+    accountDescription: "Rental of machinery"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6410"
+    accountName: "Rental of Inventory"
+    accountDescription: "Rental of inventory and fittings"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6420"
+    accountName: "Rental of IT Systems"
+    accountDescription: "Rental of data processing systems"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6430"
+    accountName: "Rental of Other Office Machines"
+    accountDescription: "Rental of other office machines"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6440"
+    accountName: "Rental of Transport Equipment"
+    accountDescription: "Rental of transport equipment"
+    accountType: "EXPENSE"
+
+  # 65 Tools, equipment and operating materials that are not to be capitalized
+  - noAccountNumber: "6500"
+    accountName: "Power-driven Tools"
+    accountDescription: "Purchase of motor-driven tools"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6510"
+    accountName: "Hand Tools"
+    accountDescription: "Purchase of hand tools"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6520"
+    accountName: "Auxiliary Tools"
+    accountDescription: "Purchase of auxiliary tools"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6530"
+    accountName: "Special Tools"
+    accountDescription: "Purchase of special tools"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6540"
+    accountName: "Inventory"
+    accountDescription: "Purchase of inventory not capitalised"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6550"
+    accountName: "Consumables"
+    accountDescription: "Consumables and materials"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6560"
+    accountName: "Office Supplies"
+    accountDescription: "Office supplies and stationery"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6570"
+    accountName: "Work Clothes and Protective Equipment"
+    accountDescription: "Protective clothing and equipment"
+    accountType: "EXPENSE"
+
+  # 66 Repair and maintenance
+  - noAccountNumber: "6600"
+    accountName: "Repair and Maintenance – Buildings"
+    accountDescription: "Maintenance of buildings"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6620"
+    accountName: "Repair and Maintenance – Equipment"
+    accountDescription: "Maintenance of equipment"
+    accountType: "EXPENSE"
+
+  # 67 Foreign service
+  - noAccountNumber: "6700"
+    accountName: "Audit and Accounting Fees"
+    accountDescription: "Fees for audit and accounting services"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6720"
+    accountName: "Economic and Legal Assistance"
+    accountDescription: "Fees for economic and legal advice"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6790"
+    accountName: "Other External Services"
+    accountDescription: "Other purchased external services"
+    accountType: "EXPENSE"
+
+  # 68 Office costs, printed matter, etc.
+  - noAccountNumber: "6800"
+    accountName: "Office Supplies and Stationery"
+    accountDescription: "Cost of office supplies and stationery"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6820"
+    accountName: "Printed Matter"
+    accountDescription: "Cost of printed materials"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6840"
+    accountName: "Newspapers, Journals and Books"
+    accountDescription: "Subscriptions to newspapers, journals, books"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6860"
+    accountName: "Meetings, Courses and Training"
+    accountDescription: "Costs of meetings, courses, updates"
+    accountType: "EXPENSE"
+
+  # 69 Telephone, postage etc.
+  - noAccountNumber: "6900"
+    accountName: "Telephone"
+    accountDescription: "Telephone and communication costs"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "6940"
+    accountName: "Postage"
+    accountDescription: "Postage costs"
+    accountType: "EXPENSE"
+
+  # 7 OTHER OPERATING EXPENSES, DEPRECIATION AND IMPAIRMENT
+  # 70 Cost of transportation
+  - noAccountNumber: "7000"
+    accountName: "Fuel"
+    accountDescription: "Fuel for transport equipment"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7020"
+    accountName: "Maintenance – Transport Equipment"
+    accountDescription: "Maintenance of transport equipment"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7040"
+    accountName: "Insurance – Transport Equipment"
+    accountDescription: "Insurance of transport equipment"
+    accountType: "EXPENSE"
+
+  # 71 Cost and allowance for travel, per diem, car, etc.
+  - noAccountNumber: "7100"
+    accountName: "Car Allowance – Taxable"
+    accountDescription: "Mileage allowance – taxable"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7130"
+    accountName: "Travel Costs – Taxable"
+    accountDescription: "Travel expenses – taxable"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7140"
+    accountName: "Travel Costs – Non-taxable"
+    accountDescription: "Travel expenses – non-taxable"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7150"
+    accountName: "Diet Costs – Taxable"
+    accountDescription: "Subsistence allowance – taxable"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7160"
+    accountName: "Diet Costs – Non-taxable"
+    accountDescription: "Subsistence allowance – non-taxable"
+    accountType: "EXPENSE"
+
+  # 72 Commission cost
+  - noAccountNumber: "7200"
+    accountName: "Commission Costs – Taxable"
+    accountDescription: "Commission expenses – taxable"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7210"
+    accountName: "Commission Costs – Non-taxable"
+    accountDescription: "Commission expenses – non-taxable"
+    accountType: "EXPENSE"
+
+  # 73 Selling, advertising and representation costs.
+  - noAccountNumber: "7300"
+    accountName: "Sales Costs"
+    accountDescription: "General sales expenses"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7320"
+    accountName: "Advertising Costs"
+    accountDescription: "Advertising and marketing expenses"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7350"
+    accountName: "Representation – Deductible"
+    accountDescription: "Deductible representation expenses"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7360"
+    accountName: "Representation – Non-deductible"
+    accountDescription: "Non-deductible representation expenses"
+    accountType: "EXPENSE"
+
+  # 74 Contribution and gift
+  - noAccountNumber: "7400"
+    accountName: "Membership Fees – Deductible"
+    accountDescription: "Deductible membership fees"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7410"
+    accountName: "Membership Fees – Non-deductible"
+    accountDescription: "Non-deductible membership fees"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7420"
+    accountName: "Gifts – Deductible"
+    accountDescription: "Deductible business gifts"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7430"
+    accountName: "Gifts – Non-deductible"
+    accountDescription: "Non-deductible business gifts"
+    accountType: "EXPENSE"
+
+  # 75 Insurance premium, warranty and service costs
+  - noAccountNumber: "7500"
+    accountName: "Insurance Premiums"
+    accountDescription: "Insurance premiums for business coverage"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7550"
+    accountName: "Warranty Costs"
+    accountDescription: "Costs related to warranty obligations"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7560"
+    accountName: "Service Costs"
+    accountDescription: "Costs for service contracts"
+    accountType: "EXPENSE"
+
+  # 76 License and patent costs
+  - noAccountNumber: "7600"
+    accountName: "License Fees and Royalties"
+    accountDescription: "Licence fees and royalties"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7610"
+    accountName: "Patent Costs – Own Patent"
+    accountDescription: "Costs related to own patents"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7620"
+    accountName: "Trademark Costs"
+    accountDescription: "Costs related to trademarks"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7630"
+    accountName: "Control, Testing and Stamp Duties"
+    accountDescription: "Control, testing and stamp duty fees"
+    accountType: "EXPENSE"
+
+  # 77 Other cost
+  - noAccountNumber: "7700"
+    accountName: "Board and Corporate Assembly Meetings"
+    accountDescription: "Costs of board and assembly meetings"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7710"
+    accountName: "General Meeting Costs"
+    accountDescription: "Costs of general meetings"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7730"
+    accountName: "Costs of Own Shares"
+    accountDescription: "Expenses related to own shares"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7740"
+    accountName: "Rounding Difference – VAT Settlement"
+    accountDescription: "Rounding differences in VAT settlement"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7745"
+    accountName: "Rounding Difference – Taxable"
+    accountDescription: "Rounding differences – taxable"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7746"
+    accountName: "Rounding Difference – Tax-free"
+    accountDescription: "Rounding differences – tax-free"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7750"
+    accountName: "Property and Lease Fees"
+    accountDescription: "Property and leasehold fees"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7770"
+    accountName: "Bank and Card Charges"
+    accountDescription: "Bank charges and card fees"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7780"
+    accountName: "Interest and Collection Fees"
+    accountDescription: "Interest and debt collection fees"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7790"
+    accountName: "Miscellaneous Costs"
+    accountDescription: "Miscellaneous operating expenses"
+    accountType: "EXPENSE"
+
+  # 78 Loss etc.
+  - noAccountNumber: "7800"
+    accountName: "Loss on Disposal of Fixed Assets"
+    accountDescription: "Losses from sale of fixed assets"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7820"
+    accountName: "Recovery of Previously Written-off Receivables"
+    accountDescription: "Income recovered on bad debts"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7830"
+    accountName: "Bad Debt Losses"
+    accountDescription: "Losses on trade receivables"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7860"
+    accountName: "Loss on Contracts"
+    accountDescription: "Losses on onerous contracts"
+    accountType: "EXPENSE"
+
+  # 79 Accrual account
+  - noAccountNumber: "7900"
+    accountName: "Inventory Change – Construction in Progress"
+    accountDescription: "Change in inventory of assets under construction"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "7910"
+    accountName: "Obsolete Inventory"
+    accountDescription: "Write-down of obsolete inventory"
+    accountType: "EXPENSE"
+
+  # 8 FINANCIAL INCOME AND EXPENSES
+  # 80 Financial income
+  - noAccountNumber: "8000"
+    accountName: "Income from Subsidiaries"
+    accountDescription: "Dividend/income from subsidiaries"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8010"
+    accountName: "Income from Group Companies"
+    accountDescription: "Dividend/income from other group companies"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8020"
+    accountName: "Income from Associated Companies"
+    accountDescription: "Dividend/income from associated companies"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8030"
+    accountName: "Interest Income – Group Companies"
+    accountDescription: "Interest income from group companies"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8040"
+    accountName: "Interest Income – Tax-free"
+    accountDescription: "Tax-free interest income"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8050"
+    accountName: "Other Interest Income"
+    accountDescription: "Other interest income"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8060"
+    accountName: "Currency Gain (Agio)"
+    accountDescription: "Gains on foreign exchange"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8070"
+    accountName: "Other Financial Income"
+    accountDescription: "Other financial income"
+    accountType: "REVENUE"
+
+  - noAccountNumber: "8080"
+    accountName: "Increase in Value of Current Financial Assets"
+    accountDescription: "Unrealised gains on current financial assets"
+    accountType: "REVENUE"
+
+  # 81 Finance cost
+  - noAccountNumber: "8100"
+    accountName: "Reduction in Value of Current Financial Assets"
+    accountDescription: "Unrealised losses on current financial assets"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8110"
+    accountName: "Write-down of Current Financial Assets"
+    accountDescription: "Write-downs of current financial assets"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8120"
+    accountName: "Write-down of Fixed Financial Assets"
+    accountDescription: "Write-downs of fixed financial assets"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8130"
+    accountName: "Interest Expense – Group Companies"
+    accountDescription: "Interest expense to group companies"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8140"
+    accountName: "Interest Expense – Non-deductible"
+    accountDescription: "Non-deductible interest expense"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8150"
+    accountName: "Other Interest Expense"
+    accountDescription: "Other interest expense"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8160"
+    accountName: "Currency Loss (Disagio)"
+    accountDescription: "Losses on foreign exchange"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8170"
+    accountName: "Other Financial Expense"
+    accountDescription: "Other financial expenses"
+    accountType: "EXPENSE"
+
+  # 83 Tax expense on ordinary income
+  - noAccountNumber: "8300"
+    accountName: "Income Tax"
+    accountDescription: "Tax on ordinary profit"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8320"
+    accountName: "Deferred Tax"
+    accountDescription: "Deferred tax on ordinary profit"
+    accountType: "EXPENSE"
+
+  # 84 Extraordinary income (specified by type)
+  - noAccountNumber: "8400"
+    accountName: "Extraordinary Income"
+    accountDescription: "Extraordinary income"
+    accountType: "REVENUE"
+
+  # 85 Extraordinary cost (specified by type)
+  - noAccountNumber: "8500"
+    accountName: "Extraordinary Expense"
+    accountDescription: "Extraordinary expenses"
+    accountType: "EXPENSE"
+
+  # 86 Tax expense on extraordinary profit
+  - noAccountNumber: "8600"
+    accountName: "Income Tax – Extraordinary Result"
+    accountDescription: "Tax on extraordinary profit"
+    accountType: "EXPENSE"
+
+  - noAccountNumber: "8620"
+    accountName: "Deferred Tax – Extraordinary Result"
+    accountDescription: "Deferred tax on extraordinary profit"
+    accountType: "EXPENSE"
+
+  # 88 Annual result
+  - noAccountNumber: "8800"
+    accountName: "Annual Result"
+    accountDescription: "Net profit or loss for the year"
+    accountType: "EQUITY"
+
+  # 89 Transfers and dispositions
+  - noAccountNumber: "8900"
+    accountName: "Transfer to Valuation Difference Reserve"
+    accountDescription: "Transfer to valuation difference reserve"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8910"
+    accountName: "Transfer to Shared Capital Reserve"
+    accountDescription: "Transfer fund jointly owned capital of the same enterprise."
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8920"
+    accountName: "Allocated Dividend/Interest on Primary Capital"
+    accountDescription: "Allocated dividend/interest on primary capital"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8930"
+    accountName: "Group Contribution"
+    accountDescription: "Group contribution"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8940"
+    accountName: "Shareholder Contribution"
+    accountDescription: "Shareholder contribution"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8950"
+    accountName: "Bonus Issue"
+    accountDescription: "Bonus issue of shares"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8960"
+    accountName: "Transfer to Other Equity"
+    accountDescription: "Transfer to other equity"
+    accountType: "EQUITY"
+
+  - noAccountNumber: "8990"
+    accountName: "Accumulated Loss Carried Forward"
+    accountDescription: "Accumulated loss carried forward"
+    accountType: "EQUITY"

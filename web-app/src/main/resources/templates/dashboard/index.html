@@ -6,20 +6,14 @@
 
 <body>
 <main layout:fragment="content">
-    <div class="container py-4">
-        <!-- Welcome Header -->
-        <div class="row mb-4">
-            <div class="col">
-                <div class="d-flex justify-content-between align-items-center">
+    <div>
+        <div>
+            <div>
+                <div>
                     <div>
-                        <h1 class="h3 mb-2">
-                            📊 Dashboard
-                            <span th:if="${currentCompany}" class="text-muted small">
-                                Company id: <span th:text="${currentCompany.organizationNumber}"></span>
-                            </span>
-                        </h1>
-                        <p class="text-muted mb-0">
-                            Welcome back, <span class="fw-bold" th:text="${user.email}">User</span>
+                        <p>
+                            <span th:text="#{dashboard.welcome.message}" />
+                            <span th:text="${user.username}" />
                         </p>
                     </div>
                 </div>
@@ -28,28 +22,5 @@
 
     </div>
 </main>
-
-<th:block layout:fragment="scripts">
-    <script>
-        // Get tenant ID from URL on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const tenantId = getCurrentTenantId();
-            if (!tenantId) {
-                // If no tenantId in URL, add default one
-                const currentUrl = new URL(window.location.href);
-                currentUrl.searchParams.set('tenantId', '23');
-                window.history.replaceState({}, '', currentUrl.toString());
-            }
-            
-            // TODO: Load actual dashboard data based on tenantId
-            console.log('Loading dashboard for tenant:', tenantId || '23');
-        });
-        
-        // TODO: Implement chart initialization when actual data is available
-        function initializeCharts() {
-            // Chart.js integration will go here
-        }
-    </script>
-</th:block>
 </body>
 </html> 

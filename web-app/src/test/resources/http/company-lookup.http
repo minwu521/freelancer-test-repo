@@ -1,7 +1,0 @@
-### Search Company
-GET http://localhost:8080/api/company-lookup/search?query=Sesam&countryCode=NO
-
-### Get Company Info
-GET http://localhost:8080/api/company-lookup/974760673?countryCode=NO
-
-###

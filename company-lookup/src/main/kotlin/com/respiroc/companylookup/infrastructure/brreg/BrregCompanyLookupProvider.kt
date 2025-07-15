@@ -15,7 +15,7 @@ class BrregCompanyLookupProvider(
     override val countryCode: String = "NO"
 
     override fun searchCompanies(query: String): CompanySearchResult {
-        logger.info("Searching Norwegian companies with query: $query")
+        logger.debug("Searching Norwegian companies with query: $query")
         
         val response = brregHttpApi.searchEntities(
             name = query,
@@ -41,7 +41,7 @@ class BrregCompanyLookupProvider(
     }
 
     override fun getCompanyInfo(companyId: String): CompanyInfo {
-        logger.info("Getting Norwegian company info for ID: $companyId")
+        logger.debug("Getting Norwegian company info for ID: $companyId")
         
         val response = brregHttpApi.getEntity(companyId)
 

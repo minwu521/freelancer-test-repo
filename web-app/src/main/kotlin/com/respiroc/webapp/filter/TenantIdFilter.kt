@@ -1,36 +1,99 @@
 package com.respiroc.webapp.filter
 
-import com.respiroc.tenant.infrastructure.context.TenantContextHolder
+import com.respiroc.user.application.UserService
 import com.respiroc.util.context.SpringUser
+import com.respiroc.util.context.UserTenantContext
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletRequestWrapper
 import jakarta.servlet.http.HttpServletResponse
-import org.springframework.http.HttpStatus
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
 import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
-import org.springframework.web.server.ResponseStatusException
 
 class TenantIdFilter(
-    private val paths: List<String> = listOf("/dashboard/**"),
-    private val paramName: String = "tenantId"
+    val userService: UserService
 ) : OncePerRequestFilter() {
 
+    private val paths: List<String> = listOf(
+        "/dashboard/**",
+        "/voucher/**",
+        "/tenant/**",
+        "/company/**",
+        "/report/**",
+        "/ledger/**",
+        "/htmx/**"
+    )
+
+    private val excludePaths: List<String> = listOf(
+        "/tenant/create",
+        "/assets/**",
+        "/errors/**",
+        "/error/**",
+        "/htmx/auth/**",
+        "/htmx/tenant/create",
+        "/htmx/company/search",
+        "/htmx/currency/**"
+    )
+    private val paramName: String = "tenantId"
     private val matcher = AntPathMatcher()
 
-    override fun shouldNotFilter(request: HttpServletRequest): Boolean =
-        paths.none { matcher.match(it, request.requestURI) }
+    override fun shouldNotFilter(request: HttpServletRequest): Boolean {
+        val uri = request.requestURI
+        return paths.none { matcher.match(it, uri) } ||
+                excludePaths.any { matcher.match(it, uri) }
+    }
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
         chain: FilterChain
     ) {
+
+        val authentication = SecurityContextHolder.getContext().authentication
+        if (authentication == null || !authentication.isAuthenticated) {
+            chain.doFilter(request, response)
+            return
+        }
+
         val tenantId = request.getParameter(paramName)
+        val springUser = getCurrentSpringUser()
 
         // Wrap the request so the parameter disappears for the rest of the app
-        val wrappedRequest = object : HttpServletRequestWrapper(request) {
+        val wrappedRequest = createWrappedRequest(request)
+
+        if (!tenantId.isNullOrBlank() && isTenantAccessible(tenantId, springUser)) {
+            setCurrentTenant(tenantId, springUser, request)
+        } else if (!tenantId.isNullOrBlank()) {
+            response.sendRedirect("/error/tenant-access-denied")
+            return
+        } else {
+            val tenants = try {
+                springUser.ctx.tenants
+            } catch (e: Exception) {
+                emptyList()
+            }
+
+            if (tenants.isEmpty()) {
+                response.sendRedirect("/tenant/create")
+            } else {
+                response.sendRedirect("/dashboard?tenantId=${tenants[0].id}")
+            }
+            return
+        }
+
+        chain.doFilter(wrappedRequest, response)
+    }
+
+    private fun getCurrentSpringUser(): SpringUser {
+        return SecurityContextHolder.getContext().authentication.principal as SpringUser
+    }
+
+    private fun createWrappedRequest(request: HttpServletRequest): HttpServletRequestWrapper {
+        return object : HttpServletRequestWrapper(request) {
             override fun getParameter(name: String?): String? =
                 if (name == paramName) null else super.getParameter(name)
 
@@ -40,36 +103,33 @@ class TenantIdFilter(
             override fun getParameterMap(): MutableMap<String, Array<String>> =
                 super.getParameterMap().toMutableMap().apply { remove(paramName) }
         }
+    }
 
-        if (!tenantId.isNullOrBlank() && isTenantAccessibleByUser(tenantId)) {
-            setCurrentTenant(tenantId)
-        } else if (!tenantId.isNullOrBlank()) {
-            // TODO: Use custom error for better visibility
-            throw ResponseStatusException(HttpStatus.BAD_REQUEST, "You cannot access this resource")
-        }
-
-        try {
-            chain.doFilter(wrappedRequest, response)
-        } finally {
-            TenantContextHolder.clear()
+    private fun isTenantAccessible(tenantId: String, springUser: SpringUser): Boolean {
+        return try {
+            springUser.ctx.tenants.any { it.id == tenantId.toLong() }
+        } catch (e: NumberFormatException) {
+            false
         }
     }
 
-    private fun isTenantAccessibleByUser(tenantId: String): Boolean {
-        val authentication = SecurityContextHolder.getContext().authentication
-        if (authentication == null) {
-            return false
-        }
-        val springUser = authentication.principal as SpringUser
-        return springUser.ctx.tenants.any { it.id == tenantId.toLong() }
+    // TODO: find better solution
+    private fun setCurrentTenant(tenantId: String, springUser: SpringUser, request: HttpServletRequest) {
+        val tenantIdLong = tenantId.toLong()
+        val roles = userService.findTenantRoles(springUser.ctx.id, tenantIdLong)
+        val user = springUser.ctx
+        val currentTenant = user.tenants.find { it.id == tenantIdLong }!!
+        user.currentTenant =
+            UserTenantContext(tenantIdLong, currentTenant.companyName, currentTenant.currencyCode, roles)
+        setSecurityContext(SpringUser(user), request)
     }
 
-    private fun setCurrentTenant(tenantId: String) {
-        TenantContextHolder.setTenantId(tenantId.toLong())
-        val authentication = SecurityContextHolder.getContext().authentication
-        if (authentication != null) {
-            val springUser = authentication.principal as SpringUser
-            springUser.ctx.currentTenant = springUser.ctx.tenants.filter { it.id == tenantId.toLong() }.first()
-        }
+    private fun setSecurityContext(springUser: SpringUser, request: HttpServletRequest) {
+        val userDetails: UserDetails = springUser
+        val usernamePasswordAuthenticationToken =
+            UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
+        usernamePasswordAuthenticationToken.details =
+            WebAuthenticationDetailsSource().buildDetails(request)
+        SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken
     }
 }

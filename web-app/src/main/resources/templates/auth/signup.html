@@ -1,95 +1,41 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/base}">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" class="wa-cloak wa-theme-matter">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="#{signup.page.title}" />
+    <th:block th:replace="~{layout/libs :: common-libs}"></th:block>
+    <link rel="stylesheet" th:href="@{/assets/signup/signup.css}">
 </head>
 
 <body>
-<main layout:fragment="content">
-    <div class="auth-container">
-        <div class="auth-card">
-            <div class="card">
-                <div class="card-body">
-                    <!-- Header -->
-                    <div class="text-center mb-4">
-                        <div class="mb-3" style="font-size: 3rem;">
-                            👤
-                        </div>
-                        <h3 class="fw-bold mb-2">Create Account</h3>
-                        <p class="text-muted">Enter your information to sign up</p>
-                    </div>
+<div class="main">
+    <div class="wa-center">
+        <wa-card style="max-width: 45ch; margin: 0 auto">
+            <div id="message-container">
+            </div>
 
-                    <!-- Alerts -->
-                    <div th:if="${error}" class="alert alert-danger" role="alert">
-                        <span th:text="${error}"></span>
-                    </div>
-
-                    <div th:if="${success}" class="alert alert-success" role="alert">
-                        <span th:text="${success}"></span>
-                    </div>
-
-                    <!-- Signup Form -->
-                    <form method="post" action="/auth/signup" id="signupForm">
-                        
-                        <div class="mb-3">
-                            <label for="email" class="form-label">
-                                📧 Email
-                            </label>
-                            <input type="email" 
-                                   class="form-control form-control-lg" 
-                                   id="email" 
-                                   name="email" 
-                                   placeholder="example@domain.com"
-                                   required
-                                   autocomplete="email">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="password" class="form-label">
-                                🔒 Password
-                            </label>
-                            <input type="password" 
-                                   class="form-control form-control-lg" 
-                                   id="password" 
-                                   name="password" 
-                                   placeholder="Enter your password"
-                                   required
-                                   autocomplete="new-password">
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">
-                            ✨ Sign Up
-                        </button>
-
-                        <!-- Login Link -->
-                        <div class="text-center">
-                            <span class="text-muted">Already have an account?</span>
-                            <a href="/auth/login" style="text-decoration: none; font-weight: bold; color: var(--primary-color);">
-                                Login
-                            </a>
-                        </div>
-                    </form>
+            <form hx-post="/htmx/auth/signup"
+                  hx-target="#message-container"
+                  hx-swap="innerHTML">
+                <div class="wa-stack">
+                    <h2 class="wa-heading-m" th:text="#{signup}" />
+                    <wa-input th:label="#{email.label}" type="email" id="email" name="email" required></wa-input>
+                    <wa-input th:label="#{password.label}" type="password" id="password" name="password" required></wa-input>
+                    <a href="/auth/login" th:text="#{signup.form.login.link}" />
+                    <wa-button type="submit" th:text="#{signup}"></wa-button>
                 </div>
-            </div>
+            </form>
+        </wa-card>
 
-            <!-- Footer -->
-            <div class="text-center mt-4">
-                <p class="text-muted small">
-                    🔐 Your information is protected with the highest level of security
-                </p>
-            </div>
+        <div style="text-align: center; margin-top: 0.5rem">
+            <p class="wa-body-xs" th:text="#{signup.footer.security.message}" />
         </div>
     </div>
-</main>
+</div>
 
-<th:block layout:fragment="scripts">
-    <script>
-        // Focus on email input when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            document.getElementById('email').focus();
-        });
-    </script>
-</th:block>
+
+<script th:src="@{/assets/signup/signup.js}"></script>
 </body>
 </html> 

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users
 (
-    id            BIGSERIAL PRIMARY KEY,
+    id            INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     email         VARCHAR(128) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     is_enabled    BOOLEAN   DEFAULT TRUE,

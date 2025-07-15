@@ -1,8 +1,10 @@
 package com.respiroc.tenant.domain.model
 
+import com.respiroc.company.domain.model.Company
 import jakarta.persistence.*
-import jakarta.validation.constraints.Size
 import org.hibernate.annotations.CreationTimestamp
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import org.hibernate.annotations.UpdateTimestamp
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.io.Serializable
@@ -18,9 +20,13 @@ open class Tenant : Serializable {
     @Column(name = "id", nullable = false)
     open var id: Long = -1
 
-    @Size(max = 255)
-    @Column(name = "name", nullable = false)
-    open lateinit var name: String
+    @Column(name = "company_id", nullable = false, updatable = false, insertable = false)
+    open var companyId: Long = -1
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "company_id", nullable = false)
+    open lateinit var company: Company
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
@@ -29,4 +35,12 @@ open class Tenant : Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     open lateinit var updatedAt: Instant
+
+    fun getCompanyName(): String {
+        return company.name
+    }
+
+    fun getCompanyCountryCode(): String {
+        return company.countryCode
+    }
 }

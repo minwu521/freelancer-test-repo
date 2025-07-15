@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS permissions
 (
-    id          BIGSERIAL PRIMARY KEY,
+    id          INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name        VARCHAR(128) NOT NULL,
     code        VARCHAR(128) NOT NULL,
     description VARCHAR(255) NOT NULL,

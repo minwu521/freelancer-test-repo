@@ -52,16 +52,9 @@ uv.lock
 .kamal
 
 reai.log*
+/.resourceCache/
 
-# Node.js dependencies and build artifacts
-node_modules/
-package-lock.json
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Cloudflare Worker specific
-cloudflare-worker/node_modules/
-cloudflare-worker/package-lock.json
-cloudflare-worker/.wrangler/
-cloudflare-worker/dist/
+# Symlink these from AI.md if needed
+GEMINI.md
+CLAUDE.md
+.junie

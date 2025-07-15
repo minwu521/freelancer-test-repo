@@ -16,7 +16,11 @@ import requests
 from cryptography.hazmat.primitives.asymmetric import rsa
 
 
+# See: https://claude.ai/share/94c60538-7bd1-40e1-83aa-6ab720149e04
+# To see discussion about this script and integration with maskinporten
+
 class MaskinportenClient:
+    # The private key JSON file has the same public / private key pair in test and prod for now
     def __init__(self, jwk_file_path="maskinporten_private_key.json"):
         """Initialize the Maskinporten client with JWK file path."""
         self.jwk_file_path = jwk_file_path
@@ -196,8 +200,9 @@ def main():
         client.set_client_id(client_id)
 
         # Set the scope you want to access
-        scope = "altinn:authentication/systemuser.request.read"
-        # scope = "skatteetaten:skattemelding"
+        # scope = "altinn:authentication/systemuser.request.read"
+        scope = "skatteetaten:formueinntekt/skattemelding"
+        scope = "skatteetaten:skattemelding"
 
         # Optional: acting on behalf of another organization
         consumer_org = "922989451"  # org nr

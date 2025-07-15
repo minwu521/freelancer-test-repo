@@ -1,6 +1,5 @@
 package com.respiroc.user.domain.model
 
-import com.respiroc.tenant.domain.model.TenantRole
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.ColumnDefault
@@ -46,14 +45,13 @@ open class User : Serializable {
     open lateinit var updatedAt: Instant
 
     @ManyToMany(targetEntity = Role::class, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_roles", joinColumns = [JoinColumn(name = "user_id")], inverseJoinColumns = [JoinColumn(name = "role_id")])
+    @JoinTable(
+        name = "user_roles",
+        joinColumns = [JoinColumn(name = "user_id")],
+        inverseJoinColumns = [JoinColumn(name = "role_id")]
+    )
     open var roles: List<Role> = ArrayList()
 
-    @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true, fetch = FetchType.EAGER)
-    open var tenantRoles: MutableSet<UserTenantRole> = HashSet()
-
-    @get:Transient
-    val rolesPerTenant: Map<Long, Set<TenantRole>>
-        get() = tenantRoles.groupBy { it.tenant.id }
-            .mapValues { entry -> entry.value.map { it.tenantRole }.toSet() }
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
+    open var userTenants: MutableSet<UserTenant> = HashSet()
 }
