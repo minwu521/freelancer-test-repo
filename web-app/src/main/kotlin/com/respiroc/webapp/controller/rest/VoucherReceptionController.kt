@@ -46,6 +46,7 @@ class VoucherReceptionController(
 
         // convert and compress file as pdf if image, else just compress pdf
 
+        // then save in DB
 
 
 
