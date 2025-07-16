@@ -2,39 +2,39 @@
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
 <head>
-    <link rel="stylesheet" th:href="@{/assets/report/trial-balance.css}">
+    <link rel="stylesheet" th:href="@{/assets/ledger/chart-of-accounts.css}">
 </head>
 
 <body>
 <main layout:fragment="content">
     <div>
-        <div class="trial-balance-container">
+        <div class="r-chart-of-accounts-container">
             <div id="content-area">
                 <div th:fragment="tableContent">
                     <div th:unless="${accounts.empty}">
                         <div style="overflow-x: auto;">
-                            <table class="trial-balance-table">
+                            <table class="r-chart-of-accounts-table">
                                 <thead>
                                 <tr>
                                     <th style="width: 15%;" th:text="#{account}" />
                                     <th style="width: 35%;" th:text="#{account_name}" />
+                                    <th style="width: 15%;" th:text="#{account_type}" />
                                     <th style="width: 35%;" th:text="#{description}" />
-                                    <th class="amount-header" style="width: 15%;" th:text="#{account_type}" />
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="account : ${accounts}">
                                     <td>
-                                        <span class="account-number" th:text="${account.noAccountNumber}" />
+                                        <span class="r-account-number" th:text="${account.noAccountNumber}" />
                                     </td>
                                     <td>
-                                        <span class="account-name" th:text="${account.accountName}" />
-                                    </td>
-                                    <td class="amount-cell">
-                                        <span th:text="${account.accountType}" />
+                                        <span class="r-account-name" th:text="${account.accountName}" />
                                     </td>
                                     <td>
-                                        <span class="account-description" th:text="${account.accountDescription}" />
+                                        <span class="r-account-name" th:text="${account.accountType}" />
+                                    </td>
+                                    <td>
+                                        <span class="r-account-description" th:text="${account.accountDescription}" />
                                     </td>
                                 </tr>
                                 </tbody>
@@ -42,8 +42,8 @@
                         </div>
                     </div>
 
-                    <div th:if="${accounts.empty}" class="empty-state">
-                        <div class="empty-state-icon">
+                    <div th:if="${accounts.empty}" class="r-empty-state">
+                        <div class="r-empty-state-icon">
                             <wa-icon name="table"></wa-icon>
                         </div>
                         <h3 th:text="#{no_Data_available}" />

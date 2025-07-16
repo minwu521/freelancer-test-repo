@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
-import com.respiroc.ledger.api.LedgerApi
 import com.respiroc.ledger.domain.model.ChartOfAccount
 import org.springframework.stereotype.Service
 
