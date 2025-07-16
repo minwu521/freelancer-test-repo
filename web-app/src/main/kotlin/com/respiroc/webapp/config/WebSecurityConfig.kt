@@ -47,15 +47,6 @@ class WebSecurityConfig {
         "/api/voucher-reception"
     )
 
-    //This is to prevent the filters from running on these paths — it's not the same as permitAll.
-    private val webIgnoringPaths = arrayOf("/assets/**", "/favicon.ico")
-    @Bean
-    fun webSecurityCustomizer(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web ->
-            web.ignoring().requestMatchers(*webIgnoringPaths)
-        }
-    }
-
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         return http

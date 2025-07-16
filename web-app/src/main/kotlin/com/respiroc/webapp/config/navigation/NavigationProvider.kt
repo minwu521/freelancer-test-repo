@@ -15,13 +15,9 @@ class NavigationProvider {
                 title = "Vouchers", icon = "file-text",
                 items = listOf(
                     NavigationSectionItem(label = "Overview", url = "/voucher/overview"),
-                    NavigationSectionItem(label = "Advanced Voucher", url = "/voucher/new-advanced-voucher")
+                    NavigationSectionItem(label = "Advanced Voucher", url = "/voucher/new-advanced-voucher"),
+                    NavigationSectionItem(label = "Reception", url = "/voucher-reception")
                 )
-            ),
-
-            NavigationSection(
-                title = "Voucher reception", icon = "mail",
-                items = listOf(NavigationSectionItem(label = "Overview", url = "/voucher-reception"))
             ),
 
             NavigationSection(
