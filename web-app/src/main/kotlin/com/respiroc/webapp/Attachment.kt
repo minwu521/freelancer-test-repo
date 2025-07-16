@@ -13,6 +13,7 @@ import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
+import java.awt.image.BufferedImage
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.Instant
@@ -94,24 +95,39 @@ class AttachmentService {
         return Triple(pdfBaos.toByteArray(), ensurePdfExt(filename), "application/pdf")
     }
 
-    private fun bufferedToJpegBytes(img: java.awt.image.BufferedImage): ByteArray {
-        val quality = 0.70f
-        val baos = ByteArrayOutputStream()
-        val writer = ImageIO.getImageWritersByFormatName("jpg").next()
-        val ios: ImageOutputStream = ImageIO.createImageOutputStream(baos)
-        writer.output = ios
-
-        val param = writer.defaultWriteParam
-        if (param.canWriteCompressed()) {
-            param.compressionMode = ImageWriteParam.MODE_EXPLICIT
-            param.compressionQuality = quality.coerceIn(0f, 1f)
+    private fun bufferedToJpegBytes(src: BufferedImage): ByteArray {
+        // --- force sRGB without alpha ------------------------------------------
+        val rgbImg = if (src.type == BufferedImage.TYPE_3BYTE_BGR ||
+            src.type == BufferedImage.TYPE_INT_RGB) {
+            src
+        } else {
+            val converted = BufferedImage(src.width, src.height,
+                BufferedImage.TYPE_3BYTE_BGR)
+            val g = converted.createGraphics()
+            g.drawImage(src, 0, 0, java.awt.Color.WHITE, null) // fills alpha w/ white
+            g.dispose()
+            converted
         }
 
-        writer.write(null, IIOImage(img, null, null), param)
-        writer.dispose()
-        ios.close()
-        return baos.toByteArray()
+        val quality = 0.70f
+        ByteArrayOutputStream().use { baos ->
+            val writer = ImageIO.getImageWritersByFormatName("jpg").next()
+            ImageIO.createImageOutputStream(baos).use { ios ->
+                writer.output = ios
+                writer.defaultWriteParam.apply {
+                    if (canWriteCompressed()) {
+                        compressionMode = ImageWriteParam.MODE_EXPLICIT
+                        compressionQuality = quality
+                    }
+                }.also { param ->
+                    writer.write(null, IIOImage(rgbImg, null, null), param)
+                }
+                writer.dispose()
+            }
+            return baos.toByteArray()
+        }
     }
+
 
     private fun ensurePdfExt(name: String): String =
         if (name.lowercase().endsWith(".pdf")) name else "${name.substringBeforeLast('.', name)}.pdf"
