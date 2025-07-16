@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <link rel="stylesheet" th:href="@{/assets/report/trial-balance.css}">
+</head>
+
+<body>
+<main layout:fragment="content">
+    <div class="container py-4">
+        <div class="trial-balance-container">
+            <div id="content-area">
+                <div th:fragment="tableContent">
+                    <div th:unless="${accounts.empty}">
+                        <div style="overflow-x: auto;">
+                            <table class="trial-balance-table">
+                                <thead>
+                                <tr>
+                                    <th style="width: 15%;" th:text="#{account}" />
+                                    <th style="width: 35%;" th:text="#{account_name}" />
+                                    <th style="width: 35%;" th:text="#{description}" />
+                                    <th class="amount-header" style="width: 15%;" th:text="#{account_type}" />
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="account : ${accounts}">
+                                    <td>
+                                        <span class="account-number" th:text="${account.noAccountNumber}" />
+                                    </td>
+                                    <td>
+                                        <span class="account-name" th:text="${account.accountName}" />
+                                    </td>
+                                    <td>
+                                        <span class="account-description" th:text="${account.accountDescription}" />
+                                    </td>
+                                    <td class="amount-cell">
+                                        <span th:text="${account.accountType}" />
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div th:if="${accounts.empty}" class="empty-state">
+                        <div class="empty-state-icon">
+                            <wa-icon name="table"></wa-icon>
+                        </div>
+                        <h3 th:text="#{no_Data_available}" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>

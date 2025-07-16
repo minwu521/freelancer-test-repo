@@ -1,6 +1,7 @@
 package com.respiroc.webapp.controller.web
 
 import com.respiroc.ledger.application.AccountService
+import com.respiroc.ledger.application.LedgerService
 import com.respiroc.ledger.application.PostingService
 import com.respiroc.webapp.controller.BaseController
 import com.respiroc.webapp.controller.response.Callout
@@ -17,7 +18,8 @@ import java.time.LocalDate
 @RequestMapping(value = ["/ledger"])
 class LedgerWebController(
     private val postingService: PostingService,
-    private val accountService: AccountService
+    private val accountService: AccountService,
+    private val ledgerService: LedgerService
 ) : BaseController() {
 
     @GetMapping(value = ["/general"])
@@ -52,6 +54,13 @@ class LedgerWebController(
             model.addAttribute(calloutAttributeName, Callout.Error("Error loading general ledger: ${e.message}"))
             "ledger/general"
         }
+    }
+
+    @GetMapping(value = ["/chart-of-accounts"])
+    fun chartOfAccounts(model: Model): String {
+        addCommonAttributes(model, "Chart of Accounts")
+        model.addAttribute("accounts", ledgerService.getChartOfAccounts())
+        return "ledger/chart-of-accounts"
     }
 }
 
