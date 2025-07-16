@@ -1,17 +1,26 @@
 package com.respiroc.webapp
 
+/* ---------- iText 7 & imaging ---------- */
+import com.itextpdf.io.image.ImageDataFactory
+import com.itextpdf.kernel.geom.PageSize
+import com.itextpdf.kernel.pdf.PdfDocument
+import com.itextpdf.kernel.pdf.PdfWriter
+import com.itextpdf.kernel.pdf.WriterProperties
+import com.itextpdf.layout.Document
+import com.itextpdf.layout.element.Image
 import com.respiroc.util.repository.CustomJpaRepository
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.springframework.stereotype.Repository
-import java.time.Instant
-import java.io.ByteArrayOutputStream
 import org.springframework.stereotype.Service
-import org.apache.pdfbox.pdmodel.PDDocument
-import org.apache.pdfbox.pdmodel.PDPage
-import org.apache.pdfbox.pdmodel.PDPageContentStream
-import org.apache.pdfbox.pdmodel.common.PDRectangle
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.time.Instant
+import javax.imageio.IIOImage
+import javax.imageio.ImageIO
+import javax.imageio.ImageWriteParam
+import javax.imageio.stream.ImageOutputStream
+
 
 @Entity
 @Table(name = "attachments")
@@ -37,63 +46,73 @@ class Attachment {
 @Repository
 interface AttachmentRepository : CustomJpaRepository<Attachment, Long>
 
-/**
- * Converts incoming images to single‑page PDFs so that the system stores *only* PDF files.
- * Uses Apache PDFBox 3 (latest) for the conversion.
- */
+
 @Service
 class AttachmentService {
 
     private val imageMimeTypes = setOf(
-        "image/png", "image/jpeg", "image/jpg",
-        "image/bmp", "image/gif", "image/tiff", "image/webp"
+        "image/png",
+        "image/jpeg",
+        "image/jpg",
+        "image/bmp",
+        "image/gif"
     )
 
-    /**
-     * @return Triple(pdfBytes, safeFilename, "application/pdf")
-     */
     fun convertToPdf(
         fileData: ByteArray,
         filename: String,
         mimeType: String
     ): Triple<ByteArray, String, String> {
 
-        // Already a PDF → no work needed
-        if (mimeType == "application/pdf") {
-            return Triple(fileData, ensurePdfExt(filename), mimeType)
+        /* ---- short‑circuit for existing PDF ---- */
+        if (mimeType.equals("application/pdf", true)) {
+            return Triple(fileData, ensurePdfExt(filename), "application/pdf")
         }
 
-        // Only images are supported for conversion; everything else is rejected
-        require(mimeType.lowercase() in imageMimeTypes) {
-            "Unsupported file type $mimeType – only image/* or application/pdf allowed"
+        val lowerMime = mimeType.lowercase()
+        require(lowerMime in imageMimeTypes) {
+            "Unsupported MIME type “$mimeType”. Allowed: PNG, JPEG, BMP, GIF, or PDF."
         }
 
-        PDDocument().use { doc ->
-            val img = PDImageXObject.createFromByteArray(doc, fileData, filename)
-            val page = PDPage(PDRectangle.LETTER)
-            doc.addPage(page)
+        val buffered = ImageIO.read(ByteArrayInputStream(fileData))
+            ?: throw IllegalArgumentException("Unable to decode image data for $mimeType")
 
-            // Scale image to fit page while keeping aspect ratio
-            val pageW = page.mediaBox.width
-            val pageH = page.mediaBox.height
-            val imgW = img.width.toFloat()
-            val imgH = img.height.toFloat()
-            val scale = minOf(pageW / imgW, pageH / imgH)
-            val drawW = imgW * scale
-            val drawH = imgH * scale
-            val offsetX = (pageW - drawW) / 2
-            val offsetY = (pageH - drawH) / 2
+        val jpegBytes = bufferedToJpegBytes(buffered)
 
-            PDPageContentStream(doc, page).use { cs ->
-                cs.drawImage(img, offsetX, offsetY, drawW, drawH)
-            }
+        val pdfBaos = ByteArrayOutputStream()
+        val writer = PdfWriter(pdfBaos, WriterProperties().setCompressionLevel(9))
+        val pdfDoc = PdfDocument(writer)
+        val document = Document(pdfDoc, PageSize.LETTER)
 
-            val baos = ByteArrayOutputStream()
-            doc.save(baos)
-            return Triple(baos.toByteArray(), ensurePdfExt(filename), "application/pdf")
+        val imgData = ImageDataFactory.create(jpegBytes)
+        val image = Image(imgData).apply {
+            scaleToFit(PageSize.LETTER.width, PageSize.LETTER.height)
         }
+        document.add(image)
+        document.close()   // closes pdfDoc & writer
+
+        return Triple(pdfBaos.toByteArray(), ensurePdfExt(filename), "application/pdf")
     }
 
-    private fun ensurePdfExt(name: String) =
-        if (name.lowercase().endsWith(".pdf")) name else name.substringBeforeLast('.', name) + ".pdf"
+    private fun bufferedToJpegBytes(img: java.awt.image.BufferedImage): ByteArray {
+        val quality = 0.70f
+        val baos = ByteArrayOutputStream()
+        val writer = ImageIO.getImageWritersByFormatName("jpg").next()
+        val ios: ImageOutputStream = ImageIO.createImageOutputStream(baos)
+        writer.output = ios
+
+        val param = writer.defaultWriteParam
+        if (param.canWriteCompressed()) {
+            param.compressionMode = ImageWriteParam.MODE_EXPLICIT
+            param.compressionQuality = quality.coerceIn(0f, 1f)
+        }
+
+        writer.write(null, IIOImage(img, null, null), param)
+        writer.dispose()
+        ios.close()
+        return baos.toByteArray()
+    }
+
+    private fun ensurePdfExt(name: String): String =
+        if (name.lowercase().endsWith(".pdf")) name else "${name.substringBeforeLast('.', name)}.pdf"
 }

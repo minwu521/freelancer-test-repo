@@ -21,8 +21,8 @@ dependencies {
     implementation("io.github.wimdeblauwe:htmx-spring-boot-thymeleaf:4.0.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
-    // converting images to pdf
-    implementation("org.apache.pdfbox:pdfbox:3.0.5")
+    // converting images to pdf, invoices etc.
+    implementation("com.itextpdf:itext7-core:9.2.0")
     //implementation("org.springframework.boot:spring-boot-starter-validation")
     //implementation("org.springframework.session:spring-session-jdbc")
 }
