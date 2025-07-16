@@ -42,17 +42,10 @@ class WebSecurityConfig {
         "/htmx/auth/login",
         "/htmx/auth/signup",
         "/error/**",
-        "/actuator/**"
+        "/actuator/**",
+        // Cloudflare worker calls this to add attachment to a tenant's voucher reception
+        "/api/voucher-reception"
     )
-
-    //This is to prevent the filters from running on these paths — it's not the same as permitAll.
-    private val webIgnoringPaths = arrayOf("/assets/**", "/favicon.ico")
-    @Bean
-    fun webSecurityCustomizer(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web ->
-            web.ignoring().requestMatchers(*webIgnoringPaths)
-        }
-    }
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {

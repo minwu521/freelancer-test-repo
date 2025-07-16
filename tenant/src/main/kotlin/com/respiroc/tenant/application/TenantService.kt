@@ -1,5 +1,6 @@
 package com.respiroc.tenant.application
 
+
 import com.respiroc.company.application.CompanyService
 import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
@@ -24,15 +25,38 @@ class TenantService(
         val company = Company()
         company.id = companyId
         tenant.company = company
+        tenant.slug = generateSlug(company.name)
         return tenantRepository.saveAndFlush(tenant)
     }
 
     fun createNewTenant(command: CreateCompanyPayload): Tenant {
         val company = companyService.getOrCreateCompany(command)
-        return createNewTenant(company.id)
+        val tenant = Tenant()
+        tenant.company = company
+        tenant.slug = generateSlug(company.name)
+        return tenantRepository.saveAndFlush(tenant)
+    }
+
+    fun findTenantBySlug(slug: String): Tenant? {
+        return tenantRepository.findBySlug(slug)
     }
 
     fun findTenantRoleByCode(role: TenantRoleCode): TenantRole {
         return tenantRoleRepository.findByCode(role.code)
+    }
+
+    private fun generateSlug(name: String): String {
+        val slug = name
+            .lowercase()
+            .replace(" ", "-")
+            .replace(Regex("[^a-z0-9-]"), "")
+            .replace(Regex("-+"), "-")
+            .trim('-')
+        var finalSlug = slug
+        var counter = 1
+        while (tenantRepository.findBySlug(finalSlug) != null) {
+            finalSlug = "$slug-${counter++}"
+        }
+        return finalSlug
     }
 }

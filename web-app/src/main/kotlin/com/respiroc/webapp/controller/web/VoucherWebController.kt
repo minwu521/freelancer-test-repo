@@ -10,6 +10,7 @@ import com.respiroc.webapp.controller.response.Callout
 import com.respiroc.webapp.service.VoucherWebService
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
 import jakarta.validation.Valid
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -33,10 +34,24 @@ class VoucherWebController(
     }
 
     @GetMapping(value = ["/overview"])
-    fun overview(model: Model): String {
-        val vouchers = voucherApi.findAllVoucherSummaries()
+    fun overview(
+        @RequestParam(name = "startDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        startDate: LocalDate?,
+        @RequestParam(name = "endDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        endDate: LocalDate?,
+        model: Model
+    ): String {
+        val effectiveStartDate = startDate ?: LocalDate.now().withDayOfMonth(1)
+        val effectiveEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+
+        val vouchers = voucherApi.findVoucherSummariesByDateRange(effectiveStartDate, effectiveEndDate)
+        
         addCommonAttributes(model, "Voucher Overview")
         model.addAttribute("vouchers", vouchers)
+        model.addAttribute("startDate", effectiveStartDate)
+        model.addAttribute("endDate", effectiveEndDate)
         return "voucher/overview"
     }
 
@@ -90,8 +105,38 @@ class VoucherHTMXController(
     private val accountService: AccountService,
     private val currencyService: CurrencyService,
     private val vatService: VatService,
-    private val voucherWebService: VoucherWebService
+    private val voucherWebService: VoucherWebService,
+    private val voucherApi: VoucherService
 ) : BaseController() {
+
+    @GetMapping("/overview")
+    @HxRequest
+    fun overviewHTMX(
+        @RequestParam(name = "startDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        startDate: LocalDate?,
+        @RequestParam(name = "endDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        endDate: LocalDate?,
+        model: Model
+    ): String {
+        return try {
+            val effectiveStartDate = startDate ?: LocalDate.now().withDayOfMonth(1)
+            val effectiveEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+
+            val vouchers = voucherApi.findVoucherSummariesByDateRange(effectiveStartDate, effectiveEndDate)
+
+            model.addAttribute("vouchers", vouchers)
+            model.addAttribute("startDate", effectiveStartDate)
+            model.addAttribute("endDate", effectiveEndDate)
+            model.addAttribute(userAttributeName, springUser())
+
+            "voucher/overview :: tableContent"
+        } catch (e: Exception) {
+            model.addAttribute(calloutAttributeName, Callout.Error("Error loading vouchers: ${e.message}"))
+            "voucher/overview :: error-message"
+        }
+    }
 
     @PostMapping("/update/{voucherId}")
     @HxRequest

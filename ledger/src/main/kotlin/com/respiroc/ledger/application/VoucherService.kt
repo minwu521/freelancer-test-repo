@@ -76,15 +76,18 @@ class VoucherService(
 
         return vouchers
             .filter { it.postings.isNotEmpty() }
-            .map { voucher ->
-                VoucherSummaryPayload(
-                    id = voucher.id,
-                    number = voucher.getDisplayNumber(),
-                    date = voucher.date,
-                    description = voucher.description,
-                    postingCount = voucher.postings.size
-                )
-            }
+            .map { voucher -> toVoucherSummary(voucher) }
+    }
+
+    @Transactional(readOnly = true)
+    fun findVoucherSummariesByDateRange(startDate: LocalDate, endDate: LocalDate): List<VoucherSummaryPayload> {
+        val vouchers = voucherRepository.findVoucherSummariesByTenantIdAndDateRange(
+            currentTenantId(), startDate, endDate
+        )
+
+        return vouchers
+            .filter { it.postings.isNotEmpty() }
+            .map { voucher -> toVoucherSummary(voucher) }
     }
 
     fun updateVoucherWithPostings(payload: UpdateVoucherPayload): VoucherPayload {
@@ -209,4 +212,20 @@ class VoucherService(
             postingRepository.saveAll(nonZeroPostings)
         }
     }
+
+    private fun toVoucherSummary(voucher: Voucher) = VoucherSummaryPayload(
+        id = voucher.id,
+        number = voucher.getDisplayNumber(),
+        postings = voucher.postings.map { posting ->
+            PostingSummaryPayload(
+                id = posting.id,
+                date = posting.postingDate,
+                description = posting.description,
+                accountNumber = posting.accountNumber,
+                accountName = accountService.findAccountByNumber(posting.accountNumber)?.accountName,
+                vatCode = posting.vatCode,
+                amount = posting.amount
+            )
+        }
+    )
 }

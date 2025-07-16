@@ -5,11 +5,20 @@ import com.respiroc.util.repository.CustomJpaRepository
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
+import java.time.LocalDate
 
 @Repository
 interface VoucherRepository : CustomJpaRepository<Voucher, Long> {
-    @Query("SELECT v FROM Voucher v WHERE v.tenantId = :tenantId ORDER BY v.date DESC, v.number DESC")
+
+    @Query("SELECT v FROM Voucher v WHERE v.tenantId = :tenantId ORDER BY v.number DESC")
     fun findVoucherSummariesByTenantId(@Param("tenantId") tenantId: Long): List<Voucher>
+
+    @Query("SELECT v FROM Voucher v WHERE v.tenantId = :tenantId AND v.date BETWEEN :startDate AND :endDate ORDER BY v.number DESC")
+    fun findVoucherSummariesByTenantIdAndDateRange(
+        @Param("tenantId") tenantId: Long,
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
+    ): List<Voucher>
 
     @Query("SELECT v FROM Voucher v LEFT JOIN FETCH v.postings WHERE v.id = :id AND v.tenantId = :tenantId")
     fun findByIdAndTenantIdWithPostings(@Param("id") id: Long, @Param("tenantId") tenantId: Long): Voucher?
