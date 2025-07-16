@@ -7,7 +7,7 @@
 
 <body>
 <main layout:fragment="content">
-    <div class="container py-4">
+    <div>
         <div class="trial-balance-container">
             <div id="content-area">
                 <div th:fragment="tableContent">
@@ -30,11 +30,11 @@
                                     <td>
                                         <span class="account-name" th:text="${account.accountName}" />
                                     </td>
-                                    <td>
-                                        <span class="account-description" th:text="${account.accountDescription}" />
-                                    </td>
                                     <td class="amount-cell">
                                         <span th:text="${account.accountType}" />
+                                    </td>
+                                    <td>
+                                        <span class="account-description" th:text="${account.accountDescription}" />
                                     </td>
                                 </tr>
                                 </tbody>
