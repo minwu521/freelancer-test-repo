@@ -20,6 +20,11 @@ class NavigationProvider {
             ),
 
             NavigationSection(
+                title = "Voucher reception", icon = "mail",
+                items = listOf(NavigationSectionItem(label = "Overview", url = "/voucher-reception"))
+            ),
+
+            NavigationSection(
                 title = "Accounts", icon = "receipt",
                 items = listOf(NavigationSectionItem(label = "General Ledger", url = "/ledger/general"))
             ),
