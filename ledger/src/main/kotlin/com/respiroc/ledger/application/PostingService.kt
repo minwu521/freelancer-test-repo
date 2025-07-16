@@ -8,7 +8,7 @@ import com.respiroc.ledger.application.payload.GeneralLedgerPayload
 import com.respiroc.ledger.application.payload.GeneralLedgerAccountEntry
 import com.respiroc.ledger.application.payload.GeneralLedgerPostingEntry
 import com.respiroc.ledger.application.payload.ProfitLossEntry
-import com.respiroc.ledger.application.payload.ProfitLossPayload
+import com.respiroc.ledger.application.payload.ProfitLossDTO
 import com.respiroc.ledger.domain.model.AccountType
 import com.respiroc.ledger.domain.repository.PostingRepository
 import com.respiroc.util.context.ContextAwareApi
@@ -66,7 +66,7 @@ class PostingService(
     }
 
     @Transactional(readOnly = true)
-    fun getPostingsForProfitLoss(startDate: LocalDate, endDate: LocalDate): Map<AccountType, ProfitLossPayload> {
+    fun getPostingsForProfitLoss(startDate: LocalDate, endDate: LocalDate): Map<AccountType, ProfitLossDTO> {
         val tenantId = currentTenantId()
         val accounts = accountService.findAllAccounts().associateBy { it.noAccountNumber }
 
@@ -88,12 +88,11 @@ class PostingService(
                     ProfitLossEntry(
                         accountNumber = accountNumber,
                         accountName = account.accountName,
-                        accountDescription = account.accountDescription,
                         amount = amount
                     )
                 } else null
             }
-            ProfitLossPayload(
+            ProfitLossDTO(
                 entries = entries,
                 totalBalance = entries.sumOf { it.amount }
             )

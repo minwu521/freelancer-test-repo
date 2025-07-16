@@ -26,13 +26,21 @@ data class CompanyInfo(
     val id: String,
     val name: String,
     val registrationNumber: String?,
-    val address: String?,
+    val address: CompanyAddressInfo?,
     val countryCode: String,
     val foundedDate: String?,
     val status: String?,
     val industry: String?,
     val contactInfo: ContactInfo?,
     val financialInfo: FinancialInfo?
+)
+
+data class CompanyAddressInfo(
+    val address: String?,
+    val city: String?,
+    val postalCode: String?,
+    val municipality: String?,
+    val countryCode: String?
 )
 
 /**

@@ -77,23 +77,17 @@ interface PostingRepository : CustomJpaRepository<Posting, Long> {
         CASE 
             WHEN p.accountNumber LIKE '1%' THEN 'ASSET'
             WHEN p.accountNumber LIKE '3%' THEN 'REVENUE'
-            WHEN p.accountNumber LIKE '4%' OR p.accountNumber LIKE '5%' 
-              OR p.accountNumber LIKE '6%' OR p.accountNumber LIKE '7%' THEN 'EXPENSE'
-            ELSE 'OTHER'
+            ELSE 'EXPENSE'
         END AS accountType,
         p.accountNumber,
         SUM(p.amount) as totalAmount 
     FROM Posting p 
     WHERE p.tenantId = :tenantId
       AND (
-            p.accountNumber LIKE '1%' OR 
-            p.accountNumber LIKE '3%' OR 
-            p.accountNumber LIKE '4%' OR 
-            p.accountNumber LIKE '5%' OR 
-            p.accountNumber LIKE '6%' OR 
-            p.accountNumber LIKE '7%'
-          )
-      AND p.postingDate BETWEEN :startDate AND :endDate 
+            p.accountNumber >= '1' AND p.accountNumber < '2' OR
+            p.accountNumber >= '3' AND p.accountNumber < '8'
+            )
+      AND p.postingDate BETWEEN :startDate AND :endDate
     GROUP BY accountType, p.accountNumber
     ORDER BY accountType, p.accountNumber
 """)

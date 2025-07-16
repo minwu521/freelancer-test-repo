@@ -42,14 +42,20 @@ class BrregCompanyLookupProvider(
 
     override fun getCompanyInfo(companyId: String): CompanyInfo {
         logger.debug("Getting Norwegian company info for ID: $companyId")
-        
         val response = brregHttpApi.getEntity(companyId)
 
+        val businessAddress = response.businessAddress
         return CompanyInfo(
             id = response.organizationNumber,
             name = response.name,
             registrationNumber = response.organizationNumber,
-            address = response.businessAddress?.addressLines?.joinToString(", "),
+            address = CompanyAddressInfo(
+                address = businessAddress?.addressLines?.joinToString(", "),
+                postalCode = businessAddress?.postalCode,
+                countryCode = businessAddress?.countryCode,
+                city = businessAddress?.city,
+                municipality = businessAddress?.municipality,
+            ),
             countryCode = countryCode,
             foundedDate = response.establishmentDate,
             status = when {
@@ -67,4 +73,4 @@ class BrregCompanyLookupProvider(
             financialInfo = null // TODO : Check from Brreg API
         )
     }
-} 
+}

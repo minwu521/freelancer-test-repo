@@ -1,6 +1,7 @@
 package com.respiroc.webapp.controller.web
 
 import com.respiroc.company.application.payload.CreateCompanyPayload
+import com.respiroc.companylookup.api.CompanyLookupInternalApi
 import com.respiroc.tenant.application.TenantService
 import com.respiroc.user.application.UserService
 import com.respiroc.util.constant.TenantRoleCode
@@ -32,7 +33,8 @@ class TenantWebController : BaseController() {
 @RequestMapping("/htmx/tenant")
 class TenantHTMXController(
     private val tenantService: TenantService,
-    private val userService: UserService
+    private val userService: UserService,
+    private val companyLookupApi: CompanyLookupInternalApi
 ) : BaseController() {
 
     @PostMapping("/create")
@@ -51,10 +53,19 @@ class TenantHTMXController(
         }
 
         try {
+            val companyInfo =
+                companyLookupApi.getInfo(createCompanyRequest.organizationNumber, createCompanyRequest.countryCode)
+            val companyAddress = companyInfo.address
             val command = CreateCompanyPayload(
-                name = createCompanyRequest.name,
-                organizationNumber = createCompanyRequest.organizationNumber,
-                countryCode = createCompanyRequest.countryCode
+                name = companyInfo.name,
+                organizationNumber = companyInfo.registrationNumber!!,
+                countryCode = companyInfo.countryCode,
+                addressCountryCode = companyAddress?.countryCode,
+                postalCode = companyAddress?.postalCode,
+                city = companyAddress?.city,
+                primaryAddress = companyAddress?.address,
+                secondaryAddress = null,
+                administrativeDivisionCode = null
             )
 
             // TODO: check for exist user tenant company

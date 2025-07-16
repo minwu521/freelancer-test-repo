@@ -1,7 +1,7 @@
 package com.respiroc.webapp.controller.web
 
 import com.respiroc.ledger.api.payload.BalanceSheetDTO
-import com.respiroc.ledger.application.payload.ProfitLossPayload
+import com.respiroc.ledger.application.payload.ProfitLossDTO
 import com.respiroc.ledger.application.PostingService
 import com.respiroc.ledger.domain.model.AccountType
 import com.respiroc.webapp.controller.BaseController
@@ -63,9 +63,9 @@ class ReportWebController(
         addCommonAttributes(model, "Profit & Loss")
         model.addAttribute("startDate", defaultStartDate)
         model.addAttribute("endDate", defaultEndDate)
-        model.addAttribute("assetPostings", postingsForProfitLoss[AccountType.ASSET] ?: ProfitLossPayload(emptyList(), BigDecimal.ZERO))
-        model.addAttribute("revenuePostings", postingsForProfitLoss[AccountType.REVENUE] ?: ProfitLossPayload(emptyList(), BigDecimal.ZERO))
-        model.addAttribute("operatingCostPostings", postingsForProfitLoss[AccountType.EXPENSE] ?: ProfitLossPayload(emptyList(), BigDecimal.ZERO))
+        model.addAttribute("assetPostings", postingsForProfitLoss[AccountType.ASSET] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
+        model.addAttribute("revenuePostings", postingsForProfitLoss[AccountType.REVENUE] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
+        model.addAttribute("operatingCostPostings", postingsForProfitLoss[AccountType.EXPENSE] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
 
         return "report/profit-loss"
     }
@@ -153,9 +153,9 @@ class ReportHTMXController(
             model.addAttribute(userAttributeName, springUser())
             model.addAttribute("startDate", defaultStartDate)
             model.addAttribute("endDate", defaultEndDate)
-            model.addAttribute("assetPostings", postingsForProfitLoss[AccountType.ASSET] ?: ProfitLossPayload(emptyList(), BigDecimal.ZERO))
-            model.addAttribute("revenuePostings", postingsForProfitLoss[AccountType.REVENUE] ?: ProfitLossPayload(emptyList(), BigDecimal.ZERO))
-            model.addAttribute("operatingCostPostings", postingsForProfitLoss[AccountType.EXPENSE] ?: ProfitLossPayload(emptyList(), BigDecimal.ZERO))
+            model.addAttribute("assetPostings", postingsForProfitLoss[AccountType.ASSET] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
+            model.addAttribute("revenuePostings", postingsForProfitLoss[AccountType.REVENUE] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
+            model.addAttribute("operatingCostPostings", postingsForProfitLoss[AccountType.EXPENSE] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
 
             "report/profit-loss :: tableContent"
         } catch (e: Exception) {

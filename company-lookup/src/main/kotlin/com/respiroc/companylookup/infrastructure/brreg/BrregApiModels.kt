@@ -54,7 +54,10 @@ data class BrregSubEntityResponse(
 
 data class BrregAddress(
     @JsonProperty("adresse") val addressLines: List<String>?,
-    @JsonProperty("landkode") val countryCode: String?
+    @JsonProperty("landkode") val countryCode: String?,
+    @JsonProperty("poststed") val city: String?,
+    @JsonProperty("postnummer") val postalCode: String?,
+    @JsonProperty("kommune") val municipality: String?
 )
 
 data class BrregIndustry(

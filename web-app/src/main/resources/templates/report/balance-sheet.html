@@ -7,15 +7,15 @@
 <body>
 <main layout:fragment="content">
     <div>
-        <!-- Trial Balance Container -->
+
         <div class="r-balance-sheet-container">
 
-            <!-- Filters Section -->
+
             <div class="r-filters-section">
                 <div class="r-filters-form" th:if="${user != null and user.ctx.currentTenant != null}">
 
                     <div class="r-filter-group">
-                        <label class="r-filter-label" for="startDate">Start Date</label>
+                        <label class="r-filter-label" for="startDate" th:text="#{start_date}" />
                         <wa-input type="date"
                                   size="small"
                                   id="startDate"
@@ -30,7 +30,7 @@
                     </div>
 
                     <div class="r-filter-group">
-                        <label class="r-filter-label" for="endDate">End Date</label>
+                        <label class="r-filter-label" for="endDate" th:text="#{end_date}" />
                         <wa-input type="date"
                                   size="small"
                                   id="endDate"
@@ -44,21 +44,20 @@
                                   hx-include="[name='startDate']"></wa-input>
                     </div>
 
-                    <!-- Loading Indicator -->
+
                     <div class="r-filter-group">
                         <div id="loading-indicator" class="htmx-indicator r-loading-indicator">
                             <wa-spinner size="small"></wa-spinner>
-                            <span style="margin-left: 0.5rem;">Loading...</span>
+                            <span style="margin-left: 0.5rem;"th:text="#{loading}" />
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Error Message Fragment -->
             <wa-callout variant="danger" th:if="${errorMessage != null}" th:fragment="error-message"
                         style="margin: 1rem;">
                 <wa-icon name="exclamation-triangle"></wa-icon>
-                <span th:text="${errorMessage}">Error occurred</span>
+                <span th:text="${errorMessage}" />
             </wa-callout>
 
             <!-- Company Selection Required -->
@@ -71,22 +70,22 @@
                 <a href="/tenant/select" is="wa-button">Select Company</a>
             </div>
 
-            <!-- Profit & Loss Content -->
+
             <div id="content-area">
                 <div th:fragment="tableContent">
                     <div th:unless="${assetPostings.entries.empty && equityPostings.entries.empty && liabilityPostings.entries.empty}">
                         <div style="overflow-x: auto;">
-                            <!-- Assets  -->
+
                             <table class="r-balance-sheet-table">
                                 <thead>
 
                                 <tr>
-                                    <th style="width: 25%;">Account</th>
-                                    <th style="width: 50%;">Account Name</th>
-                                    <th class="r-amount-header" style="width: 25%;">Amount</th>
+                                    <th style="width: 25%;" th:text="#{account}" />
+                                    <th style="width: 50%;" th:text="#{account_name}" />
+                                    <th class="r-amount-header" style="width: 25%;" th:text="#{amount}" />
                                 </tr>
                                 <tr>
-                                    <th style="width: 25%">Assets</th>
+                                    <th style="width: 25%" th:text="#{assets}" />
                                     <th style="width: 50%;"></th>
                                     <th class="r-amount-header" style="width: 25%;"></th>
 
@@ -109,18 +108,18 @@
                                 </tbody>
                                 <tfoot>
                                 <tr class="r-total-row">
-                                    <td colspan="2" style="text-align: center;"><strong>Total</strong></td>
+                                    <td colspan="2" style="text-align: center;"><strong th:text="#{total}" />
                                     <td class="r-amount-cell">
                                         <strong th:text="${#numbers.formatDecimal(assetPostings.totalBalance, 1, 2)}"/>
                                     </td>
                                 </tr>
                                 </tfoot>
                             </table>
-                            <!-- Equity  -->
+
                             <table class="r-balance-sheet-table">
                                 <thead>
                                 <tr>
-                                    <th style="width: 25%">Equity</th>
+                                    <th style="width: 25%" th:text="#{equity}" />
                                     <th style="width: 50%;"></th>
                                     <th class="r-amount-header" style="width: 25%;"></th>
 
@@ -143,7 +142,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr class="r-total-row">
-                                    <td colspan="2" style="text-align: center;"><strong>Total</strong></td>
+                                    <td colspan="2" style="text-align: center;"><strong th:text="#{total}" /></td>
                                     <td class="r-amount-cell">
                                         <strong th:text="${#numbers.formatDecimal(equityPostings.totalBalance, 1, 2)}"/>
                                     </td>
@@ -153,7 +152,7 @@
                             <table class="r-balance-sheet-table">
                                 <thead>
                                 <tr>
-                                    <th style="width: 25%">Liabilities</th>
+                                    <th style="width: 25%" th:text="#{liabilities}" />
                                     <th style="width: 50%;"></th>
                                     <th class="r-amount-header" style="width: 25%;"></th>
 
@@ -178,7 +177,7 @@
                                 </tbody>
                                 <tfoot>
                                 <tr class="r-total-row">
-                                    <td colspan="2" style="text-align: center;"><strong>Total</strong></td>
+                                    <td colspan="2" style="text-align: center;"><strong th:text="#{total}" /></td>
                                     <td class="r-amount-cell">
                                         <strong th:text="${#numbers.formatDecimal(liabilityPostings.totalBalance, 1, 2)}"/>
                                     </td>
@@ -190,15 +189,15 @@
                         </div>
                     </div>
 
-                    <!-- Empty State -->
+
                     <div th:if="${assetPostings.entries.empty && equityPostings.entries.empty && liabilityPostings.entries.empty}"
                          class="r-empty-state">
                         <div class="r-empty-state-icon">
                             <wa-icon name="table"></wa-icon>
                         </div>
-                        <h3>No Data Available</h3>
-                        <p>No posting data found for the selected period.</p>
-                        <p>Try adjusting the date range or create some postings first.</p>
+                        <h3 th:text="#{no_Data_available}" />
+                        <p th:text="#{no_posting_found}" />
+                        <p th:text="#{try_adjusting_date}" />
                     </div>
                 </div>
             </div>

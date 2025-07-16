@@ -1,5 +1,6 @@
 package com.respiroc.company.domain.model
 
+import com.respiroc.util.domain.addresss.Address
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 import org.hibernate.annotations.CreationTimestamp
@@ -37,6 +38,13 @@ open class Company : Serializable {
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false)
     open lateinit var updatedAt: Instant
+
+    @Column(name = "address_id", nullable = true, updatable = false, insertable = false)
+    open var addressId: Long? = null
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "address_id", nullable = true)
+    open var address: Address? = null
 
     @Transient
     open lateinit var currencyCode: String
