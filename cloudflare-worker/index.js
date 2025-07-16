@@ -6,6 +6,7 @@ const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
 export default {
     /** Cloudflare Email Worker entry-point */
     async email(message, env, ctx) {
+        console.debug("Received email");
         try {
             if (message.rawSize > MAX_FILE_SIZE * 2) {
                 console.log(`Email too large: ${message.rawSize} bytes`);
