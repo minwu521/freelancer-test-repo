@@ -1,3 +1,5 @@
+// Handles all emails to *@ea.reai.no catch-all email route
+
 import PostalMime from 'postal-mime';
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25 MB
@@ -14,7 +16,6 @@ export default {
             const rawEmail = await new Response(message.raw).arrayBuffer();
             const email = await PostalMime.parse(rawEmail, {attachmentEncoding: 'base64'});
 
-            // Derive company slug from recipient local-part (acme@ea.reai.no → acme)
             const companySlug = (message.to || '').split('@')[0].toLowerCase();
 
             for (const attachment of email.attachments ?? []) {

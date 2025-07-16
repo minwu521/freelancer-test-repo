@@ -35,5 +35,4 @@ class TenantService(
     fun findTenantRoleByCode(role: TenantRoleCode): TenantRole {
         return tenantRoleRepository.findByCode(role.code)
     }
-
 }

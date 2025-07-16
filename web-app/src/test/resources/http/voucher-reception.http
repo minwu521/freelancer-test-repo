@@ -1,25 +1,2 @@
 ### Test voucher document upload
-POST http://localhost:8080/api/voucher-reception/1/documents
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="invoice.pdf"
-Content-Type: application/pdf
-
-< ./test-invoice.pdf
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="senderEmail"
-
-sender@example.com
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
-
-### Test with missing company
-POST http://localhost:8080/api/voucher-reception/999/documents
-Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
-
-------WebKitFormBoundary7MA4YWxkTrZu0gW
-Content-Disposition: form-data; name="file"; filename="test.txt"
-Content-Type: text/plain
-
-Test content
-------WebKitFormBoundary7MA4YWxkTrZu0gW--
+POST http://localhost:8080/api/voucher-reception/
