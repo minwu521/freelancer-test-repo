@@ -25,7 +25,8 @@ class TenantIdFilter(
         "/company/**",
         "/report/**",
         "/ledger/**",
-        "/htmx/**"
+        "/htmx/**",
+        "/voucher-reception/**"
     )
 
     private val excludePaths: List<String> = listOf(

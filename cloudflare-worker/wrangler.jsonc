@@ -1,0 +1,13 @@
+{
+	"name": "reai-email-worker",
+	"main": "index.js",
+	"compatibility_date": "2025-07-16"
+
+	// Email Workers do not need an HTTP route here;
+	// you bind the catch-all address in the Dashboard.
+	// Uncomment below if you later need ENV vars or KV bindings.
+	// "vars": {
+	//   "VOUCHER_API_BASE": "",
+	//   "API_TOKEN": ""
+	// }
+}
