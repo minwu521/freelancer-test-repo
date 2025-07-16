@@ -22,7 +22,7 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // converting images to pdf
-    implementation("org.apache.pdfbox:pdfbox:3.0.2")
+    implementation("org.apache.pdfbox:pdfbox:3.0.5")
     //implementation("org.springframework.boot:spring-boot-starter-validation")
     //implementation("org.springframework.session:spring-session-jdbc")
 }
