@@ -23,7 +23,7 @@ export default {
                 const fileData = attachment.content;                // already base64
                 if (!fileData) continue;
 
-                const res = await fetch(`https://reai.no/api/voucher-reception`, {
+                const res = await fetch(`https://app.reai.no/api/voucher-reception`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
