@@ -26,14 +26,8 @@ data class TrialBalanceEntry(
         get() = balanceClass(closingBalance)
 
     private fun balanceClass(amount: BigDecimal): String = when {
-        amount > BigDecimal.ZERO -> POSITIVE
-        amount < BigDecimal.ZERO -> NEGATIVE
-        else -> ZERO
-    }
-
-    companion object {
-        private const val POSITIVE = "r-positive-amount"
-        private const val NEGATIVE = "r-negative-amount"
-        private const val ZERO = "r-zero-amount"
+        amount > BigDecimal.ZERO -> "r-positive-amount"
+        amount < BigDecimal.ZERO -> "r-negative-amount"
+        else -> "r-zero-amount"
     }
 }

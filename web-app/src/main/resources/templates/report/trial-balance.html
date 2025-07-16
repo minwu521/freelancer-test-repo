@@ -55,10 +55,10 @@
             </div>
             
             <!-- Error Message Fragment -->
-            <div th:if="${errorMessage != null}" th:fragment="error-message" class="wa-alert wa-alert-danger" style="margin: 1rem;">
+            <wa-callout variant="danger" th:if="${errorMessage != null}" th:fragment="error-message"                        style="margin: 1rem;">
                 <wa-icon name="exclamation-triangle"></wa-icon>
                 <span th:text="${errorMessage}" />
-            </div>
+            </wa-callout>
             
             <div id="content-area">
                 <div th:fragment="tableContent">
