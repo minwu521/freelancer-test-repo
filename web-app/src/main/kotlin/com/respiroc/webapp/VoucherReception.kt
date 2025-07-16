@@ -42,7 +42,6 @@ class VoucherReceptionController(
         val tenant = tenantService.findTenantBySlug(tenantSlug)
             ?: return ResponseEntity.badRequest().body(mapOf("error" to "Company not found"))
 
-        // We are already validating file size in index.js is not too large
         val fileData = try {
             Base64.getDecoder().decode(request.fileData)
         } catch (_: Exception) {
@@ -58,7 +57,7 @@ class VoucherReceptionController(
         )
 
         return ResponseEntity.ok(
-            mapOf<String, Any>(
+            mapOf(
                 "id" to (saved.id ?: 0),
                 "filename" to saved.attachment.filename,
                 "status" to "received"
@@ -71,7 +70,8 @@ class VoucherReceptionController(
 @Transactional
 class VoucherReceptionService(
     private val voucherDocumentRepository: VoucherReceptionDocumentRepository,
-    private val attachmentRepository: AttachmentRepository
+    private val attachmentRepository: AttachmentRepository,
+    private val attachmentService: AttachmentService
 ) {
 
     fun saveDocument(
@@ -81,10 +81,14 @@ class VoucherReceptionService(
         senderEmail: String,
         tenant: Tenant
     ): VoucherReceptionDocument {
+
+        val (pdfBytes, pdfName, pdfMime) =
+            attachmentService.convertToPdf(fileData, filename, mimeType)
+
         val attachment = Attachment().apply {
-            this.fileData = fileData
-            this.filename = filename
-            this.mimetype = mimeType
+            this.fileData = pdfBytes
+            this.filename = pdfName
+            this.mimetype = pdfMime
         }
         val savedAttachment = attachmentRepository.save(attachment)
 

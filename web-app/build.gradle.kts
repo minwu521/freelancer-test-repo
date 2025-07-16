@@ -20,6 +20,9 @@ dependencies {
     implementation("io.github.wimdeblauwe:htmx-spring-boot:4.0.1")
     implementation("io.github.wimdeblauwe:htmx-spring-boot-thymeleaf:4.0.1")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+
+    // converting images to pdf
+    implementation("org.apache.pdfbox:pdfbox:3.0.2")
     //implementation("org.springframework.boot:spring-boot-starter-validation")
     //implementation("org.springframework.session:spring-session-jdbc")
 }
