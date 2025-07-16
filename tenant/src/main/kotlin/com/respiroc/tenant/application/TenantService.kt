@@ -1,5 +1,6 @@
 package com.respiroc.tenant.application
 
+
 import com.respiroc.company.application.CompanyService
 import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
@@ -10,6 +11,8 @@ import com.respiroc.tenant.domain.repository.TenantRoleRepository
 import com.respiroc.util.constant.TenantRoleCode
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.text.Normalizer
+import java.util.regex.Pattern
 
 @Service
 @Transactional
@@ -24,20 +27,35 @@ class TenantService(
         val company = Company()
         company.id = companyId
         tenant.company = company
+        tenant.slug = generateSlug(company.name)
         return tenantRepository.saveAndFlush(tenant)
     }
 
     fun createNewTenant(command: CreateCompanyPayload): Tenant {
-        // TODO add slug here as well when company is created, make sure it is not duplicate, on conflict add increasing number
         val company = companyService.getOrCreateCompany(command)
-        return createNewTenant(company.id)
+        val tenant = Tenant()
+        tenant.company = company
+        tenant.slug = generateSlug(company.name)
+        return tenantRepository.saveAndFlush(tenant)
     }
 
     fun findTenantBySlug(slug: String): Tenant? {
-        // find directly from tenant table, need to add slug to tenant
+        return tenantRepository.findBySlug(slug)
     }
 
     fun findTenantRoleByCode(role: TenantRoleCode): TenantRole {
         return tenantRoleRepository.findByCode(role.code)
+    }
+
+    private fun generateSlug(name: String): String {
+        val normalized = Normalizer.normalize(name, Normalizer.Form.NFD)
+        val pattern = Pattern.compile("\p{InCombiningDiacriticalMarks}+")
+        val slug = pattern.matcher(normalized).replaceAll("").lowercase().replace(" ", "-")
+        var finalSlug = slug
+        var counter = 1
+        while (tenantRepository.findBySlug(finalSlug) != null) {
+            finalSlug = "$slug-${counter++}"
+        }
+        return finalSlug
     }
 }
