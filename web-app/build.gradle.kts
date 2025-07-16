@@ -25,4 +25,8 @@ dependencies {
     implementation("com.itextpdf:itext7-core:9.2.0")
     //implementation("org.springframework.boot:spring-boot-starter-validation")
     //implementation("org.springframework.session:spring-session-jdbc")
+
+    // Test dependencies
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.jetbrains.kotlin:kotlin-test")
 }
