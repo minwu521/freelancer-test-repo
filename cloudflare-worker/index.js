@@ -27,7 +27,6 @@ export default {
                     headers: {
                         'Content-Type': 'application/json',
                         'X-Tenant-Slug': companySlug,
-                        'Authorization': `Bearer ${env.API_TOKEN}`
                     },
                     body: JSON.stringify({
                         filename: attachment.filename || 'unnamed_file',
