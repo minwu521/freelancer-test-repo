@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OneToOne
 import jakarta.persistence.Table
 import org.hibernate.annotations.CreationTimestamp
 import org.slf4j.LoggerFactory
@@ -18,7 +19,10 @@ import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.RestController
 import java.time.Instant
 import java.util.*
 
@@ -40,11 +44,11 @@ class VoucherReceptionController(
     // Cloudflare worker in index.js calls this
     @PostMapping("/api/voucher-reception")
     fun receiveDocumentFromEmail(
-        @RequestHeader("X-Company-Slug") companySlug: String,
+        @RequestHeader("X-Tenant-Slug") tenantSlug: String,
         @RequestBody request: EmailDocumentRequest
     ): ResponseEntity<Map<String, Any>> {
-        logger.info("Receiving Voucher Receipt for $companySlug")
-        val tenantId = tenantService.findTenantIdBySlug(companySlug)
+        logger.info("Receiving Voucher Receipt for $tenantSlug")
+        val tenant = tenantService.findTenantBySlug(tenantSlug)
             ?: return ResponseEntity.badRequest().body(mapOf("error" to "Company not found"))
 
         // We are already validating file size in index.js is not too large
@@ -54,15 +58,18 @@ class VoucherReceptionController(
             return ResponseEntity.badRequest().body(mapOf("error" to "Invalid base64 data"))
         }
 
-        // convert and compress file as pdf if image, else just compress pdf
-
-        // then save in DB
-
+        val saved = voucherReceptionService.saveDocument(
+            fileData = fileData,
+            filename = request.filename,
+            mimeType = request.mimeType,
+            senderEmail = request.senderEmail,
+            tenant = tenant
+        )
 
         return ResponseEntity.ok(
             mapOf<String, Any>(
                 "id" to (saved.id ?: 0),
-                "filename" to saved.filename,
+                "filename" to saved.attachment.filename,
                 "status" to "received"
             )
         )
@@ -72,16 +79,35 @@ class VoucherReceptionController(
 @Service
 @Transactional
 class VoucherReceptionService(
-    private val voucherDocumentRepository: VoucherDocumentRepository
+    private val voucherDocumentRepository: VoucherReceptionDocumentRepository,
+    private val attachmentRepository: AttachmentRepository
 ) {
 
-    fun saveDocument(document: VoucherReceptionDocument): VoucherReceptionDocument {
+    fun saveDocument(
+        fileData: ByteArray,
+        filename: String,
+        mimeType: String,
+        senderEmail: String,
+        tenant: Tenant
+    ): VoucherReceptionDocument {
+        val attachment = Attachment().apply {
+            this.fileData = fileData
+            this.filename = filename
+            this.mimetype = mimeType
+        }
+        val savedAttachment = attachmentRepository.save(attachment)
+
+        val document = VoucherReceptionDocument().apply {
+            this.attachment = savedAttachment
+            this.senderEmail = senderEmail
+            this.tenant = tenant
+        }
         return voucherDocumentRepository.save(document)
     }
 }
 
 @Repository
-interface VoucherDocumentRepository : CustomJpaRepository<VoucherReceptionDocument, Long>
+interface VoucherReceptionDocumentRepository : CustomJpaRepository<VoucherReceptionDocument, Long>
 
 @Entity
 @Table(name = "voucher_reception_documents")
@@ -90,18 +116,9 @@ class VoucherReceptionDocument {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null
 
-    @Column(name = "attachment_id")
-    var attachmentId: Long? = null
-
-    @Column(name = "file_data", columnDefinition = "BYTEA")
-    var fileData: ByteArray? = null
-
-
-    @Column(name = "filename", nullable = false)
-    lateinit var filename: String
-
-    @Column(name = "mime_type")
-    var mimeType: String? = null
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "attachment_id", nullable = false)
+    lateinit var attachment: Attachment
 
     @CreationTimestamp
     @Column(name = "received_at", nullable = false)
@@ -114,3 +131,28 @@ class VoucherReceptionDocument {
     @JoinColumn(name = "tenant_id", nullable = false)
     lateinit var tenant: Tenant
 }
+
+
+@Entity
+@Table(name = "attachments")
+class Attachment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    var id: Long? = null
+
+    @Column(name = "file_data", nullable = false, columnDefinition = "BYTEA")
+    lateinit var fileData: ByteArray
+
+    @Column(name = "filename", nullable = false)
+    lateinit var filename: String
+
+    @Column(name = "mimetype", nullable = false)
+    lateinit var mimetype: String
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false)
+    var createdAt: Instant? = null
+}
+
+@Repository
+interface AttachmentRepository : CustomJpaRepository<Attachment, Long>

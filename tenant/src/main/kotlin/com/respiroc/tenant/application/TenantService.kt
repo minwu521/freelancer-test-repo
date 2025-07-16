@@ -28,8 +28,13 @@ class TenantService(
     }
 
     fun createNewTenant(command: CreateCompanyPayload): Tenant {
+        // TODO add slug here as well when company is created, make sure it is not duplicate, on conflict add increasing number
         val company = companyService.getOrCreateCompany(command)
         return createNewTenant(company.id)
+    }
+
+    fun findTenantBySlug(slug: String): Tenant? {
+        // find directly from tenant table, need to add slug to tenant
     }
 
     fun findTenantRoleByCode(role: TenantRoleCode): TenantRole {

@@ -26,7 +26,7 @@ export default {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-Company-Slug': companySlug,
+                        'X-Tenant-Slug': companySlug,
                         'Authorization': `Bearer ${env.API_TOKEN}`
                     },
                     body: JSON.stringify({
