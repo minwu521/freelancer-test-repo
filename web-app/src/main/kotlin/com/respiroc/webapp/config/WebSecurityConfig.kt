@@ -42,7 +42,9 @@ class WebSecurityConfig {
         "/htmx/auth/login",
         "/htmx/auth/signup",
         "/error/**",
-        "/actuator/**"
+        "/actuator/**",
+        // Cloudflare worker calls this to add attachment to a tenant's voucher reception
+        "/api/voucher-reception"
     )
 
     //This is to prevent the filters from running on these paths — it's not the same as permitAll.
