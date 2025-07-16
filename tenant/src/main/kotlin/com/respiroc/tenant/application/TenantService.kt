@@ -11,8 +11,6 @@ import com.respiroc.tenant.domain.repository.TenantRoleRepository
 import com.respiroc.util.constant.TenantRoleCode
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.text.Normalizer
-import java.util.regex.Pattern
 
 @Service
 @Transactional
@@ -48,9 +46,12 @@ class TenantService(
     }
 
     private fun generateSlug(name: String): String {
-        val normalized = Normalizer.normalize(name, Normalizer.Form.NFD)
-        val pattern = Pattern.compile("\p{InCombiningDiacriticalMarks}+")
-        val slug = pattern.matcher(normalized).replaceAll("").lowercase().replace(" ", "-")
+        val slug = name
+            .lowercase()
+            .replace(" ", "-")
+            .replace(Regex("[^a-z0-9-]"), "")
+            .replace(Regex("-+"), "-")
+            .trim('-')
         var finalSlug = slug
         var counter = 1
         while (tenantRepository.findBySlug(finalSlug) != null) {
