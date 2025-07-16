@@ -2,7 +2,6 @@ package com.respiroc.ledger.domain.repository
 
 import com.respiroc.ledger.domain.model.Posting
 import com.respiroc.util.repository.CustomJpaRepository
-import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
@@ -11,9 +10,6 @@ import java.time.LocalDate
 
 @Repository
 interface PostingRepository : CustomJpaRepository<Posting, Long> {
-
-    @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Posting p WHERE p.accountNumber = :accountNumber AND p.tenantId = :tenantId")
-    fun getAccountBalance(@Param("accountNumber") accountNumber: String, @Param("tenantId") tenantId: Long): BigDecimal
 
     @Query("SELECT COALESCE(SUM(p.amount), 0) FROM Posting p WHERE p.accountNumber = :accountNumber AND p.tenantId = :tenantId AND p.postingDate < :beforeDate")
     fun getAccountBalanceBeforeDate(
@@ -72,7 +68,8 @@ interface PostingRepository : CustomJpaRepository<Posting, Long> {
         @Param("endDate") endDate: LocalDate
     ): List<Posting>
 
-    @Query("""
+    @Query(
+        """
     SELECT 
         CASE 
             WHEN p.accountNumber LIKE '1%' THEN 'ASSET'
@@ -90,14 +87,16 @@ interface PostingRepository : CustomJpaRepository<Posting, Long> {
       AND p.postingDate BETWEEN :startDate AND :endDate
     GROUP BY accountType, p.accountNumber
     ORDER BY accountType, p.accountNumber
-""")
+"""
+    )
     fun findProfitLossPostings(
         @Param("tenantId") tenantId: Long,
         @Param("startDate") startDate: LocalDate,
         @Param("endDate") endDate: LocalDate
     ): List<Array<Any>>
 
-    @Query("""
+    @Query(
+        """
     SELECT 
         CASE 
             WHEN p.accountNumber LIKE '1%' THEN 'ASSET'
@@ -113,26 +112,11 @@ interface PostingRepository : CustomJpaRepository<Posting, Long> {
       AND p.postingDate BETWEEN :startDate AND :endDate 
     GROUP BY accountType, p.accountNumber
     ORDER BY accountType, p.accountNumber
-""")
+"""
+    )
     fun findBalanceSheetPostings(
         @Param("tenantId") tenantId: Long,
         @Param("startDate") startDate: LocalDate,
         @Param("endDate") endDate: LocalDate
     ): List<Array<Any>>
-
-    @Modifying
-    @Query("DELETE FROM Posting p WHERE p.voucherId = :voucherId AND p.rowNumber = :rowNumber AND p.tenantId = :tenantId")
-    fun deleteByVoucherIdAndRowNumber(
-        @Param("voucherId") voucherId: Long,
-        @Param("rowNumber") rowNumber: Int,
-        @Param("tenantId") tenantId: Long
-    )
-
-    @Modifying
-    @Query("UPDATE Posting p SET p.rowNumber = p.rowNumber - 1 WHERE p.voucherId = :voucherId AND p.rowNumber > :deletedRowNumber AND p.tenantId = :tenantId")
-    fun decrementRowNumbersAfterDeleted(
-        @Param("voucherId") voucherId: Long,
-        @Param("deletedRowNumber") deletedRowNumber: Int,
-        @Param("tenantId") tenantId: Long
-    )
 }

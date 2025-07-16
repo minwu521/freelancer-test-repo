@@ -57,119 +57,136 @@
                     <small th:text="#{debits.credits}"/>
                 </div>
 
-                <table class="posting-table">
-                    <thead>
-                    <tr>
-                        <th style="width: 90px;" th:text="#{date}"/>
-                        <th style="width: 160px;" th:text="#{debit}"/>
-                        <th style="width: 160px;" th:text="#{credit}"/>
-                        <th style="width: 100px;" th:text="#{amount}"/>
-                        <th style="width: 70px;" th:text="#{currency}"/>
-                        <th th:text="#{description}"/>
-                        <th style="width: 60px;" th:text="#{action}"/>
-                    </tr>
-                    </thead>
-                    <tbody id="postingLines">
-                    <tr th:if="${voucher != null}" th:each="posting, iterStat : ${voucher.postings}" class="posting-line-row"
-                        th:fragment="posting-line-row"
-                        th:id="'posting-line-row-' + ${iterStat.index}">
-                        <td>
-                            <wa-input type="date" size="small"
-                                   th:tabindex="${iterStat.index * 10 + 1}"
-                                   th:value="${posting.postingDate}"
-                                   th:name="'postingLines[' + ${iterStat.index} + '].postingDate'">
-                            </wa-input>
-                        </td>
-                        <td>
-                            <div style="display: flex; flex-direction: column; gap: 2px;">
-                                <r-combobox th:id="'debit-account-' + ${iterStat.index}"
-                                           th:name="'postingLines[' + ${iterStat.index} + '].debitAccount'"
-                                           placeholder="Select debit account..."
-                                           th:tabindex="${iterStat.index * 10 + 3}"
-                                           th:value="${posting.amount > 0 ? posting.accountNumber : ''}"
-                                           style="font-size: 0.8rem;">
-                                </r-combobox>
-                                <r-combobox th:id="'debit-vat-' + ${iterStat.index}"
-                                           th:name="'postingLines[' + ${iterStat.index} + '].debitVatCode'"
-                                           placeholder="Select VAT code..."
-                                           th:tabindex="${iterStat.index * 10 + 8}"
-                                           th:value="${posting.amount > 0 ? posting.vatCode : ''}"
-                                           style="font-size: 0.75rem;">
-                                </r-combobox>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="display: flex; flex-direction: column; gap: 2px;">
-                                <r-combobox th:id="'credit-account-' + ${iterStat.index}"
-                                           th:name="'postingLines[' + ${iterStat.index} + '].creditAccount'"
-                                           placeholder="Select credit account..."
-                                           th:tabindex="${iterStat.index * 10 + 2}"
-                                           th:value="${posting.amount < 0 ? posting.accountNumber : ''}"
-                                           style="font-size: 0.8rem;">
-                                </r-combobox>
-                                <r-combobox th:id="'credit-vat-' + ${iterStat.index}"
-                                           th:name="'postingLines[' + ${iterStat.index} + '].creditVatCode'"
-                                           placeholder="Select VAT code..."
-                                           th:tabindex="${iterStat.index * 10 + 7}"
-                                           th:value="${posting.amount < 0 ? posting.vatCode : ''}"
-                                           style="font-size: 0.75rem;">
-                                </r-combobox>
-                            </div>
-                        </td>
-                        <td>
-                            <div style="position: relative;">
-                                <wa-input type="number" size="small"
-                                       th:tabindex="${iterStat.index * 10 + 4}"
-                                       th:name="'postingLines[' + ${iterStat.index} + '].amount'"
-                                       th:id="'posting-lines-amount-' + ${iterStat.index}"
-                                       min="0" step="0.01" placeholder="Amount"
-                                       th:value="${#numbers.formatDecimal(posting.amount.abs(), 1, 2)}">
-                                </wa-input>
-                                <div th:id="'converted-amount-' + ${iterStat.index}" class="converted-amount-display"></div>
-                            </div>
-                        </td>
-                        <td>
-                            <wa-select style="width: 5.6rem" size="small"
-                                     th:tabindex="${iterStat.index * 10 + 5}"
-                                     th:name="'postingLines[' + ${iterStat.index} + '].currency'"
-                                     th:id="'posting-lines-currency-' + ${iterStat.index}">
-                                <wa-option th:each="currency : ${supportedCurrencies}"
-                                         th:value="${currency}" th:text="${currency}"
-                                         th:selected="${currency == posting.currency}">
-                                </wa-option>
-                            </wa-select>
-                        </td>
-                        <td>
-                            <wa-input type="text" size="small"
-                                   th:tabindex="${iterStat.index * 10 + 6}"
-                                   placeholder="Description"
-                                   th:name="'postingLines[' + ${iterStat.index} + '].description'"
-                                   th:value="${posting.description}">
-                            </wa-input>
-                        </td>
-                        <td>
-                            <wa-button type="button" size="small" variant="danger" tabindex="-1"
-                                     th:hx-delete="@{/htmx/voucher/posting-line/{voucherId}/{rowNumber}(voucherId=${voucherId}, rowNumber=${iterStat.index})}"
-                                     hx-target="closest tr"
-                                     hx-swap="outerHTML">
-                                <wa-icon label="Remove posting row" name="trash"></wa-icon>
-                            </wa-button>
-                        </td>
-                    </tr>
-                    <!-- Initial posting line will be added via HTMX on page load if no existing postings -->
-                    </tbody>
-                    <tfoot id="balanceFooter">
-                    <tr class="balance-row">
-                        <td></td>
-                        <td class="balance-total"><span id="totalDebit">0.00</span></td>
-                        <td class="balance-total"><span id="totalCredit">0.00</span></td>
-                        <td class="balance-total"><span id="balanceAmount">0.00</span></td>
-                        <td colspan="3"></td>
-                    </tr>
-                    </tfoot>
-                </table>
 
-                <div class="form-actions">
+                <wa-scroller id="scroller_voucher_postings" style="--scroller-max-width: 100%;">
+                    <table class="posting-table">
+                        <thead>
+                        <tr>
+                            <th style="width: 90px;" th:text="#{date}"/>
+                            <th style="width: 160px;" th:text="#{debit}"/>
+                            <th style="width: 160px;" th:text="#{credit}"/>
+                            <th style="width: 100px;" th:text="#{amount}"/>
+                            <th style="width: 70px;" th:text="#{currency}"/>
+                            <th th:text="#{description}"/>
+                            <th style="width: 60px;" th:text="#{action}"/>
+                        </tr>
+                        </thead>
+                        <tbody id="postingLines">
+                        <tr th:if="${uiPostingLines != null and !uiPostingLines.isEmpty()}"
+                            th:each="postingLine, iterStat : ${uiPostingLines}" class="posting-line-row"
+                            th:fragment="posting-line-row"
+                            th:id="'posting-line-row-' + ${iterStat.index}">
+                            <!-- Hidden row number field -->
+                            <input type="hidden" th:name="'postingLines[' + ${iterStat.index} + '].rowNumber'"
+                                   th:value="${postingLine.rowNumber}">
+                            <td>
+                                <wa-input type="date" size="small" style="width: 9rem;"
+                                          th:tabindex="${iterStat.index * 10 + 1}"
+                                          th:value="${postingLine.postingDate}"
+                                          th:name="'postingLines[' + ${iterStat.index} + '].postingDate'">
+                                </wa-input>
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <r-combobox th:id="'debit-account-' + ${iterStat.index}"
+                                                th:name="'postingLines[' + ${iterStat.index} + '].debitAccount'"
+                                                placeholder="Select debit account..."
+                                                th:tabindex="${iterStat.index * 10 + 3}"
+                                                th:value="${postingLine.debitAccount}"
+                                                style="font-size: 0.8rem;">
+                                    </r-combobox>
+                                    <r-combobox th:id="'debit-vat-' + ${iterStat.index}"
+                                                th:name="'postingLines[' + ${iterStat.index} + '].debitVatCode'"
+                                                placeholder="Select VAT code..."
+                                                th:tabindex="${iterStat.index * 10 + 8}"
+                                                th:value="${postingLine.debitVatCode}"
+                                                th:data-default-value="${defaultVatCode}"
+                                                style="font-size: 0.75rem;">
+                                    </r-combobox>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="display: flex; flex-direction: column; gap: 2px;">
+                                    <r-combobox th:id="'credit-account-' + ${iterStat.index}"
+                                                th:name="'postingLines[' + ${iterStat.index} + '].creditAccount'"
+                                                placeholder="Select credit account..."
+                                                th:tabindex="${iterStat.index * 10 + 2}"
+                                                th:value="${postingLine.creditAccount}"
+                                                style="font-size: 0.8rem;">
+                                    </r-combobox>
+                                    <r-combobox th:id="'credit-vat-' + ${iterStat.index}"
+                                                th:name="'postingLines[' + ${iterStat.index} + '].creditVatCode'"
+                                                placeholder="Select VAT code..."
+                                                th:tabindex="${iterStat.index * 10 + 7}"
+                                                th:value="${postingLine.creditVatCode}"
+                                                th:data-default-value="${defaultVatCode}"
+                                                style="font-size: 0.75rem;">
+                                    </r-combobox>
+                                </div>
+                            </td>
+                            <td>
+                                <div style="position: relative; width: 7rem;">
+                                    <wa-input type="number" size="small"
+                                              th:tabindex="${iterStat.index * 10 + 4}"
+                                              th:name="'postingLines[' + ${iterStat.index} + '].amount'"
+                                              th:id="'posting-lines-amount-' + ${iterStat.index}"
+                                              min="0" step="0.01" placeholder="Amount"
+                                              th:value="${postingLine.amount != null ? #numbers.formatDecimal(postingLine.amount, 1, 2) : ''}"
+                                              th:attr="hx-get=@{/htmx/currency/convert(toCurrency=${companyCurrencyCode})},
+                                                       hx-trigger='change, keyup delay:500ms',
+                                                       hx-target=|#converted-amount-${iterStat.index}|,
+                                                       hx-swap='innerHTML',
+                                                       hx-include=|#posting-lines-amount-${iterStat.index}, #posting-lines-currency-${iterStat.index}|"></wa-input>
+                                    <div th:id="'converted-amount-' + ${iterStat.index}"
+                                         class="converted-amount-display"></div>
+                                </div>
+                            </td>
+                            <td>
+                                <wa-select style="width: 5.6rem" size="small"
+                                           th:tabindex="${iterStat.index * 10 + 5}"
+                                           th:name="'postingLines[' + ${iterStat.index} + '].currency'"
+                                           th:id="'posting-lines-currency-' + ${iterStat.index}"
+                                           th:attr="hx-get=@{/htmx/currency/convert(toCurrency=${companyCurrencyCode})},
+                                                    hx-trigger='change',
+                                                    hx-target=|#converted-amount-${iterStat.index}|,
+                                                    hx-swap='innerHTML',
+                                                    hx-include=|#posting-lines-amount-${iterStat.index}, #posting-lines-currency-${iterStat.index}|">
+                                    <wa-option th:each="currency : ${supportedCurrencies}"
+                                               th:value="${currency}" th:text="${currency}"
+                                               th:selected="${currency == postingLine.currency}">
+                                    </wa-option>
+                                </wa-select>
+                            </td>
+                            <td>
+                                <wa-input type="text" size="small"
+                                          th:tabindex="${iterStat.index * 10 + 6}"
+                                          placeholder="Description"
+                                          th:name="'postingLines[' + ${iterStat.index} + '].description'"
+                                          th:value="${postingLine.description}">
+                                </wa-input>
+                            </td>
+                            <td>
+                                <wa-button type="button" size="small" variant="danger" tabindex="-1"
+                                           th:onclick="'removePostingLine(this, ' + ${iterStat.index} + ')'">
+                                    <wa-icon label="Remove posting row" name="trash"></wa-icon>
+                                </wa-button>
+                            </td>
+                        </tr>
+                        <!-- Initial posting line will be added via HTMX on page load if no existing postings -->
+                        </tbody>
+                        <tfoot id="balanceFooter">
+                        <tr class="balance-row">
+                            <td></td>
+                            <td class="balance-total"><span id="totalDebit">0.00</span></td>
+                            <td class="balance-total"><span id="totalCredit">0.00</span></td>
+                            <td class="balance-total"><span id="balanceAmount">0.00</span></td>
+                            <td colspan="3"></td>
+                        </tr>
+                        </tfoot>
+                    </table>
+                </wa-scroller>
+
+                <div class="form-actions" style="margin-top: var(--wa-space-m)">
                     <wa-button onclick="addPostingLine()"
                                size="small"
                                th:text="#{voucher_new_row}"
@@ -197,47 +214,6 @@
         // Initialize comboboxes for existing postings
         const accounts = /*[[${accounts ?: {}}]]*/ [];
         const vatCodes = /*[[${vatCodes ?: {}}]]*/ [];
-
-        // Initialize existing posting comboboxes when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            if (typeof customElements !== 'undefined' && customElements.whenDefined) {
-                customElements.whenDefined('r-combobox').then(() => {
-                    initializeExistingPostingComboboxes();
-                });
-            } else {
-                setTimeout(initializeExistingPostingComboboxes, 100);
-            }
-        });
-
-        function initializeExistingPostingComboboxes() {
-            // Setup account comboboxes
-            const accountItems = accounts.map(account => ({
-                value: account.noAccountNumber,
-                title: account.noAccountNumber,
-                subtitle: account.accountName,
-                displayText: account.noAccountNumber + ' - ' + account.accountName
-            }));
-
-            // Setup VAT code comboboxes
-            const vatItems = [
-                { value: '0', title: 'No VAT', displayText: 'No VAT' }
-            ].concat(vatCodes.map(vat => ({
-                value: vat.code,
-                title: vat.code,
-                subtitle: '(' + vat.rate + '%) - ' + vat.description,
-                displayText: vat.code + ' (' + vat.rate + '%) - ' + vat.description
-            })));
-
-            // Initialize all existing comboboxes
-            document.querySelectorAll('r-combobox').forEach(combobox => {
-                if (combobox.id.includes('account')) {
-                    combobox.items = accountItems;
-                } else if (combobox.id.includes('vat')) {
-                    combobox.items = vatItems;
-                }
-                combobox.addEventListener('change', () => updateBalance());
-            });
-        }
     </script>
 
     <script th:src="@{/assets/voucher/advanced-voucher.js}"></script>

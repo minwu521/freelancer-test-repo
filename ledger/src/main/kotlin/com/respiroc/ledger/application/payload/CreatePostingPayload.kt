@@ -11,5 +11,6 @@ data class CreatePostingPayload(
     val description: String?,
     val originalAmount: BigDecimal? = null,
     val originalCurrency: String? = null,
-    val vatCode: String? = null
+    val vatCode: String? = null,
+    val rowNumber: Int = 0
 )

@@ -2,9 +2,9 @@ package com.respiroc.ledger.application.payload
 
 import java.time.LocalDate
 
-data class VoucherPayload(
+data class UpdateVoucherPayload(
     val id: Long,
-    val number: String,
     val date: LocalDate,
-    val description: String? = null
-) 
+    val description: String?,
+    val postings: List<CreatePostingPayload>
+)

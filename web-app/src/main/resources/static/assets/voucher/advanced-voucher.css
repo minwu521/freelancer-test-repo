@@ -105,3 +105,29 @@ r-combobox[style*="font-size: 0.75rem"] {
 r-combobox[style*="font-size: 0.8rem"] {
     --combobox-font-size: 0.8rem;
 }
+
+#scroller_voucher_postings {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+}
+#scroller_voucher_postings table {
+  margin-block: 0;
+  min-width: 800px;
+}
+#scroller_voucher_postings th,
+#scroller_voucher_postings td {
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  #scroller_voucher_postings table {
+    min-width: 600px;
+  }
+}
+
+@media (max-width: 600px) {
+  #scroller_voucher_postings table {
+    min-width: 500px;
+  }
+}

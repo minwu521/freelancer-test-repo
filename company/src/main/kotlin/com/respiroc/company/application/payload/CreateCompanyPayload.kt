@@ -8,6 +8,6 @@ data class CreateCompanyPayload(
     val administrativeDivisionCode: String?,
     val city: String?,
     val postalCode: String?,
-    val primaryAddress: String?,
-    val secondaryAddress: String?
+    val addressPart1: String?,
+    val addressPart2: String?
 )

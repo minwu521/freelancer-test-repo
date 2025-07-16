@@ -1,4 +1,4 @@
-package com.respiroc.util.domain.addresss
+package com.respiroc.util.domain.address
 
 import jakarta.persistence.*
 

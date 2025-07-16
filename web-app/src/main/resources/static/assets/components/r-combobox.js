@@ -10,13 +10,15 @@ import { LitElement, html, css } from 'lit';
  * - Clear button
  * - Hidden input for form submission
  * - Flexible item structure (title, subtitle, description, meta)
+ * - Optional default value support
  * 
  * Usage:
  * <r-combobox 
  *   id="my-combo"
  *   placeholder="Search..."
  *   name="fieldName"
- *   value="initialValue">
+ *   value="initialValue"
+ *   data-default-value="defaultValue">
  * </r-combobox>
  * 
  * Then set items via JavaScript:
@@ -35,7 +37,8 @@ class RCombobox extends LitElement {
         isOpen: { type: Boolean, state: true },
         searchQuery: { type: String, state: true },
         highlightedIndex: { type: Number, state: true },
-        displayValue: { type: String, state: true }
+        displayValue: { type: String, state: true },
+        defaultValue: { type: String }
     };
 
     static styles = css`
@@ -50,7 +53,7 @@ class RCombobox extends LitElement {
         }
 
         .combobox-input {
-            width: 100%;
+            width: 13rem;
             padding: 0.5rem 0.75rem;
             font-size: 0.875rem;
             border: 1px solid var(--wa-color-gray-90);
@@ -72,19 +75,20 @@ class RCombobox extends LitElement {
         }
 
         .dropdown {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            margin-top: 0.25rem;
+            position: fixed;
             background: white;
             border: 1px solid var(--wa-color-gray-90);
             border-radius: 0.375rem;
             box-shadow: 0 10px 15px -3px var(--wa-color-gray-95);
             max-height: 300px;
             overflow-y: auto;
-            z-index: 1000;
+            overflow-x: hidden;
+            z-index: 9999;
             display: none;
+            transform: translateZ(0);
+            width: var(--dropdown-width, 13rem);
+            left: 0;
+            top: 0;
         }
 
         .dropdown.open {
@@ -96,6 +100,9 @@ class RCombobox extends LitElement {
             cursor: pointer;
             transition: background-color 0.15s ease-in-out;
             border-bottom: 1px solid var(--wa-color-gray-95);
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .dropdown-item:last-child {
@@ -116,18 +123,27 @@ class RCombobox extends LitElement {
             font-size: 0.875rem;
             color: var(--wa-color-gray-10);
             margin-bottom: 0.125rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .item-description {
             font-size: 0.75rem;
             color: var(--wa-color-gray-40);
             line-height: 1.4;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .item-meta {
             font-size: 0.7rem;
             color: var(--wa-color-gray-50);
             margin-top: 0.125rem;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
         }
 
         .no-results {
@@ -171,6 +187,7 @@ class RCombobox extends LitElement {
         this.searchQuery = '';
         this.highlightedIndex = -1;
         this.displayValue = '';
+        this.defaultValue = '';
     }
 
     connectedCallback() {
@@ -178,28 +195,62 @@ class RCombobox extends LitElement {
         // Listen for clicks outside to close dropdown
         this._handleOutsideClick = this._handleOutsideClick.bind(this);
         document.addEventListener('click', this._handleOutsideClick);
+        
+        // Listen for scroll and resize events to update dropdown position
+        this._handleScrollResize = this._handleScrollResize.bind(this);
+        window.addEventListener('scroll', this._handleScrollResize, true);
+        window.addEventListener('resize', this._handleScrollResize);
+        
+        // Read default value from data attribute if not already set
+        if (!this.defaultValue && this.hasAttribute('data-default-value')) {
+            this.defaultValue = this.getAttribute('data-default-value');
+        }
     }
 
     disconnectedCallback() {
         super.disconnectedCallback();
         document.removeEventListener('click', this._handleOutsideClick);
+        window.removeEventListener('scroll', this._handleScrollResize, true);
+        window.removeEventListener('resize', this._handleScrollResize);
     }
 
     updated(changedProperties) {
-        // This is the key change: when items or value are updated,
-        // we ensure the display text is correctly set. This solves the race condition.
-        if ((changedProperties.has('items') || changedProperties.has('value')) && this.value) {
-            const item = this.items.find(i => i.value === this.value);
-            if (item) {
-                const newDisplayValue = item.displayText || `${item.title}${item.subtitle ? ' ' + item.subtitle : ''}`;
-                // Only update if it's different to avoid re-rendering loops
-                if (this.displayValue !== newDisplayValue) {
-                    this.displayValue = newDisplayValue;
-                    this.searchQuery = newDisplayValue; // Also update searchQuery to show in input
+        if (changedProperties.has('items')) {
+            // If we have items and a default value but no current value, set the default
+            if (this.items.length > 0 && this.defaultValue && !this.value) {
+                const defaultItem = this.items.find(i => i.value === this.defaultValue);
+                if (defaultItem) {
+                    this._selectItem(defaultItem);
+                    return;
                 }
-            } else {
-                this.displayValue = ''; // Clear if value is not in items
             }
+
+            if (this.value) {
+                const item = this.items.find(i => i.value === this.value);
+                if (item) {
+                    const newDisplayValue = item.displayText || `${item.title}${item.subtitle ? ' ' + item.subtitle : ''}`;
+                    // Only update if it's different to avoid re-rendering loops
+                    if (this.displayValue !== newDisplayValue) {
+                        this.displayValue = newDisplayValue;
+                        this.searchQuery = newDisplayValue; // Also update searchQuery to show in input
+                    }
+                } else {
+                    this.displayValue = ''; // Clear if value is not in items
+                }
+            }
+        }
+        
+        // Also check for default value when defaultValue property changes
+        if (changedProperties.has('defaultValue') && this.defaultValue && this.items.length > 0 && !this.value) {
+            const defaultItem = this.items.find(i => i.value === this.defaultValue);
+            if (defaultItem) {
+                this._selectItem(defaultItem);
+            }
+        }
+
+        // Update dropdown position when isOpen changes
+        if (changedProperties.has('isOpen') && this.isOpen) {
+            setTimeout(() => this._updateDropdownPosition(), 0);
         }
     }
 
@@ -236,6 +287,9 @@ class RCombobox extends LitElement {
                 detail: { value: '', item: null }
             }));
         }
+
+        // Update dropdown position after a short delay to ensure DOM is updated
+        setTimeout(() => this._updateDropdownPosition(), 0);
     }
 
     _handleKeyDown(e) {
@@ -281,6 +335,39 @@ class RCombobox extends LitElement {
             this.isOpen = true;
             this.highlightedIndex = 0;
         }
+        
+        // Update dropdown position after a short delay to ensure DOM is updated
+        setTimeout(() => this._updateDropdownPosition(), 0);
+    }
+
+    _updateDropdownPosition() {
+        const dropdown = this.shadowRoot.querySelector('.dropdown');
+        if (!dropdown) return;
+
+        const input = this.shadowRoot.querySelector('.combobox-input');
+        const rect = input.getBoundingClientRect();
+        
+        // Set dropdown width to match input width
+        dropdown.style.setProperty('--dropdown-width', rect.width + 'px');
+        
+        // Position dropdown below input
+        dropdown.style.left = rect.left + 'px';
+        dropdown.style.top = (rect.bottom + 4) + 'px'; // 4px margin
+        
+        // Check if dropdown would go below viewport
+        const dropdownHeight = Math.min(300, this.filteredItems.length * 50); // Approximate height
+        const spaceBelow = window.innerHeight - rect.bottom;
+        
+        if (spaceBelow < dropdownHeight && rect.top > dropdownHeight) {
+            // Position above input if not enough space below
+            dropdown.style.top = (rect.top - dropdownHeight - 4) + 'px';
+        }
+    }
+
+    _handleScrollResize() {
+        if (this.isOpen) {
+            this._updateDropdownPosition();
+        }
     }
 
     _handleClick() {
@@ -295,6 +382,9 @@ class RCombobox extends LitElement {
         } else {
             this.isOpen = true;
         }
+
+        // Update dropdown position after a short delay to ensure DOM is updated
+        setTimeout(() => this._updateDropdownPosition(), 0);
     }
 
     _selectItem(item) {
@@ -330,12 +420,51 @@ class RCombobox extends LitElement {
         }));
     }
 
+    setDefaultValue(defaultValue) {
+        this.defaultValue = defaultValue;
+        // If we have items and no current value, try to apply the default
+        if (this.items.length > 0 && !this.value) {
+            const defaultItem = this.items.find(i => i.value === defaultValue);
+            if (defaultItem) {
+                this._selectItem(defaultItem);
+            }
+        }
+    }
+
+    resetToDefault() {
+        if (this.defaultValue && this.items.length > 0) {
+            const defaultItem = this.items.find(i => i.value === this.defaultValue);
+            if (defaultItem) {
+                this._selectItem(defaultItem);
+            }
+        } else {
+            this._clearValue({ stopPropagation: () => {} });
+        }
+    }
+
+    applyDefaultIfNeeded() {
+        if (this.defaultValue && this.items.length > 0 && !this.value) {
+            const defaultItem = this.items.find(i => i.value === this.defaultValue);
+            if (defaultItem) {
+                this._selectItem(defaultItem);
+                return true;
+            }
+        }
+        return false;
+    }
+
     firstUpdated() {
-        // Set initial input value
         const input = this.shadowRoot.querySelector('.combobox-input');
         if (this.displayValue) {
             input.value = this.displayValue;
             this.searchQuery = this.displayValue;
+        }
+
+        if (this.defaultValue && this.items.length > 0 && !this.value) {
+            const defaultItem = this.items.find(i => i.value === this.defaultValue);
+            if (defaultItem) {
+                this._selectItem(defaultItem);
+            }
         }
     }
 
