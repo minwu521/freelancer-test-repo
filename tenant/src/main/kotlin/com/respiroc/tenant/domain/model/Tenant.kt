@@ -20,6 +20,9 @@ open class Tenant : Serializable {
     @Column(name = "id", nullable = false)
     open var id: Long = -1
 
+    @Column(name = "slug", nullable = false, unique = true)
+    open lateinit var slug: String
+
     @Column(name = "company_id", nullable = false, updatable = false, insertable = false)
     open var companyId: Long = -1
 
