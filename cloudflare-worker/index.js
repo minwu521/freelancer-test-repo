@@ -58,7 +58,7 @@ export default {
         if (request.method === 'GET' && new URL(request.url).pathname === '/health') {
             return new Response('OK', { status: 200 });
         }
-        return new Response('Email worker active', { status: 200 });
+        return new Response('Email worker active now!', { status: 200 });
     }
 };
 
