@@ -1,2 +1,0 @@
-### Test voucher document upload
-POST http://localhost:8080/api/voucher-reception/
