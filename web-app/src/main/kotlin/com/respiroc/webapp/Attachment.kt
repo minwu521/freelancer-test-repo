@@ -1,4 +1,4 @@
-package com.respiroc.webapp.controller.rest
+package com.respiroc.webapp
 
 import com.respiroc.util.repository.CustomJpaRepository
 import jakarta.persistence.*

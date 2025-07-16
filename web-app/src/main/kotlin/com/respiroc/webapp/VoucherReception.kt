@@ -1,28 +1,19 @@
-package com.respiroc.webapp.controller.rest
+package com.respiroc.webapp
 
 import com.respiroc.tenant.application.TenantService
 import com.respiroc.tenant.domain.model.Tenant
 import com.respiroc.util.repository.CustomJpaRepository
-import jakarta.persistence.Column
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.GenerationType
-import jakarta.persistence.Id
-import jakarta.persistence.JoinColumn
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
-import jakarta.persistence.Table
+import com.respiroc.webapp.controller.BaseController
+import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.slf4j.LoggerFactory
 import org.springframework.http.ResponseEntity
+import org.springframework.stereotype.Controller
 import org.springframework.stereotype.Repository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.ui.Model
+import org.springframework.web.bind.annotation.*
 import java.time.Instant
 import java.util.*
 
@@ -130,4 +121,19 @@ class VoucherReceptionDocument {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "tenant_id", nullable = false)
     lateinit var tenant: Tenant
+}
+
+@Controller
+@RequestMapping("/voucher-reception")
+class VoucherReceptionWebController(
+    private val voucherReceptionDocumentRepository: VoucherReceptionDocumentRepository
+) : BaseController() {
+
+    @GetMapping(value = ["", "/"])
+    fun overview(model: Model): String {
+        val documents = voucherReceptionDocumentRepository.findAll()
+        addCommonAttributes(model, "Voucher Reception")
+        model.addAttribute("documents", documents)
+        return "voucher-reception/overview"
+    }
 }
