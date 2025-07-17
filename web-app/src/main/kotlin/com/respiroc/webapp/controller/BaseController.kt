@@ -5,6 +5,8 @@ import com.respiroc.util.context.TenantInfo
 import com.respiroc.util.context.UserContext
 import com.respiroc.util.context.UserTenantContext
 import com.respiroc.util.exception.MissingTenantContextException
+import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.ui.Model
@@ -17,6 +19,10 @@ open class BaseController {
     val tenantsAttributeName: String = "tenants"
     val currentTenantAttributeName: String = "currentTenant"
     val calloutAttributeName: String = "callout"
+
+    companion object {
+        private const val JWT_TOKEN_PERIOD = 24 * 60 * 60
+    }
 
     fun springUser(): SpringUser {
         return SecurityContextHolder.getContext().authentication.principal as SpringUser
@@ -73,5 +79,14 @@ open class BaseController {
         return authentication != null &&
                 authentication.isAuthenticated &&
                 authentication !is AnonymousAuthenticationToken
+    }
+
+    fun setJwtCookie(token: String, response: HttpServletResponse) {
+        val jwtCookie = Cookie("token", token)
+        jwtCookie.isHttpOnly = true
+        jwtCookie.secure = false // Set to true in production with HTTPS
+        jwtCookie.path = "/"
+        jwtCookie.maxAge = JWT_TOKEN_PERIOD
+        response.addCookie(jwtCookie)
     }
 }

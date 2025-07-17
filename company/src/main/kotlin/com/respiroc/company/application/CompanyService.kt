@@ -1,6 +1,6 @@
 package com.respiroc.company.application
 
-import com.respiroc.company.application.payload.CreateCompanyPayload
+import com.respiroc.util.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
 import com.respiroc.company.domain.repository.CompanyRepository
 import com.respiroc.util.currency.CurrencyService

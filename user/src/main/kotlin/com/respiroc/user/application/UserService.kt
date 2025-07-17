@@ -1,5 +1,6 @@
 package com.respiroc.user.application
 
+import com.respiroc.tenant.application.TenantService
 import com.respiroc.tenant.domain.model.Tenant
 import com.respiroc.tenant.domain.model.TenantPermission
 import com.respiroc.tenant.domain.model.TenantRole
@@ -11,8 +12,10 @@ import com.respiroc.user.domain.repository.UserRepository
 import com.respiroc.user.domain.repository.UserSessionRepository
 import com.respiroc.user.domain.repository.UserTenantRepository
 import com.respiroc.user.domain.repository.UserTenantRoleRepository
+import com.respiroc.util.constant.TenantRoleCode
 import com.respiroc.util.context.*
 import com.respiroc.util.currency.CurrencyService
+import com.respiroc.util.payload.CreateCompanyPayload
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -27,6 +30,7 @@ import java.time.temporal.ChronoUnit
 @Transactional
 class UserService(
     private val userRepository: UserRepository,
+    private val tenantService: TenantService,
     private val userSessionRepository: UserSessionRepository,
     private val userTenantRoleRepository: UserTenantRoleRepository,
     private val userTenantRepository: UserTenantRepository,
@@ -104,6 +108,14 @@ class UserService(
             .roles.map {
                 it.tenantRole.toTenantRoleContext()
             }
+    }
+
+    fun createTenantForUser(payload: CreateCompanyPayload, user: UserContext): Tenant {
+        // TODO: check for exist user tenant company
+        val tenant = tenantService.createNewTenant(payload)
+        val tenantRole = tenantService.findTenantRoleByCode(TenantRoleCode.OWNER)
+        addUserTenantRole(tenant, tenantRole, user)
+        return tenant
     }
 
     fun addUserTenantRole(

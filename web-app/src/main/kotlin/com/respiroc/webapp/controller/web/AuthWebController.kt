@@ -64,8 +64,6 @@ class AuthHTMXController(
     private val userService: UserService
 ) : BaseController() {
 
-    private val JWT_TOKEN_PERIOD: Int = 24 * 60 * 60
-
     @PostMapping("/login")
     @HxRequest
     fun loginHTMX(
@@ -119,14 +117,5 @@ class AuthHTMXController(
         val result = userService.selectTenant(user(), tenantId, token)
         setJwtCookie(result.token, response)
         return "redirect:htmx:/"
-    }
-
-    private fun setJwtCookie(token: String, response: HttpServletResponse) {
-        val jwtCookie = Cookie("token", token)
-        jwtCookie.isHttpOnly = true
-        jwtCookie.secure = false // Set to true in production with HTTPS
-        jwtCookie.path = "/"
-        jwtCookie.maxAge = JWT_TOKEN_PERIOD
-        response.addCookie(jwtCookie)
     }
 }

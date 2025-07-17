@@ -1,4 +1,4 @@
-package com.respiroc.company.application.payload
+package com.respiroc.util.payload
 
 data class CreateCompanyPayload(
     val name: String,

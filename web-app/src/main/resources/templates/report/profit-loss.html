@@ -55,23 +55,6 @@
                 </div>
             </div>
 
-
-            <wa-callout variant="danger" th:if="${errorMessage != null}" th:fragment="error-message"  style="margin: 1rem;">
-                <wa-icon name="exclamation-triangle"></wa-icon>
-                <span th:text="${errorMessage}" />
-            </wa-callout>
-
-
-            <div th:if="${user == null or user.ctx.currentTenant == null}" class="r-empty-state">
-                <div class="r-empty-state-icon">
-                    <wa-icon name="building"></wa-icon>
-                </div>
-                <h3>Company Selection Required</h3>
-                <p>Please select a company before viewing the trial balance.</p>
-                <a href="/tenant/select" is="wa-button">Select Company</a>
-            </div>
-
-
             <div id="content-area">
                 <div th:fragment="tableContent">
                     <div th:unless="${assetPostings.entries.empty && revenuePostings.entries.empty && operatingCostPostings.entries.empty}">

@@ -11,10 +11,6 @@ class GlobalExceptionHandler : BaseController() {
 
     @ExceptionHandler(MissingTenantContextException::class)
     fun handleMissingTenantContext(): ModelAndView {
-        return if (tenants().isEmpty()) {
-            ModelAndView("redirect:/tenant/create")
-        } else {
-            ModelAndView("redirect:/tenant/select")
-        }
+        return ModelAndView("redirect:/tenant/create")
     }
 }
