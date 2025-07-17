@@ -8,9 +8,10 @@
 <main layout:fragment="content">
     <div class="r-voucher-reception-container">
         <wa-callout variant="neutral" class="r-voucher-reception">
-            <h1 class="wa-heading-xl">Voucher reception</h1>
+            <h1 class="wa-heading-xl" th:text="#{voucher_reception}" />
 
-            <p class="wa-text">👋 Drag and drop your files directly on this page or send them to
+            <p class="wa-text">
+                <span th:text="#{voucher_reception_info}" />
                 <wa-tag variant="brand" appearance="accent">
                     <span th:text="${tenantSlug + '@ea.reai.no'}" /><wa-copy-button th:value="${tenantSlug + '@ea.reai.no'}"></wa-copy-button>
                 </wa-tag>
@@ -24,11 +25,12 @@
             <table class="r-voucher-reception-table">
                 <thead>
                 <tr>
-                    <th>Filename</th>
-                    <th>Sender Email</th>
-                    <th>MIME Type</th>
-                    <th>Received At</th>
-                    <th>File Created At</th>
+                    <th th:text="#{filename}" />
+                    <th th:text="#{sender_email}" />
+                    <th th:text="#{mime_type}" />
+                    <th th:text="#{received}" />
+                    <th th:text="#{file_created_at}" />
+
                 </tr>
                 </thead>
                 <tbody>
@@ -45,7 +47,7 @@
             <div class="wa-center" th:if="${#lists.isEmpty(documents)}">
                 <div class="wa-stack wa-center wa-gap-m">
                     <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
-                    <h2 class="wa-heading-m">No voucher reception documents found</h2>
+                    <h2 class="wa-heading-m" th:text="#{no_voucher_reception_found}" />
                 </div>
             </div>
 
