@@ -2,8 +2,10 @@
     th:id="'posting-line-row-' + ${rowCounter}"
     xmlns:th="http://www.thymeleaf.org"
     th:fragment="posting-line-row">
+    <!-- Hidden row number field -->
+    <input type="hidden" th:name="'postingLines[' + ${rowCounter} + '].rowNumber'" th:value="${rowCounter}">
     <td>
-        <wa-input type="date"
+        <wa-input type="date" style="width: 9rem;"
                size="small"
                th:tabindex="${rowCounter * 10 + 1}"
                th:value="${initialDate}"
@@ -25,6 +27,7 @@
                 th:name="'postingLines[' + ${rowCounter} + '].debitVatCode'"
                 placeholder="Select VAT code..."
                 th:tabindex="${rowCounter * 10 + 8}"
+                th:data-default-value="${defaultVatCode}"
                 style="font-size: 0.75rem;">
             </r-combobox>
         </div>
@@ -44,12 +47,13 @@
                 th:name="'postingLines[' + ${rowCounter} + '].creditVatCode'"
                 placeholder="Select VAT code..."
                 th:tabindex="${rowCounter * 10 + 7}"
+                th:data-default-value="${defaultVatCode}"
                 style="font-size: 0.75rem;">
             </r-combobox>
         </div>
     </td>
     <td>
-        <div style="position: relative;">
+        <div style="position: relative; width: 7rem;">
             <wa-input type="number" size="small"
                    th:tabindex="${rowCounter * 10 + 4}"
                    th:name="'postingLines[' + ${rowCounter} + '].amount'"
@@ -129,14 +133,12 @@
         }));
         
         // Setup VAT code comboboxes
-        const vatItems = [
-            { value: '0', title: 'No VAT', displayText: 'No VAT' }
-        ].concat(vatCodes.map(vat => ({
+        const vatItems = vatCodes.map(vat => ({
             value: vat.code,
             title: vat.code,
             subtitle: '(' + vat.rate + '%) - ' + vat.description,
             displayText: vat.code + ' (' + vat.rate + '%) - ' + vat.description
-        })));
+        }));
         
         // Get combobox elements
         const debitAccount = document.getElementById('debit-account-' + rowCounter);

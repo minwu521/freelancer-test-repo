@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en" layout:decorate="~{layout/base}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+
+<body>
+<main layout:fragment="content">
+    <div class="wa-container">
+        <div class="wa-stack wa-gap-l">
+            <table>
+                <thead>
+                <tr>
+                    <th>Filename</th>
+                    <th>Sender Email</th>
+                    <th>MIME Type</th>
+                    <th>Received At</th>
+                    <th>File Created At</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="document : ${documents}">
+                    <td>
+                        <strong th:text="${document.attachment.filename}"/>
+                    </td>
+                    <td th:text="${document.senderEmail ?: '-'}"/>
+                    <td th:text="${document.attachment.mimetype}"/>
+                    <td th:text="${#temporals.format(document.receivedAt, 'dd.MM.yyyy HH:mm')}"/>
+                    <td th:text="${#temporals.format(document.attachment.createdAt, 'dd.MM.yyyy HH:mm')}"/>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="wa-center" th:if="${#lists.isEmpty(documents)}">
+                <div class="wa-stack wa-gap-m wa-center">
+                    <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
+                    <h2 class="wa-heading-m">No voucher reception documents found</h2>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+</body>
+</html>

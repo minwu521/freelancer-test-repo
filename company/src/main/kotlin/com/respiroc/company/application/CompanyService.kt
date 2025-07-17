@@ -4,7 +4,7 @@ import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
 import com.respiroc.company.domain.repository.CompanyRepository
 import com.respiroc.util.currency.CurrencyService
-import com.respiroc.util.domain.addresss.Address
+import com.respiroc.util.domain.address.Address
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -43,16 +43,16 @@ class CompanyService(
         if (!isValidAddress(command)) return null
         val address = Address(
             city = command.city!!,
-            addressPart1 = command.primaryAddress!!,
+            addressPart1 = command.addressPart1!!,
             postalCode = command.postalCode,
             countryIsoCode = command.addressCountryCode!!,
-            addressPart2 = command.secondaryAddress,
+            addressPart2 = command.addressPart2,
             administrativeDivisionCode = command.administrativeDivisionCode
         )
         return Address.upsertAddress(entityManager, address)
     }
 
     private fun isValidAddress(command: CreateCompanyPayload): Boolean {
-        return !(command.primaryAddress == null || command.city == null || command.addressCountryCode == null)
+        return !(command.addressPart1 == null || command.city == null || command.addressCountryCode == null)
     }
 }

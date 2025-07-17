@@ -5,42 +5,98 @@
 <body>
 <main layout:fragment="content">
     <div class="wa-container">
-        <div class="wa-stack wa-gap-l">
-            <table>
-                <thead>
-                <tr>
-                    <th th:text="#{number}"/>
-                    <th th:text="#{description}"/>
-                    <th th:text="#{date}"/>
-                    <th th:text="#{postings}"/>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="voucher : ${vouchers}">
-                    <td>
-                        <a style="color: var(--wa-color-blue-50); text-decoration: none;"
-                           th:href="'/voucher/' + ${voucher.id} + '?tenantId=' + ${user.ctx.currentTenant?.id}">
-                            <strong th:text="${voucher.number}"/>
-                        </a>
-                    </td>
-                    <td th:text="${voucher.description ?: '-'}"/>
-                    <td th:text="${#temporals.format(voucher.date, 'dd.MM.yyyy')}"/>
-                    <td>
-                        <wa-badge variant="neutral">
-                            <span th:text="${voucher.postingCount}">0</span> postings
-                        </wa-badge>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div class="wa-center" th:if="${#lists.isEmpty(vouchers)}">
-                <div class="wa-stack wa-gap-m wa-center">
-                    <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
-                    <h2 class="wa-heading-m" th:text="#{no_vouchers_found}"/>
+        <div class="wa-stack wa-gap-s">
+            
+            <wa-card>
+                <div class="wa-cluster">
+                    <div class="wa-stack wa-gap-xs">
+                        <label class="wa-body-s" style="font-weight: var(--wa-font-weight-semibold);">Start Date</label>
+                        <wa-input type="date" 
+                                  name="startDate" 
+                                  size="small"
+                                  th:value="${startDate}"
+                                  th:hx-get="'/htmx/voucher/overview?tenantId=' + ${user.ctx.currentTenant.id}"
+                                  hx-target="#tableContent"
+                                  hx-indicator="#loading-indicator"
+                                  hx-trigger="change"
+                                  hx-include="[name='endDate']"></wa-input>
+                    </div>
+                    
+                    <div class="wa-stack wa-gap-xs">
+                        <label class="wa-body-s" style="font-weight: var(--wa-font-weight-semibold);">End Date</label>
+                        <wa-input type="date" 
+                                  name="endDate" 
+                                  size="small"
+                                  th:value="${endDate}"
+                                  th:hx-get="'/htmx/voucher/overview?tenantId=' + ${user.ctx.currentTenant.id}"
+                                  hx-target="#tableContent"
+                                  hx-indicator="#loading-indicator"
+                                  hx-trigger="change"
+                                  hx-include="[name='startDate']"></wa-input>
+                    </div>
                 </div>
-            </div>
+            </wa-card>
 
+            <div id="tableContent" th:fragment="tableContent">
+                <wa-card>
+                    <wa-progress-bar id="loading-indicator" indeterminate class="htmx-indicator"></wa-progress-bar>
+                    <div class="wa-stack wa-gap-m">
+                        <div th:if="${#lists.isEmpty(vouchers)}" class="wa-center">
+                            <div class="wa-stack wa-gap-m wa-center">
+                                <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
+                                <h3 class="wa-heading-m" th:text="#{no_vouchers_found}" />
+                            </div>
+                        </div>
+
+                        <table id="voucherTable" style="--wa-table-row-padding: var(--wa-space-xs);" th:unless="${#lists.isEmpty(vouchers)}">
+                            <thead>
+                                <tr>
+                                    <th th:text="#{date}"/>
+                                    <th th:text="#{description}"/>
+                                    <th th:text="#{account}"/>
+                                    <th th:text="#{vat_code}"/>
+                                    <th th:text="#{amount}" style="text-align: right;"/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <th:block th:each="voucher, voucherStat : ${vouchers}">
+
+                                    <tr style="background-color: var(--wa-color-gray-90);">
+                                        <td></td>
+                                        <td style="font-weight: 600;">
+                                            <a style="color: var(--wa-color-blue-50); text-decoration: none;"
+                                               th:href="'/voucher/' + ${voucher.id} + '?tenantId=' + ${user.ctx.currentTenant?.id}">
+                                                <strong th:text="${voucher.number}"/><span style="font-size: var(--wa-font-size-s)" th:text=" ' ' + #{show_voucher}"/>
+                                            </a>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+
+                                    <tr th:each="posting : ${voucher.postings}">
+                                        <td th:text="${#temporals.format(posting.date, 'dd.MM.yyyy')}"/>
+                                        <td th:text="${posting.description ?: '-'}"/>
+                                        <td>
+                                            <span th:text="${posting.accountNumber}"/>
+                                            <span th:if="${posting.accountName}" th:text="' - ' + ${posting.accountName}"/>
+                                        </td>
+                                        <td th:text="${posting.vatCode ?: '-'}"/>
+                                        <td style="text-align: right;">
+                                            <span th:text="${posting.amount}" />
+                                        </td>
+                                    </tr>
+
+                                    <tr th:unless="${voucherStat.last}" style="height: 0;">
+                                        <td colspan="5" style="padding: 0; border-top: 2px solid var(--wa-color-neutral-200);"></td>
+                                    </tr>
+                                </th:block>
+                            </tbody>
+                        </table>
+                    </div>
+                </wa-card>
+            </div>
+            
         </div>
     </div>
 </main>

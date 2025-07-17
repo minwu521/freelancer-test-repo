@@ -26,6 +26,7 @@ class TenantIdFilter(
         "/report/**",
         "/ledger/**",
         "/htmx/**",
+        "/voucher-reception/**",
         "/contact/**",
     )
 

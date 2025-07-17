@@ -1,9 +1,6 @@
 package com.respiroc.ledger.application
 
-import com.respiroc.ledger.application.payload.CreatePostingPayload
-import com.respiroc.ledger.application.payload.CreateVoucherPayload
-import com.respiroc.ledger.application.payload.VoucherPayload
-import com.respiroc.ledger.application.payload.VoucherSummaryPayload
+import com.respiroc.ledger.application.payload.*
 import com.respiroc.ledger.domain.exception.AccountNotFoundException
 import com.respiroc.ledger.domain.exception.InvalidPostingsException
 import com.respiroc.ledger.domain.exception.InvalidVatCodeException
@@ -47,61 +44,86 @@ class VoucherService(
         return VoucherPayload(
             id = savedVoucher.id,
             number = savedVoucher.getDisplayNumber(),
-            date = savedVoucher.date
+            date = savedVoucher.date,
+            description = savedVoucher.description
         )
+    }
+
+    fun findOrCreateEmptyVoucher(): VoucherPayload {
+        val tenantId = currentTenantId()
+
+        val existingEmptyVoucher = voucherRepository.findFirstEmptyVoucherByTenantId(tenantId)
+        if (existingEmptyVoucher != null) {
+            return VoucherPayload(
+                id = existingEmptyVoucher.id,
+                number = existingEmptyVoucher.getDisplayNumber(),
+                date = existingEmptyVoucher.date,
+                description = existingEmptyVoucher.description
+            )
+        }
+
+        val emptyVoucherPayload = CreateVoucherPayload(
+            date = LocalDate.now(),
+            description = null,
+            postings = emptyList()
+        )
+        return createVoucher(emptyVoucherPayload)
     }
 
     @Transactional(readOnly = true)
     fun findAllVoucherSummaries(): List<VoucherSummaryPayload> {
         val vouchers = voucherRepository.findVoucherSummariesByTenantId(currentTenantId())
 
-        return vouchers.map { voucher ->
-            VoucherSummaryPayload(
-                id = voucher.id,
-                number = voucher.getDisplayNumber(),
-                date = voucher.date,
-                description = voucher.description,
-                postingCount = voucher.postings.size
-            )
-        }
+        return vouchers
+            .filter { it.postings.isNotEmpty() }
+            .map { voucher -> toVoucherSummary(voucher) }
     }
 
-    fun updateVoucherWithPostings(voucherId: Long, postings: List<CreatePostingPayload>): VoucherPayload {
+    @Transactional(readOnly = true)
+    fun findVoucherSummariesByDateRange(startDate: LocalDate, endDate: LocalDate): List<VoucherSummaryPayload> {
+        val vouchers = voucherRepository.findVoucherSummariesByTenantIdAndDateRange(
+            currentTenantId(), startDate, endDate
+        )
+
+        return vouchers
+            .filter { it.postings.isNotEmpty() }
+            .map { voucher -> toVoucherSummary(voucher) }
+    }
+
+    fun updateVoucherWithPostings(payload: UpdateVoucherPayload): VoucherPayload {
         val tenantId = currentTenantId()
 
-        val voucher = voucherRepository.findByIdAndTenantIdWithPostings(voucherId, tenantId)
+        val voucher = voucherRepository.findByIdAndTenantIdWithPostings(payload.id, tenantId)
             ?: throw IllegalArgumentException("Voucher not found")
 
-        if (postings.isNotEmpty()) {
-            validatePostingCommands(postings)
-            validateBalance(postings)
+        if (payload.postings.isNotEmpty()) {
+            validatePostingCommands(payload.postings)
+            validateBalance(payload.postings)
         }
 
         if (voucher.postings.isNotEmpty()) {
             postingRepository.deleteAll(voucher.postings)
         }
 
-        if (postings.isNotEmpty()) {
-            saveNonZeroPostings(postings, tenantId, voucherId)
+        if (payload.postings.isNotEmpty()) {
+            saveNonZeroPostings(payload.postings, tenantId, payload.id)
         }
+
+        voucher.date = payload.date
+        voucher.description = payload.description
+        val savedVoucher = voucherRepository.save(voucher)
 
         return VoucherPayload(
             id = voucher.id,
             number = voucher.getDisplayNumber(),
-            date = voucher.date
+            date = voucher.date,
+            description = savedVoucher.description
         )
     }
 
     @Transactional(readOnly = true)
     fun findVoucherById(id: Long): Voucher? {
         return voucherRepository.findByIdAndTenantIdWithPostings(id, currentTenantId())
-    }
-
-    fun deletePostingLineAndAdjustRowNumbers(voucherId: Long, rowNumber: Int) {
-        val tenantId = currentTenantId()
-
-        postingRepository.deleteByVoucherIdAndRowNumber(voucherId, rowNumber, tenantId)
-        postingRepository.decrementRowNumbersAfterDeleted(voucherId, rowNumber, tenantId)
     }
 
     // -------------------------------
@@ -140,10 +162,8 @@ class VoucherService(
 
     private fun validateBalance(postings: List<CreatePostingPayload>) {
         val totalAmount = postings.sumOf { it.amount }
-        // Round to 2 decimal places for balance validation (currency conversion can introduce extra decimals)
-        val roundedAmount = totalAmount.setScale(2, java.math.RoundingMode.HALF_UP)
-        if (roundedAmount.compareTo(BigDecimal.ZERO) != 0) {
-            throw PostingsNotBalancedException(roundedAmount)
+        if (totalAmount.compareTo(BigDecimal.ZERO) != 0) {
+            throw PostingsNotBalancedException(totalAmount)
         }
     }
 
@@ -172,6 +192,7 @@ class VoucherService(
         posting.originalCurrency = postingData.originalCurrency
         posting.vatCode = postingData.vatCode
         posting.voucherId = voucherId
+        posting.rowNumber = postingData.rowNumber
 
         return posting
     }
@@ -187,9 +208,24 @@ class VoucherService(
                 createPostingEntity(postingData, tenantId, voucherId)
             }
 
-        // Save only non-zero postings to optimize storage
         if (nonZeroPostings.isNotEmpty()) {
             postingRepository.saveAll(nonZeroPostings)
         }
     }
+
+    private fun toVoucherSummary(voucher: Voucher) = VoucherSummaryPayload(
+        id = voucher.id,
+        number = voucher.getDisplayNumber(),
+        postings = voucher.postings.map { posting ->
+            PostingSummaryPayload(
+                id = posting.id,
+                date = posting.postingDate,
+                description = posting.description,
+                accountNumber = posting.accountNumber,
+                accountName = accountService.findAccountByNumber(posting.accountNumber)?.accountName,
+                vatCode = posting.vatCode,
+                amount = posting.amount
+            )
+        }
+    )
 }

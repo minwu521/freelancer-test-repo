@@ -1,6 +1,5 @@
 package com.respiroc.webapp.controller.web
 
-import com.respiroc.ledger.application.payload.CreateVoucherPayload
 import com.respiroc.ledger.application.AccountService
 import com.respiroc.ledger.application.VatService
 import com.respiroc.ledger.application.VoucherService
@@ -11,6 +10,7 @@ import com.respiroc.webapp.controller.response.Callout
 import com.respiroc.webapp.service.VoucherWebService
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
 import jakarta.validation.Valid
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
@@ -24,7 +24,8 @@ class VoucherWebController(
     private val accountService: AccountService,
     private val currencyService: CurrencyService,
     private val vatService: VatService,
-    private val voucherApi: VoucherService
+    private val voucherApi: VoucherService,
+    private val voucherWebService: VoucherWebService
 ) : BaseController() {
 
     @GetMapping(value = [])
@@ -33,22 +34,31 @@ class VoucherWebController(
     }
 
     @GetMapping(value = ["/overview"])
-    fun overview(model: Model): String {
-        val vouchers = voucherApi.findAllVoucherSummaries()
+    fun overview(
+        @RequestParam(name = "startDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        startDate: LocalDate?,
+        @RequestParam(name = "endDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        endDate: LocalDate?,
+        model: Model
+    ): String {
+        val effectiveStartDate = startDate ?: LocalDate.now().withDayOfMonth(1)
+        val effectiveEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+
+        val vouchers = voucherApi.findVoucherSummariesByDateRange(effectiveStartDate, effectiveEndDate)
+        
         addCommonAttributes(model, "Voucher Overview")
         model.addAttribute("vouchers", vouchers)
+        model.addAttribute("startDate", effectiveStartDate)
+        model.addAttribute("endDate", effectiveEndDate)
         return "voucher/overview"
     }
 
     @GetMapping(value = ["/new-advanced-voucher"])
     fun newAdvancedVoucher(): String {
-        val emptyVoucherPayload = CreateVoucherPayload(
-            date = LocalDate.now(),
-            description = null,
-            postings = emptyList()
-        )
-        val createdVoucher = voucherApi.createVoucher(emptyVoucherPayload)
-        return "redirect:/voucher/${createdVoucher.id}?tenantId=${tenantId()}"
+        val emptyVoucher = voucherApi.findOrCreateEmptyVoucher()
+        return "redirect:/voucher/${emptyVoucher.id}?tenantId=${tenantId()}"
     }
 
     @GetMapping(value = ["/{id}"])
@@ -56,8 +66,16 @@ class VoucherWebController(
         val voucher = voucherApi.findVoucherById(id)
             ?: throw IllegalArgumentException("Voucher not found")
 
+        val uiPostingLines = if (voucher.postings.isNotEmpty()) {
+            voucherWebService.convertPostingsToUILines(voucher.postings.toList())
+        } else {
+            emptyList()
+        }
+
         setupModelAttributes(model)
+        model.addAttribute("companyCurrencyCode", countryCode())
         model.addAttribute("voucher", voucher)
+        model.addAttribute("uiPostingLines", uiPostingLines)
         model.addAttribute("voucherId", id)
         model.addAttribute("voucherDate", voucher.date.toString())
         return "voucher/advanced-voucher"
@@ -72,9 +90,10 @@ class VoucherWebController(
         val vatCodes = vatService.findAllVatCodes()
         val supportedCurrencies = currencyService.getSupportedCurrencies()
 
-        addCommonAttributes(model, "General Ledger")
+        addCommonAttributes(model, "New Voucher")
         model.addAttribute("accounts", accounts)
         model.addAttribute("vatCodes", vatCodes)
+        model.addAttribute("defaultVatCode", vatCodes.first().code)
         model.addAttribute("supportedCurrencies", supportedCurrencies)
     }
 }
@@ -86,8 +105,38 @@ class VoucherHTMXController(
     private val accountService: AccountService,
     private val currencyService: CurrencyService,
     private val vatService: VatService,
-    private val voucherWebService: VoucherWebService
+    private val voucherWebService: VoucherWebService,
+    private val voucherApi: VoucherService
 ) : BaseController() {
+
+    @GetMapping("/overview")
+    @HxRequest
+    fun overviewHTMX(
+        @RequestParam(name = "startDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        startDate: LocalDate?,
+        @RequestParam(name = "endDate", required = false)
+        @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+        endDate: LocalDate?,
+        model: Model
+    ): String {
+        return try {
+            val effectiveStartDate = startDate ?: LocalDate.now().withDayOfMonth(1)
+            val effectiveEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+
+            val vouchers = voucherApi.findVoucherSummariesByDateRange(effectiveStartDate, effectiveEndDate)
+
+            model.addAttribute("vouchers", vouchers)
+            model.addAttribute("startDate", effectiveStartDate)
+            model.addAttribute("endDate", effectiveEndDate)
+            model.addAttribute(userAttributeName, springUser())
+
+            "voucher/overview :: tableContent"
+        } catch (e: Exception) {
+            model.addAttribute(calloutAttributeName, Callout.Error("Error loading vouchers: ${e.message}"))
+            "voucher/overview :: error-message"
+        }
+    }
 
     @PostMapping("/update/{voucherId}")
     @HxRequest
@@ -133,27 +182,12 @@ class VoucherHTMXController(
         model.addAttribute("rowCounter", rowCounter)
         model.addAttribute("accounts", accounts)
         model.addAttribute("vatCodes", vatCodes)
+        model.addAttribute("defaultVatCode", vatCodes.first().code)
         model.addAttribute("companyCurrencyCode", countryCode())
         model.addAttribute("supportedCurrencies", supportedCurrencies)
         model.addAttribute("initialDate", initialDate)
 
         return "fragments/posting-line-row"
-    }
-
-    @DeleteMapping("/posting-line/{voucherId}/{rowNumber}")
-    @HxRequest
-    fun deletePostingLineHTMX(
-        @PathVariable voucherId: Long,
-        @PathVariable rowNumber: Int,
-        model: Model
-    ): String {
-        try {
-            voucherWebService.deletePostingLineAndAdjustRowNumbers(voucherId, rowNumber)
-            return ""
-        } catch (e: Exception) {
-            model.addAttribute(calloutAttributeName, Callout.Error("Failed to delete posting line: ${e.message}"))
-            return "fragments/callout-message"
-        }
     }
 
     @PostMapping("/update-balance")
@@ -163,22 +197,17 @@ class VoucherHTMXController(
         model: Model
     ): String {
         try {
-            val companyCurrency = countryCode()
-
-            // Calculate balance using the voucher request
             val (totalDebit, totalCredit, balance, isBalanced, hasValidEntries) = calculateBalance(
                 createVoucherRequest,
-                companyCurrency
+                countryCode()
             )
 
-            // Simple balance calculation result
-            model.addAttribute("totalDebit", "%.2f %s".format(totalDebit, companyCurrency))
-            model.addAttribute("totalCredit", "%.2f %s".format(totalCredit, companyCurrency))
-            model.addAttribute("balance", "%.2f %s".format(balance, companyCurrency))
+            model.addAttribute("totalDebit", "%.2f".format(totalDebit))
+            model.addAttribute("totalCredit", "%.2f".format(totalCredit))
+            model.addAttribute("balance", "%.2f".format(balance))
             model.addAttribute("isBalanced", isBalanced)
             model.addAttribute("hasValidEntries", hasValidEntries)
 
-            // Return simple balance row fragment
             return "fragments/balance-row-simple"
         } catch (_: Exception) {
             // Return original balance on error - use company currency or fallback
@@ -210,11 +239,12 @@ class VoucherHTMXController(
                 (posting.debitAccount.isNotBlank() || posting.creditAccount.isNotBlank())
             ) {
 
-                // Convert to company currency if needed
+                // Convert to company currency if needed and round to 2 decimal places
                 val convertedAmount = if (posting.currency != companyCurrency) {
                     currencyService.convertCurrency(posting.amount, posting.currency, companyCurrency)
+                        .setScale(2, java.math.RoundingMode.HALF_UP)
                 } else {
-                    posting.amount
+                    posting.amount.setScale(2, java.math.RoundingMode.HALF_UP)
                 }
 
                 // Add to totals based on account selection

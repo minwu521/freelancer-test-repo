@@ -18,12 +18,13 @@
 </th:block>
 
 <!-- Fragment for creating an r-combobox -->
-<th:block th:fragment="r-combobox(id, name, placeholder, value, cssClass)">
+<th:block th:fragment="r-combobox(id, name, placeholder, value, defaultValue, cssClass)">
     <r-combobox
         th:id="${id}"
         th:name="${name}"
         th:placeholder="${placeholder ?: 'Search...'}"
         th:value="${value}"
+        th:data-default-value="${defaultValue}"
         th:class="${cssClass}">
     </r-combobox>
 </th:block>

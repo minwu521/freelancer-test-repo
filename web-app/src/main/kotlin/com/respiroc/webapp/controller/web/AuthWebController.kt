@@ -2,8 +2,6 @@ package com.respiroc.webapp.controller.web
 
 import com.respiroc.user.application.UserService
 import com.respiroc.webapp.controller.BaseController
-import com.respiroc.webapp.controller.request.LoginRequest
-import com.respiroc.webapp.controller.request.SignupRequest
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletResponse
@@ -16,9 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 
+
+data class LoginRequest(val email: String, val password: String)
+data class SignupRequest(val email: String, val password: String)
+
 @Controller
 @RequestMapping("/auth")
-class AuthWebController: BaseController() {
+class AuthWebController : BaseController() {
 
     @GetMapping("/login")
     fun loginPage(model: Model): String {

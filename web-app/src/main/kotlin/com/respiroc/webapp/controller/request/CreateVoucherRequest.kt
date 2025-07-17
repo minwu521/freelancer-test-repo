@@ -18,6 +18,7 @@ data class CreateVoucherRequest(
         return postingLines.filterNotNull()
             .filter { it.amount != null && it.amount > BigDecimal.ZERO }
             .filter { it.getAccountNumber().isNotBlank() }
+            .map { it.roundAmountToTwoDecimals() }
     }
 }
 
@@ -30,7 +31,8 @@ data class PostingLine(
     val postingDate: LocalDate = LocalDate.now(),
     val description: String? = null,
     val debitVatCode: String? = null,
-    val creditVatCode: String? = null
+    val creditVatCode: String? = null,
+    val rowNumber: Int = 0
 ) {
     fun getAccountNumber(): String {
         return if (debitAccount.isNotBlank()) debitAccount else creditAccount
@@ -60,5 +62,10 @@ data class PostingLine(
         } else {
             trimmed.takeIf { it.isNotBlank() }
         }
+    }
+
+    fun roundAmountToTwoDecimals(): PostingLine {
+        val roundedAmount = amount?.setScale(2, java.math.RoundingMode.HALF_UP)
+        return this.copy(amount = roundedAmount)
     }
 }

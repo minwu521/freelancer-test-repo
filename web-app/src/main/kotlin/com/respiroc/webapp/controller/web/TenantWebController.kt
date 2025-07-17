@@ -63,8 +63,8 @@ class TenantHTMXController(
                 addressCountryCode = companyAddress?.countryCode,
                 postalCode = companyAddress?.postalCode,
                 city = companyAddress?.city,
-                primaryAddress = companyAddress?.address,
-                secondaryAddress = null,
+                addressPart1 = companyAddress?.address,
+                addressPart2 = null,
                 administrativeDivisionCode = null
             )
 

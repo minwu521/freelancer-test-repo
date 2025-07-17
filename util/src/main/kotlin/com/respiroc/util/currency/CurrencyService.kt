@@ -72,6 +72,7 @@ class CurrencyService {
         
         val conversionFactor = getRate(fromCurrency, toCurrency)
         return amount.multiply(BigDecimal.valueOf(conversionFactor))
+            .setScale(2, java.math.RoundingMode.HALF_UP)
     }
 
     fun convertCurrency(amount: Double, fromCurrency: String, toCurrency: String = "NOK"): Double {

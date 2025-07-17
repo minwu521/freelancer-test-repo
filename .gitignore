@@ -54,6 +54,10 @@ uv.lock
 reai.log*
 /.resourceCache/
 
+node_modules
+# we want bug fixes and updates, not locking to older versions
+package-lock.json
+
 # Symlink these from AI.md if needed
 GEMINI.md
 CLAUDE.md
