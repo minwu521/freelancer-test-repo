@@ -1,12 +1,12 @@
 package com.respiroc.supplier.application
 
-import com.respiroc.common.exception.ContactExistException
-import com.respiroc.common.exception.ContactNotFoundException
 import com.respiroc.common.payload.NewCustomerSupplierPayload
 import com.respiroc.common.service.BaseService
 import com.respiroc.supplier.domain.model.Supplier
 import com.respiroc.supplier.domain.repository.SupplierRepository
 import com.respiroc.tenant.domain.model.Tenant
+import com.respiroc.util.exception.ContactExistException
+import com.respiroc.util.exception.ContactNotFoundException
 import org.springframework.stereotype.Service
 
 @Service
