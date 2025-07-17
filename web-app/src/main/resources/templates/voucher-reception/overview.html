@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en" layout:decorate="~{layout/base}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
-
+<head>
+    <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
+</head>
 <body>
 <main layout:fragment="content">
-    <div class="wa-container wa-stack wa-gap-xl">
-        <h1 class="wa-heading-xl">Voucher reception</h1>
+    <div class="r-voucher-reception-container">
+        <wa-callout variant="neutral" class="r-voucher-reception">
+            <h1 class="wa-heading-xl">Voucher reception</h1>
 
-        <p class="wa-text">👋 Drag and drop your files directly on this page or send them to
-            <wa-tag variant="brand" appearance="accent">${slug}@ea.reai.no</wa-tag>
-        </p>
+            <p class="wa-text">👋 Drag and drop your files directly on this page or send them to
+                <wa-tag variant="brand" appearance="accent">
+                    <span th:text="${tenantSlug + '@ea.reai.no'}" /><wa-copy-button th:attr="value=${tenantSlug + '@ea.reai.no'}"></wa-copy-button>
+                </wa-tag>
+            </p>
+        </wa-callout>
 
 
-        <div class="wa-card wa-stack wa-gap-l">
 
-            <table class="">
+        <div style="overflow-x: auto;">
+
+            <table class="r-voucher-reception-table">
                 <thead>
                 <tr>
                     <th>Filename</th>
@@ -26,9 +33,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="document : ${documents}">
-                    <td>
-                        <strong th:text="${document.attachment.filename}"/>
-                    </td>
+                    <td th:text="${document.attachment.filename}"/>
                     <td th:text="${document.senderEmail ?: '-'}"/>
                     <td th:text="${document.attachment.mimetype}"/>
                     <td th:text="${#temporals.format(document.receivedAt, 'dd.MM.yyyy HH:mm')}"/>

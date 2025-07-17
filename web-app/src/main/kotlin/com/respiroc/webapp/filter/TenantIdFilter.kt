@@ -1,5 +1,6 @@
 package com.respiroc.webapp.filter
 
+import com.respiroc.tenant.application.TenantService
 import com.respiroc.user.application.UserService
 import com.respiroc.util.context.SpringUser
 import com.respiroc.util.context.UserTenantContext
@@ -15,7 +16,8 @@ import org.springframework.util.AntPathMatcher
 import org.springframework.web.filter.OncePerRequestFilter
 
 class TenantIdFilter(
-    val userService: UserService
+    val userService: UserService,
+    val tenantService: TenantService
 ) : OncePerRequestFilter() {
 
     private val paths: List<String> = listOf(
@@ -118,10 +120,11 @@ class TenantIdFilter(
     private fun setCurrentTenant(tenantId: String, springUser: SpringUser, request: HttpServletRequest) {
         val tenantIdLong = tenantId.toLong()
         val roles = userService.findTenantRoles(springUser.ctx.id, tenantIdLong)
+        val tenantSlug = tenantService.findTenantByTenantId(tenantIdLong).slug
         val user = springUser.ctx
         val currentTenant = user.tenants.find { it.id == tenantIdLong }!!
         user.currentTenant =
-            UserTenantContext(tenantIdLong, currentTenant.companyName, currentTenant.currencyCode, roles)
+            UserTenantContext(tenantIdLong, currentTenant.companyName, currentTenant.currencyCode, roles,tenantSlug)
         setSecurityContext(SpringUser(user), request)
     }
 
