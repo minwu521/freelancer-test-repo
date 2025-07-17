@@ -5,5 +5,5 @@ data class UserTenantContext(
     val companyName: String,
     val countryCode: String,
     val roles: List<TenantRoleContext>,
-    val tenantSlug: String
+    val tenantSlug: String?
 )
