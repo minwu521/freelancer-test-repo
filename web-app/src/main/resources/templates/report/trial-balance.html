@@ -7,15 +7,15 @@
 
 <body>
 <main layout:fragment="content">
-    <div class="container py-4">
+    <div>
         
-        <div class="trial-balance-container">
+        <div class="r-trial-balance-container">
             
-            <div class="filters-section">
-                <div class="filters-form" th:if="${user != null and user.ctx.currentTenant != null}">
+            <div class="r-filters-section">
+                <div class="r-filters-form" th:if="${user != null and user.ctx.currentTenant != null}">
                     
-                    <div class="filter-group">
-                        <label class="filter-label" for="startDate" th:text="#{start_date}" />
+                    <div class="r-filter-group">
+                        <label class="r-filter-label" for="startDate" th:text="#{start_date}" />
                         <wa-input type="date"
                                size="small"
                                id="startDate" 
@@ -29,8 +29,8 @@
                                hx-include="[name='endDate']"></wa-input>
                     </div>
                     
-                    <div class="filter-group">
-                        <label class="filter-label" for="endDate" th:text="#{end_date}" />
+                    <div class="r-filter-group">
+                        <label class="r-filter-label" for="endDate" th:text="#{end_date}" />
                         <wa-input type="date"
                                size="small"
                                id="endDate" 
@@ -45,8 +45,8 @@
                     </div>
                     
                     <!-- Loading Indicator -->
-                    <div class="filter-group">
-                        <div id="loading-indicator" class="htmx-indicator loading-indicator">
+                    <div class="r-filter-group">
+                        <div id="loading-indicator" class="htmx-indicator r-loading-indicator">
                             <wa-spinner size="small"></wa-spinner>
                             <span style="margin-left: 0.5rem;">Loading...</span>
                         </div>
@@ -55,57 +55,57 @@
             </div>
             
             <!-- Error Message Fragment -->
-            <div th:if="${errorMessage != null}" th:fragment="error-message" class="alert alert-danger" style="margin: 1rem;">
+            <wa-callout variant="danger" th:if="${errorMessage != null}" th:fragment="error-message"                        style="margin: 1rem;">
                 <wa-icon name="exclamation-triangle"></wa-icon>
                 <span th:text="${errorMessage}" />
-            </div>
+            </wa-callout>
             
             <div id="content-area">
                 <div th:fragment="tableContent">
                     <div th:unless="${trialBalanceData.entries.empty}">
                         <div style="overflow-x: auto;">
-                            <table class="trial-balance-table">
+                            <table class="r-trial-balance-table">
                                 <thead>
                                     <tr>
                                         <th style="width: 15%;" th:text="#{account}" />
                                         <th style="width: 35%;" th:text="#{account_name}" />
-                                        <th class="amount-header" style="width: 16.67%;" th:text="#{opening_balance}" />
-                                        <th class="amount-header" style="width: 16.67%;" th:text="#{difference}" />
-                                        <th class="amount-header" style="width: 16.67%;" th:text="#{closing_balance}" />
+                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{opening_balance}" />
+                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{difference}" />
+                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{closing_balance}" />
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr th:each="entry : ${trialBalanceData.entries}">
                                         <td>
-                                            <span class="account-number" th:text="${entry.accountNumber}" />
+                                            <span class="r-account-number" th:text="${entry.accountNumber}" />
                                         </td>
                                         <td>
-                                            <span class="account-name" th:text="${entry.accountName}" />
+                                            <span class="r-account-name" th:text="${entry.accountName}" />
                                         </td>
-                                        <td class="amount-cell">
-                                            <span th:class="${entry.openingBalance.compareTo(T(java.math.BigDecimal).ZERO) > 0 ? 'positive-amount' : entry.openingBalance.compareTo(T(java.math.BigDecimal).ZERO) < 0 ? 'negative-amount' : 'zero-amount'}"
+                                        <td class="r-amount-cell">
+                                            <span th:class="${entry.openingBalanceClass}"
                                                   th:text="${#numbers.formatDecimal(entry.openingBalance, 1, 2)}" />
                                         </td>
-                                        <td class="amount-cell">
-                                            <span th:class="${entry.difference.compareTo(T(java.math.BigDecimal).ZERO) > 0 ? 'positive-amount' : entry.difference.compareTo(T(java.math.BigDecimal).ZERO) < 0 ? 'negative-amount' : 'zero-amount'}"
+                                        <td class="r-amount-cell">
+                                            <span th:class="${entry.differenceClass}"
                                                   th:text="${#numbers.formatDecimal(entry.difference, 1, 2)}" />
                                         </td>
-                                        <td class="amount-cell">
-                                            <span th:class="${entry.closingBalance.compareTo(T(java.math.BigDecimal).ZERO) > 0 ? 'positive-amount' : entry.closingBalance.compareTo(T(java.math.BigDecimal).ZERO) < 0 ? 'negative-amount' : 'zero-amount'}"
+                                        <td class="r-amount-cell">
+                                            <span th:class="${entry.closingBalanceClass}"
                                                   th:text="${#numbers.formatDecimal(entry.closingBalance, 1, 2)}" />
                                         </td>
                                     </tr>
                                 </tbody>
                                 <tfoot>
-                                    <tr class="total-row">
+                                    <tr class="r-total-row">
                                         <td colspan="2"><strong>Total</strong></td>
-                                        <td class="amount-cell">
+                                        <td class="r-amount-cell">
                                             <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalOpeningBalance, 1, 2)}" />
                                         </td>
-                                        <td class="amount-cell">
+                                        <td class="r-amount-cell">
                                             <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalDifference, 1, 2)}" />
                                         </td>
-                                        <td class="amount-cell">
+                                        <td class="r-amount-cell">
                                             <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalClosingBalance, 1, 2)}" />
                                         </td>
                                     </tr>
@@ -114,8 +114,8 @@
                         </div>
                     </div>
                     
-                    <div th:if="${trialBalanceData.entries.empty}" class="empty-state">
-                        <div class="empty-state-icon">
+                    <div th:if="${trialBalanceData.entries.empty}" class="r-empty-state">
+                        <div class="r-empty-state-icon">
                             <wa-icon name="table"></wa-icon>
                         </div>
                         <h3 th:text="#{no_Data_available}" />

@@ -3,7 +3,7 @@ package com.respiroc.ledger.application
 import com.respiroc.ledger.api.payload.BalanceSheetEntry
 import com.respiroc.ledger.api.payload.BalanceSheetDTO
 import com.respiroc.ledger.application.payload.TrialBalanceEntry
-import com.respiroc.ledger.application.payload.TrialBalancePayload
+import com.respiroc.ledger.application.payload.TrialBalanceDTO
 import com.respiroc.ledger.application.payload.GeneralLedgerPayload
 import com.respiroc.ledger.application.payload.GeneralLedgerAccountEntry
 import com.respiroc.ledger.application.payload.GeneralLedgerPostingEntry
@@ -25,7 +25,7 @@ class PostingService(
 ) : ContextAwareApi {
 
     @Transactional(readOnly = true)
-    fun getTrialBalance(startDate: LocalDate, endDate: LocalDate): TrialBalancePayload {
+    fun getTrialBalance(startDate: LocalDate, endDate: LocalDate): TrialBalanceDTO {
         val tenantId = currentTenantId()
         val accountNumbers = postingRepository.findDistinctAccountNumbersByTenant(tenantId)
         val accounts = accountService.findAllAccounts().associateBy { it.noAccountNumber }
@@ -57,7 +57,7 @@ class PostingService(
         val totalDifference = trialBalanceEntries.sumOf { it.difference }
         val totalClosingBalance = trialBalanceEntries.sumOf { it.closingBalance }
 
-        return TrialBalancePayload(
+        return TrialBalanceDTO(
             entries = trialBalanceEntries,
             totalOpeningBalance = totalOpeningBalance,
             totalDifference = totalDifference,
