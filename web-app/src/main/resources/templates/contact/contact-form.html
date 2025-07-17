@@ -38,7 +38,8 @@
                             <wa-radio value="true" th:text="#{contact.private_person}"></wa-radio>
                         </wa-radio-group>
                     </div>
-                    <div th:fragment="contactFormFields" id="contactFormFields" class="wa-grid" style="--min-column-size: 1000px;">
+                    <div th:fragment="contactFormFields" id="contactFormFields" class="wa-grid"
+                         style="--min-column-size: 1000px;">
                         <div>
                             <wa-input
                                     th:unless="${contact.privateContact}"
@@ -110,11 +111,13 @@
                                       th:label="#{contact.form.addressPart2}">
                             </wa-input>
                         </div>
-                        <wa-button type="submit" variant="success" size="small" id="submitButton"
-                                   th:text="#{contact.create}">
-                        </wa-button>
-                        <wa-spinner id="loading-indicator" class="htmx-indicator"
-                                    style="font-size: var(--wa-space-xl)"></wa-spinner>
+                        <div>
+                            <wa-button type="submit" variant="success" size="small" id="submitButton"
+                                       th:text="#{contact.create}">
+                            </wa-button>
+                            <wa-spinner id="loading-indicator" class="htmx-indicator"
+                                        style="font-size: var(--wa-space-xl)"></wa-spinner>
+                        </div>
                     </div>
                 </form>
             </div>
