@@ -19,8 +19,6 @@ Be careful to not use bigint if the table does not obviously grow extremely larg
 typically integer or smallint will suffice 
 * Generate DDL so that it optimizes storage space (column tetris)
 
-
-
 Frontend:
 
 * We use the new web component framework webawesome.com
@@ -36,4 +34,3 @@ No other libraries are in use or should be used
 * Use modern CSS features, no need to care about older browser support, using polyfills if necessary
   to support older browsers.
 Use the modern Temporal API, if time,zone, calendar functionality is needed
-* 
