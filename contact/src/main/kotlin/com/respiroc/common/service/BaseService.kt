@@ -5,7 +5,7 @@ import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
 import com.respiroc.companylookup.api.CompanyLookupInternalApi
 import com.respiroc.common.payload.NewCustomerSupplierPayload
-import com.respiroc.util.domain.addresss.Address
+import com.respiroc.util.domain.address.Address
 import com.respiroc.util.domain.person.PrivatePerson
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
@@ -27,8 +27,8 @@ class BaseService(
             addressCountryCode = companyAddress?.countryCode,
             postalCode = companyAddress?.postalCode,
             city = companyAddress?.city,
-            primaryAddress = companyAddress?.address,
-            secondaryAddress = null,
+            addressPart1 = companyAddress?.address,
+            addressPart2 = null,
             administrativeDivisionCode = null
         )
         return companyService.getOrCreateCompany(command)

@@ -16,7 +16,7 @@ import jakarta.persistence.Table
 
 @Entity
 @Table(name = "suppliers")
-class Supplier {
+open class Supplier {
 
 
     @Id

@@ -1,6 +1,6 @@
 package com.respiroc.util.domain.person
 
-import com.respiroc.util.domain.addresss.Address
+import com.respiroc.util.domain.address.Address
 import jakarta.persistence.*
 import jakarta.validation.constraints.Size
 
