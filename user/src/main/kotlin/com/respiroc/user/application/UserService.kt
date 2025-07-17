@@ -193,7 +193,8 @@ class UserService(
                     id = tenantId,
                     companyName = tenant.getCompanyName(),
                     countryCode = currencyService.getCompanyCurrency(tenant.getCompanyCountryCode()),
-                    roles = findTenantRoles(this.id, tenantId)
+                    roles = findTenantRoles(this.id, tenantId),
+                    tenantSlug = tenant.slug
                 )
             }
     }

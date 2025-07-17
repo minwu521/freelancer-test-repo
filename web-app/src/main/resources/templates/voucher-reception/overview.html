@@ -1,26 +1,41 @@
 <!DOCTYPE html>
 <html dir="ltr" lang="en" layout:decorate="~{layout/base}" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       xmlns:th="http://www.thymeleaf.org">
-
+<head>
+    <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
+</head>
 <body>
 <main layout:fragment="content">
-    <div class="wa-container">
-        <div class="wa-stack wa-gap-l">
-            <table>
+    <div class="r-voucher-reception-container">
+        <wa-callout variant="neutral" class="r-voucher-reception">
+            <h1 class="wa-heading-xl" th:text="#{voucher_reception}" />
+
+            <p class="wa-text">
+                <span th:text="#{voucher_reception_info}" />
+                <wa-tag variant="brand" appearance="accent">
+                    <span th:text="${tenantSlug + '@ea.reai.no'}" /><wa-copy-button th:value="${tenantSlug + '@ea.reai.no'}"></wa-copy-button>
+                </wa-tag>
+            </p>
+        </wa-callout>
+
+
+
+        <div style="overflow-x: auto;">
+
+            <table class="r-voucher-reception-table">
                 <thead>
                 <tr>
-                    <th>Filename</th>
-                    <th>Sender Email</th>
-                    <th>MIME Type</th>
-                    <th>Received At</th>
-                    <th>File Created At</th>
+                    <th th:text="#{filename}" />
+                    <th th:text="#{sender_email}" />
+                    <th th:text="#{mime_type}" />
+                    <th th:text="#{received}" />
+                    <th th:text="#{file_created_at}" />
+
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="document : ${documents}">
-                    <td>
-                        <strong th:text="${document.attachment.filename}"/>
-                    </td>
+                    <td th:text="${document.attachment.filename}"/>
                     <td th:text="${document.senderEmail ?: '-'}"/>
                     <td th:text="${document.attachment.mimetype}"/>
                     <td th:text="${#temporals.format(document.receivedAt, 'dd.MM.yyyy HH:mm')}"/>
@@ -30,9 +45,9 @@
             </table>
 
             <div class="wa-center" th:if="${#lists.isEmpty(documents)}">
-                <div class="wa-stack wa-gap-m wa-center">
+                <div class="wa-stack wa-center wa-gap-m">
                     <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
-                    <h2 class="wa-heading-m">No voucher reception documents found</h2>
+                    <h2 class="wa-heading-m" th:text="#{no_voucher_reception_found}" />
                 </div>
             </div>
 
