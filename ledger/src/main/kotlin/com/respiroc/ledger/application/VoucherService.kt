@@ -25,7 +25,7 @@ class VoucherService(
 ) : ContextAwareApi {
 
     fun createVoucher(payload: CreateVoucherPayload): VoucherPayload {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
 
         val voucherNumber = generateNextVoucherNumber(tenantId, payload.date)
 
@@ -50,7 +50,7 @@ class VoucherService(
     }
 
     fun findOrCreateEmptyVoucher(): VoucherPayload {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
 
         val existingEmptyVoucher = voucherRepository.findFirstEmptyVoucherByTenantId(tenantId)
         if (existingEmptyVoucher != null) {
@@ -72,7 +72,7 @@ class VoucherService(
 
     @Transactional(readOnly = true)
     fun findAllVoucherSummaries(): List<VoucherSummaryPayload> {
-        val vouchers = voucherRepository.findVoucherSummariesByTenantId(currentTenantId())
+        val vouchers = voucherRepository.findVoucherSummariesByTenantId(tenantId())
 
         return vouchers
             .filter { it.postings.isNotEmpty() }
@@ -82,7 +82,7 @@ class VoucherService(
     @Transactional(readOnly = true)
     fun findVoucherSummariesByDateRange(startDate: LocalDate, endDate: LocalDate): List<VoucherSummaryPayload> {
         val vouchers = voucherRepository.findVoucherSummariesByTenantIdAndDateRange(
-            currentTenantId(), startDate, endDate
+            tenantId(), startDate, endDate
         )
 
         return vouchers
@@ -91,7 +91,7 @@ class VoucherService(
     }
 
     fun updateVoucherWithPostings(payload: UpdateVoucherPayload): VoucherPayload {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
 
         val voucher = voucherRepository.findByIdAndTenantIdWithPostings(payload.id, tenantId)
             ?: throw IllegalArgumentException("Voucher not found")
@@ -123,7 +123,7 @@ class VoucherService(
 
     @Transactional(readOnly = true)
     fun findVoucherById(id: Long): Voucher? {
-        return voucherRepository.findByIdAndTenantIdWithPostings(id, currentTenantId())
+        return voucherRepository.findByIdAndTenantIdWithPostings(id, tenantId())
     }
 
     // -------------------------------

@@ -1,9 +1,7 @@
 package com.respiroc.webapp.config
 
-import com.respiroc.tenant.application.TenantService
 import com.respiroc.user.application.UserService
 import com.respiroc.util.context.SpringUser
-import com.respiroc.webapp.filter.TenantIdFilter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -11,12 +9,10 @@ import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.web.SecurityFilterChain
@@ -33,10 +29,6 @@ class WebSecurityConfig {
 
     @Autowired
     lateinit var userService: UserService
-
-    @Autowired
-    lateinit var tenantService: TenantService
-
 
     private val publicPaths = arrayOf(
         "/",
@@ -65,12 +57,8 @@ class WebSecurityConfig {
             .httpBasic { it.disable() }
             .formLogin { it.disable() }
             .addFilterBefore(
-                BearerTokenAuthenticationFilter(userService),
+                TokenAuthenticationFilter(userService),
                 UsernamePasswordAuthenticationFilter::class.java
-            )
-            .addFilterAfter(
-                TenantIdFilter(userService,tenantService),
-                BearerTokenAuthenticationFilter::class.java
             )
             .exceptionHandling {
                 it.authenticationEntryPoint { request, response, authException ->
@@ -99,25 +87,16 @@ class WebSecurityConfig {
         return source
     }
 
-    class BearerTokenAuthenticationFilter(private val userService: UserService) : OncePerRequestFilter() {
+    class TokenAuthenticationFilter(private val userService: UserService) : OncePerRequestFilter() {
         override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
             if (SecurityContextHolder.getContext().authentication == null) {
                 var token = ""
 
-                // Check Authorization header first (for API calls)
-                val authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION)
-                if (StringUtils.isNotEmpty(authorizationHeader)) {
-                    token = StringUtils.removeStart(authorizationHeader, "Bearer").trim()
-                }
-
-                // If no token in header, check JWT cookie (for web app)
-                if (StringUtils.isEmpty(token)) {
-                    val cookies = request.cookies
-                    if (cookies != null) {
-                        val jwtCookie = cookies.find { it.name == "token" }
-                        if (jwtCookie != null && StringUtils.isNotEmpty(jwtCookie.value)) {
-                            token = jwtCookie.value
-                        }
+                val cookies = request.cookies
+                if (cookies != null) {
+                    val jwtCookie = cookies.find { it.name == "token" }
+                    if (jwtCookie != null && StringUtils.isNotEmpty(jwtCookie.value)) {
+                        token = jwtCookie.value
                     }
                 }
 

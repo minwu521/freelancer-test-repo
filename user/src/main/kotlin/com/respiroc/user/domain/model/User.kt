@@ -36,6 +36,9 @@ open class User : Serializable {
     @Column(name = "last_login_at")
     open var lastLoginAt: Instant? = null
 
+    @Column(name = "last_tenant_id")
+    open var lastTenantId: Long? = null
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false)
     open lateinit var createdAt: Instant

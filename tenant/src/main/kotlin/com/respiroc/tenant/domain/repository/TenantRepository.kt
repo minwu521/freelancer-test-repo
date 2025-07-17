@@ -7,6 +7,4 @@ import org.springframework.stereotype.Repository
 @Repository
 interface TenantRepository : CustomJpaRepository<Tenant, Long> {
     fun findBySlug(slug: String): Tenant?
-
-    fun findTenantById(tenantId: Long): Tenant
 }

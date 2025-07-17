@@ -43,7 +43,7 @@ class LedgerWebController(
             model.addAttribute("endDate", effectiveEndDate)
             model.addAttribute("selectedAccountNumber", accountNumber)
 
-            addCommonAttributes(model, "General Ledger")
+            addCommonAttributesForCurrentTenant(model, "General Ledger")
             val accounts = accountService.findAllAccounts().sortedBy { it.noAccountNumber }
             model.addAttribute("accounts", accounts)
 
@@ -56,7 +56,7 @@ class LedgerWebController(
 
     @GetMapping(value = ["/chart-of-accounts"])
     fun chartOfAccounts(model: Model): String {
-        addCommonAttributes(model, "Chart of Accounts")
+        addCommonAttributesForCurrentTenant(model, "Chart of Accounts")
         model.addAttribute("accounts", accountService.findAllAccounts())
         return "ledger/chart-of-accounts"
     }

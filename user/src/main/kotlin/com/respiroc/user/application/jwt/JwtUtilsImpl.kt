@@ -12,19 +12,17 @@ import javax.crypto.SecretKey
 @Component
 class JwtUtilsImpl: JwtUtils {
 
+    companion object {
+        const val TENANT_ID_KEY = "tenantId"
+    }
+
     override fun extractSubject(token: String): String {
         return extractClaim(token, Claims::getSubject)
     }
 
-    override fun extractAudiences(token: String): Set<String> {
-        return extractClaim(token, Claims::getAudience)
-    }
-
-    override fun extractAudience(token: String): String? {
-        return try {
-            extractClaim(token, Claims::getAudience).first()
-        } catch (e: NoSuchElementException) {
-            null
+    override fun extractTenantId(token: String): Long? {
+        return extractClaim(token) { claims ->
+            (claims[TENANT_ID_KEY] as? Number)?.toLong()
         }
     }
 
@@ -55,43 +53,20 @@ class JwtUtilsImpl: JwtUtils {
         return extractExpiration(token).before(Date())
     }
 
-    override fun generateToken(subject: String, period: Long): String {
+    override fun generateToken(subject: String, tenantId: Long?, period: Long): String {
         return Jwts
             .builder()
             .subject(subject)
+            .claim(TENANT_ID_KEY, tenantId)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(Date(System.currentTimeMillis() + period))
             .signWith(secretKey())
             .compact()
     }
 
-    override fun generateToken(subject: String, audience: String, period: Long): String {
-        return Jwts
-            .builder()
-            .subject(subject)
-            .audience().add(audience).and()
-            .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + period))
-            .signWith(secretKey())
-            .compact()
-    }
-
-    override fun generateToken(issuer: String, subject: String, audience: String, period: Long
-    ): String {
-        return Jwts
-            .builder()
-            .issuer(issuer)
-            .subject(subject)
-            .audience().add(audience).and()
-            .issuedAt(Date(System.currentTimeMillis()))
-            .expiration(Date(System.currentTimeMillis() + period))
-            .signWith(secretKey())
-            .compact()
-    }
-
-    override fun isTokenValid(token: String, username: String): Boolean {
-        val subject = extractSubject(token)
-        return subject == username && !isTokenExpired(token)
+    override fun isTokenValid(token: String, subject: String): Boolean {
+        val extractedSubject = extractSubject(token)
+        return extractedSubject == subject && !isTokenExpired(token)
     }
 
     private fun secretKey(): SecretKey {

@@ -30,7 +30,7 @@ class VoucherWebController(
 
     @GetMapping(value = [])
     fun voucher(): String {
-        return "redirect:/voucher/overview?tenantId=${tenantId()}"
+        return "redirect:/voucher/overview"
     }
 
     @GetMapping(value = ["/overview"])
@@ -48,7 +48,7 @@ class VoucherWebController(
 
         val vouchers = voucherApi.findVoucherSummariesByDateRange(effectiveStartDate, effectiveEndDate)
         
-        addCommonAttributes(model, "Voucher Overview")
+        addCommonAttributesForCurrentTenant(model, "Voucher Overview")
         model.addAttribute("vouchers", vouchers)
         model.addAttribute("startDate", effectiveStartDate)
         model.addAttribute("endDate", effectiveEndDate)
@@ -58,7 +58,7 @@ class VoucherWebController(
     @GetMapping(value = ["/new-advanced-voucher"])
     fun newAdvancedVoucher(): String {
         val emptyVoucher = voucherApi.findOrCreateEmptyVoucher()
-        return "redirect:/voucher/${emptyVoucher.id}?tenantId=${tenantId()}"
+        return "redirect:/voucher/${emptyVoucher.id}"
     }
 
     @GetMapping(value = ["/{id}"])
@@ -90,7 +90,7 @@ class VoucherWebController(
         val vatCodes = vatService.findAllVatCodes()
         val supportedCurrencies = currencyService.getSupportedCurrencies()
 
-        addCommonAttributes(model, "New Voucher")
+        addCommonAttributesForCurrentTenant(model, "New Voucher")
         model.addAttribute("accounts", accounts)
         model.addAttribute("vatCodes", vatCodes)
         model.addAttribute("defaultVatCode", vatCodes.first().code)

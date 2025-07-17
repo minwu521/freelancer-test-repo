@@ -37,7 +37,7 @@ class ReportWebController(
         val defaultEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
         val trialBalanceData = postingService.getTrialBalance(defaultStartDate, defaultEndDate)
 
-        addCommonAttributes(model, "Trial Balance")
+        addCommonAttributesForCurrentTenant(model, "Trial Balance")
         model.addAttribute("trialBalanceData", trialBalanceData)
         model.addAttribute("startDate", defaultStartDate)
         model.addAttribute("endDate", defaultEndDate)
@@ -60,7 +60,7 @@ class ReportWebController(
 
         val postingsForProfitLoss = postingService.getPostingsForProfitLoss(defaultStartDate, defaultEndDate)
 
-        addCommonAttributes(model, "Profit & Loss")
+        addCommonAttributesForCurrentTenant(model, "Profit & Loss")
         model.addAttribute("startDate", defaultStartDate)
         model.addAttribute("endDate", defaultEndDate)
         model.addAttribute("assetPostings", postingsForProfitLoss[AccountType.ASSET] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
@@ -80,14 +80,13 @@ class ReportWebController(
         endDate: LocalDate?,
         model: Model
     ): String {
-        val springUser = springUser()
 
         val defaultStartDate = startDate ?: LocalDate.now().withDayOfMonth(1)
         val defaultEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
 
         val postingsForBalanceSheet = postingService.getPostingsForBalanceSheet(defaultStartDate, defaultEndDate)
 
-        model.addAttribute("user", springUser)
+        addCommonAttributesForCurrentTenant(model, "Balance Sheet")
         model.addAttribute("startDate", defaultStartDate)
         model.addAttribute("endDate", defaultEndDate)
         model.addAttribute("assetPostings", postingsForBalanceSheet[AccountType.ASSET] ?: BalanceSheetDTO(emptyList(),BigDecimal.ZERO))
@@ -150,7 +149,6 @@ class ReportHTMXController(
 
             val postingsForProfitLoss = postingService.getPostingsForProfitLoss(defaultStartDate, defaultEndDate)
 
-            model.addAttribute(userAttributeName, springUser())
             model.addAttribute("startDate", defaultStartDate)
             model.addAttribute("endDate", defaultEndDate)
             model.addAttribute("assetPostings", postingsForProfitLoss[AccountType.ASSET] ?: ProfitLossDTO(emptyList(), BigDecimal.ZERO))
@@ -175,14 +173,12 @@ class ReportHTMXController(
         model: Model
     ): String {
         return try {
-            val springUser = springUser()
 
             val defaultStartDate = startDate ?: LocalDate.now().withDayOfMonth(1)
             val defaultEndDate = endDate ?: LocalDate.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
 
             val postingsForBalanceSheet = postingService.getPostingsForBalanceSheet(defaultStartDate, defaultEndDate)
 
-            model.addAttribute("user", springUser)
             model.addAttribute("startDate", defaultStartDate)
             model.addAttribute("endDate", defaultEndDate)
             model.addAttribute("assetPostings", postingsForBalanceSheet[AccountType.ASSET] ?: BalanceSheetDTO(emptyList(),BigDecimal.ZERO))
