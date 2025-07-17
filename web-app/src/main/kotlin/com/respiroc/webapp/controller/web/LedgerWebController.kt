@@ -1,7 +1,6 @@
 package com.respiroc.webapp.controller.web
 
 import com.respiroc.ledger.application.AccountService
-import com.respiroc.ledger.application.LedgerService
 import com.respiroc.ledger.application.PostingService
 import com.respiroc.webapp.controller.BaseController
 import com.respiroc.webapp.controller.response.Callout
@@ -18,8 +17,7 @@ import java.time.LocalDate
 @RequestMapping(value = ["/ledger"])
 class LedgerWebController(
     private val postingService: PostingService,
-    private val accountService: AccountService,
-    private val ledgerService: LedgerService
+    private val accountService: AccountService
 ) : BaseController() {
 
     @GetMapping(value = ["/general"])
@@ -59,7 +57,7 @@ class LedgerWebController(
     @GetMapping(value = ["/chart-of-accounts"])
     fun chartOfAccounts(model: Model): String {
         addCommonAttributes(model, "Chart of Accounts")
-        model.addAttribute("accounts", ledgerService.getChartOfAccounts())
+        model.addAttribute("accounts", accountService.findAllAccounts())
         return "ledger/chart-of-accounts"
     }
 }
