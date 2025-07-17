@@ -36,22 +36,3 @@
     font-size: var(--wa-font-size-s);
     color: var(--wa-color-text-quiet);
 }
-
-.r-form-group {
-    position: relative;
-    margin-bottom: var(--wa-space-xl);
-}
-
-.r-form-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
-
-@media (min-width: 768px) {
-    .r-form-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-

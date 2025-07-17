@@ -15,14 +15,15 @@
                       th:hx-post="@{/htmx/contact(tenantId=${currentTenant.id})}"
                       hx-indicator="#loading-indicator"
                       hx-disabled-elt="#submitButton"
+                      class="wa-grid" style="--min-column-size: 1000px;"
                       hx-swap="outerHTML">
-                    <div class="r-form-group">
+                    <div>
                         <wa-select required label="Type" name="type" th:value="${contact.type}" th:field="*{type}">
                             <wa-option value="customer" th:text="#{contact.customer}"></wa-option>
                             <wa-option value="supplier" th:text="#{contact.supplier}"></wa-option>
                         </wa-select>
                     </div>
-                    <div class="r-form-group">
+                    <div>
                         <wa-radio-group
                                 required
                                 orientation="horizontal"
@@ -37,8 +38,8 @@
                             <wa-radio value="true" th:text="#{contact.private_person}"></wa-radio>
                         </wa-radio-group>
                     </div>
-                    <div th:fragment="contactFormFields" id="contactFormFields">
-                        <div class="r-form-group">
+                    <div th:fragment="contactFormFields" id="contactFormFields" class="wa-grid" style="--min-column-size: 1000px;">
+                        <div>
                             <wa-input
                                     th:unless="${contact.privateContact}"
                                     id="companyName"
@@ -67,7 +68,7 @@
                             </wa-input>
                             <div id="name-dropdown"></div>
                         </div>
-                        <div th:unless="${contact.privateContact}" class="r-form-group" id="orgNumberGroup">
+                        <div th:unless="${contact.privateContact}" id="orgNumberGroup">
                             <wa-input
                                     id="organizationNumber"
                                     name="organizationNumber"
@@ -78,7 +79,7 @@
                                     autocomplete="off">
                             </wa-input>
                         </div>
-                        <div th:if="${contact.privateContact}" class="r-form-grid">
+                        <div th:if="${contact.privateContact}" class="wa-grid" style="--min-column-size: 350px;">
                             <wa-select id="countryCode" name="countryCode" th:field="*{countryCode}"
                                        th:label="#{company.create.form.country.label}">
                                 <wa-option value="NO" th:text="#{company.create.form.country.norway}"></wa-option>
@@ -108,7 +109,6 @@
                                       th:field="*{addressPart2}"
                                       th:label="#{contact.form.addressPart2}">
                             </wa-input>
-
                         </div>
                         <wa-button type="submit" variant="success" size="small" id="submitButton"
                                    th:text="#{contact.create}">
