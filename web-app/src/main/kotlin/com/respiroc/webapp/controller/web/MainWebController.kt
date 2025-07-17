@@ -21,7 +21,7 @@ class MainWebController() : BaseController() {
     fun dashboard(
         model: Model
     ): String {
-        addCommonAttributes(model, "Dashboard")
+        addCommonAttributesForCurrentTenant(model, "Dashboard")
         return "dashboard/index"
     }
 } 

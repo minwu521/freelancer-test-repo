@@ -64,8 +64,14 @@ class UserService(
         val userSession = userSessionRepository.findByToken(token)
         if (userSession != null) {
             val newToken = jwt.generateToken(user.email, tenatId, JWT_TOKEN_PERIOD)
+
             userSession.token = newToken
             userSessionRepository.save(userSession)
+
+            val user = userSession.user
+            user.lastTenantId = tenatId
+            userRepository.save(user)
+
             return SelectTenantPayload(newToken)
         }
         throw BadCredentialsException("Token is not valid")
@@ -92,9 +98,12 @@ class UserService(
     }
 
     fun findTenantRoles(userId: Long, tenantId: Long): List<TenantRoleContext> {
-        return userRepository.findUserWithTenantRoles(userId, tenantId)!!.userTenants.single().roles.map {
-            it.tenantRole.toTenantRoleContext()
-        }
+        // TODO : There is bug here: Collection has more than one element. There is more than one tenant
+        return userRepository.findUserWithTenantRoles(userId, tenantId)!!
+            .userTenants.single { it.tenantId == tenantId }
+            .roles.map {
+                it.tenantRole.toTenantRoleContext()
+            }
     }
 
     fun addUserTenantRole(

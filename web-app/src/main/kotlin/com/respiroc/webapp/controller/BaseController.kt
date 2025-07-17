@@ -45,7 +45,6 @@ open class BaseController {
     fun addCommonAttributesForCurrentTenant(
         model: Model,
         title: String,
-        useCurrentCompanyAsTitlePrefix: Boolean = false
     ) {
         val springUser = springUser()
         val currentTenant = currentTenant()

@@ -2,7 +2,6 @@ package com.respiroc.webapp.config
 
 import com.respiroc.user.application.UserService
 import com.respiroc.util.context.SpringUser
-import com.respiroc.webapp.filter.TenantIdFilter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse

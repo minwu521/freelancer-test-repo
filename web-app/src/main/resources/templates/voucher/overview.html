@@ -15,11 +15,11 @@
                                   name="startDate" 
                                   size="small"
                                   th:value="${startDate}"
-                                  th:hx-get="'/htmx/voucher/overview?tenantId=' + ${user.ctx.currentTenant.id}"
-                                  hx-target="#tableContent"
-                                  hx-indicator="#loading-indicator"
-                                  hx-trigger="change"
-                                  hx-include="[name='endDate']"></wa-input>
+                                  th:hx-get="'/htmx/voucher/overview'"
+                                  th:hx-target="'#tableContent'"
+                                  th:hx-indicator="'#loading-indicator'"
+                                  th:hx-trigger="'change'"
+                                  th:hx-include="'[name=\'endDate\']'"></wa-input>
                     </div>
                     
                     <div class="wa-stack wa-gap-xs">
@@ -28,11 +28,11 @@
                                   name="endDate" 
                                   size="small"
                                   th:value="${endDate}"
-                                  th:hx-get="'/htmx/voucher/overview?tenantId=' + ${user.ctx.currentTenant.id}"
-                                  hx-target="#tableContent"
-                                  hx-indicator="#loading-indicator"
-                                  hx-trigger="change"
-                                  hx-include="[name='startDate']"></wa-input>
+                                  th:hx-get="'/htmx/voucher/overview'"
+                                  th:hx-target="'#tableContent'"
+                                  th:hx-indicator="'#loading-indicator'"
+                                  th:hx-trigger="'change'"
+                                  th:hx-include="'[name=\'startDate\']'"></wa-input>
                     </div>
                 </div>
             </wa-card>
@@ -65,7 +65,7 @@
                                         <td></td>
                                         <td style="font-weight: 600;">
                                             <a style="color: var(--wa-color-blue-50); text-decoration: none;"
-                                               th:href="'/voucher/' + ${voucher.id} + '?tenantId=' + ${user.ctx.currentTenant?.id}">
+                                               th:href="'/voucher/' + ${voucher.id}">
                                                 <strong th:text="${voucher.number}"/><span style="font-size: var(--wa-font-size-s)" th:text=" ' ' + #{show_voucher}"/>
                                             </a>
                                         </td>

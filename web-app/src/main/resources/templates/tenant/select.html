@@ -1,90 +1,52 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/base}">
-<head>
-    <link rel="stylesheet" th:href="@{/assets/tenant/select.css}">
-</head>
 
 <body>
 <main layout:fragment="content">
-    <!-- Loading Indicator -->
-    <div id="loading-indicator" class="wa-loading-overlay" style="display: none;">
-        <wa-spinner size="large"></wa-spinner>
-        <p class="wa-caption-m">Selecting company...</p>
-    </div>
-
     <div class="wa-container">
         <div class="wa-stack wa-gap-l">
-            <!-- Header Section -->
+
             <div class="wa-stack wa-gap-s">
-                <h1 class="wa-heading-xl" th:text="#{tenant.select.title}">Select Company</h1>
-                <p class="wa-caption-l" th:text="#{tenant.select.caption}" style="color: var(--wa-color-neutral-600);">
-                    Please select one of your companies to continue.
-                </p>
+                <h1 class="wa-heading-xl" th:text="#{tenant.select.title}"/>
+                <p class="wa-caption-l" th:text="#{tenant.select.caption}" style="color: var(--wa-color-neutral-600);"/>
             </div>
 
-            <!-- Companies Grid -->
-            <div th:if="${!tenants.empty}" class="wa-grid" style="--min-column-size: 30ch;">
-                <wa-card with-footer th:each="tenant : ${tenants}">
-                    <div class="wa-flank:end">
-                        <div class="wa-stack wa-gap-xs">
-                            <div class="wa-cluster wa-gap-xs">
-                                <h3 class="wa-heading-s" th:text="${tenant.companyName}">Company Name</h3>
-                                <wa-badge pill variant="brand" 
-                                          th:if="${currentTenant != null and currentTenant.id == tenant.id}">
-                                    Current
-                                </wa-badge>
-                            </div>
-                            <span class="wa-caption-m" th:text="${tenant.currencyCode}">Currency</span>
-                        </div>
-                        <wa-avatar th:attr="label=${tenant.companyName}">
-                            <wa-icon name="building" slot="fallback"></wa-icon>
-                        </wa-avatar>
+            <div class="wa-grid" style="--min-column-size: 29ch;">
+                <wa-card th:each="tenant : ${tenants}" with-footer>
+                    <div class="wa-stack wa-align-items-center wa-gap-xs">
+                        <h2 class="wa-heading-m" th:text="${tenant.companyName}"/>
+                        <p class="wa-caption-l"
+                           th:if="${currentTenant != null and currentTenant.id == tenant.id}"
+                           th:text="#{tenant.current.badge}"/>
                     </div>
-                    <div slot="footer" class="wa-grid wa-gap-xs" style="--min-column-size: 10ch;">
+                    <div slot="footer"
+                         class="wa-grid wa-gap-xs"
+                         style="--min-column-size: 10ch;">
                         <wa-button
+                                th:text="#{tenant.select.button}"
                                 th:if="${currentTenant == null or currentTenant.id != tenant.id}"
-                                appearance="filled"
+                                appearance="outlined"
                                 variant="brand"
-                                hx-post="/htmx/auth/select-tenant"
-                                hx-target="body"
-                                hx-swap="innerHTML"
-                                hx-include="[name='tenantId']"
-                                hx-indicator="#loading-indicator"
-                                hx-on::after-request="if(event.detail.xhr.status === 200) { window.location.href = '/dashboard'; }">
-                            <wa-icon slot="start" name="check"></wa-icon>
+                                th:hx-post="@{/htmx/auth/select-tenant(tenantId=${tenant.id})}"
+                                th:hx-target="'body'"
+                                th:hx-swap="'innerHTML'"
+                                th:hx-include="'[name=\'tenantId\']'"
+                                th:hx-indicator="'#loading-indicator'">
                             Select
-                            <input type="hidden" name="tenantId" th:value="${tenant.id}">
                         </wa-button>
                         <wa-button
+                                th:text="#{tenant.select.checked}"
                                 th:if="${currentTenant != null and currentTenant.id == tenant.id}"
                                 appearance="outlined"
                                 disabled>
-                            <wa-icon slot="start" name="check"></wa-icon>
                             Selected
                         </wa-button>
                     </div>
                 </wa-card>
             </div>
-
-            <!-- Empty State -->
-            <div th:if="${tenants.empty}" class="wa-empty-state">
-                <wa-icon slot="icon" name="building" size="large"></wa-icon>
-                <h3 class="wa-heading-m">No Companies Found</h3>
-                <p class="wa-caption-m">You don't have any companies yet. Create your first company to get started.</p>
-            </div>
-
-            <!-- Create Company Button -->
-            <div class="wa-stack wa-gap-s" style="text-align: center;">
-                <wa-divider></wa-divider>
-                <wa-button appearance="outlined" variant="brand" onclick="window.open('/tenant/create', '_blank')">
-                    <wa-icon slot="start" name="plus"></wa-icon>
-                    Create New Company
-                </wa-button>
-            </div>
         </div>
     </div>
 </main>
-
 </body>
 </html> 
