@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="DEV-WebApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev" />
+    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateResources" />
+    <module name="reai.web-app.main" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="com.respiroc.webapp.WebApplication" />
+    <option name="VM_PARAMETERS" value="-XX:+UnlockExperimentalVMOptions -XX:+UseCompactObjectHeaders" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="com.respiroc.webapp.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
