@@ -4,9 +4,17 @@
 
 <body>
 <main layout:fragment="content">
-    <div class="wa-container">
-        <div class="wa-stack wa-gap-l">
-            <table>
+    <div class="wa-container wa-stack wa-gap-xl">
+        <h1 class="wa-heading-xl">Voucher reception</h1>
+
+        <p class="wa-text">👋 Drag and drop your files directly on this page or send them to
+            <wa-tag variant="brand" appearance="accent">${slug}@ea.reai.no</wa-tag>
+        </p>
+
+
+        <div class="wa-card wa-stack wa-gap-l">
+
+            <table class="">
                 <thead>
                 <tr>
                     <th>Filename</th>
@@ -30,7 +38,7 @@
             </table>
 
             <div class="wa-center" th:if="${#lists.isEmpty(documents)}">
-                <div class="wa-stack wa-gap-m wa-center">
+                <div class="wa-stack wa-center wa-gap-m">
                     <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
                     <h2 class="wa-heading-m">No voucher reception documents found</h2>
                 </div>
@@ -41,3 +49,4 @@
 </main>
 </body>
 </html>
+
