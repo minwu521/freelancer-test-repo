@@ -41,6 +41,11 @@ class TenantService(
         return tenantRepository.findBySlug(slug)
     }
 
+
+    fun findTenantByTenantId(tenantId: Long): Tenant {
+        return tenantRepository.findTenantById(tenantId)
+    }
+
     fun findTenantRoleByCode(role: TenantRoleCode): TenantRole {
         return tenantRoleRepository.findByCode(role.code)
     }

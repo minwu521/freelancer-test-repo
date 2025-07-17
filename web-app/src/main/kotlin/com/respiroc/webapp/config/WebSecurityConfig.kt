@@ -1,5 +1,6 @@
 package com.respiroc.webapp.config
 
+import com.respiroc.tenant.application.TenantService
 import com.respiroc.user.application.UserService
 import com.respiroc.util.context.SpringUser
 import com.respiroc.webapp.filter.TenantIdFilter
@@ -33,6 +34,10 @@ class WebSecurityConfig {
     @Autowired
     lateinit var userService: UserService
 
+    @Autowired
+    lateinit var tenantService: TenantService
+
+
     private val publicPaths = arrayOf(
         "/",
         "/assets/**",
@@ -64,7 +69,7 @@ class WebSecurityConfig {
                 UsernamePasswordAuthenticationFilter::class.java
             )
             .addFilterAfter(
-                TenantIdFilter(userService),
+                TenantIdFilter(userService,tenantService),
                 BearerTokenAuthenticationFilter::class.java
             )
             .exceptionHandling {
