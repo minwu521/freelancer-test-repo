@@ -53,6 +53,13 @@ class LedgerWebController(
             "ledger/general"
         }
     }
+
+    @GetMapping(value = ["/chart-of-accounts"])
+    fun chartOfAccounts(model: Model): String {
+        addCommonAttributes(model, "Chart of Accounts")
+        model.addAttribute("accounts", accountService.findAllAccounts())
+        return "ledger/chart-of-accounts"
+    }
 }
 
 @Controller
