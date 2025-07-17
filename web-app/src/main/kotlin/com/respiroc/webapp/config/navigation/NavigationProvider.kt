@@ -22,7 +22,10 @@ class NavigationProvider {
 
             NavigationSection(
                 title = "Accounts", icon = "receipt",
-                items = listOf(NavigationSectionItem(label = "General Ledger", url = "/ledger/general"))
+                items = listOf(
+                    NavigationSectionItem(label = "General Ledger", url = "/ledger/general"),
+                    NavigationSectionItem(label = "Chart of Accounts", url = "/ledger/chart-of-accounts"),
+                    )
             ),
 
             NavigationSection(
