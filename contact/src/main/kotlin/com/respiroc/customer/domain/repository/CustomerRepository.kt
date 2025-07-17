@@ -25,9 +25,9 @@ interface CustomerRepository : CustomJpaRepository<Customer, Long> {
         LEFT JOIN FETCH c.person person
         WHERE c.tenantId = :tenantId
         AND (
-                (LOWER(person.name) LIKE LOWER(CONCAT('%', :name, '%'))) 
+                (person.name ILIKE '%' || :name || '%') 
                 OR 
-                (LOWER(company.name) LIKE LOWER(CONCAT('%', :name, '%')))
+                (company.name ILIKE '%' || :name || '%')
             )
     """
     )

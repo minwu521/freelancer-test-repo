@@ -25,9 +25,9 @@ interface SupplierRepository : CustomJpaRepository<Supplier, Long> {
         LEFT JOIN FETCH s.person person
         WHERE s.tenantId = :tenantId
         AND (
-                (LOWER(person.name) LIKE LOWER(CONCAT('%', :name, '%'))) 
+                (person.name ILIKE '%' || :name || '%') 
                 OR 
-                (LOWER(company.name) LIKE LOWER(CONCAT('%', :name, '%')))
+                (company.name ILIKE '%' || :name || '%')
             )
     """
     )
