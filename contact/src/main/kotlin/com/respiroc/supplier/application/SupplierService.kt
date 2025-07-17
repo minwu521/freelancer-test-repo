@@ -1,6 +1,6 @@
 package com.respiroc.supplier.application
 
-import com.respiroc.common.payload.NewCustomerSupplierPayload
+import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.common.service.BaseService
 import com.respiroc.supplier.domain.model.Supplier
 import com.respiroc.supplier.domain.repository.SupplierRepository
@@ -16,15 +16,15 @@ class SupplierService(
 ) {
 
     fun createNewSupplier(
-        payload: NewCustomerSupplierPayload,
+        payload: NewContactPayload,
         tenantId: Long
     ): Supplier {
         val tenant = Tenant().apply { id = tenantId }
-        return if (payload.privateCustomer) createPrivateSupplier(payload, tenant)
+        return if (payload.privateContact) createPrivateSupplier(payload, tenant)
         else createCompanySupplier(payload, tenant)
     }
 
-    private fun createPrivateSupplier(payload: NewCustomerSupplierPayload, tenant: Tenant): Supplier {
+    private fun createPrivateSupplier(payload: NewContactPayload, tenant: Tenant): Supplier {
         val person = baseService.getOrCreatePerson(payload)
         if (supplierRepository.existsSuppliersByPerson_NameAndTenantId(person.name, tenant.id))
             throw ContactExistException("Supplier already exists")
@@ -36,7 +36,7 @@ class SupplierService(
         )
     }
 
-    private fun createCompanySupplier(payload: NewCustomerSupplierPayload, tenant: Tenant): Supplier {
+    private fun createCompanySupplier(payload: NewContactPayload, tenant: Tenant): Supplier {
         val company = baseService.getOrCreateCompany(payload)
         if (supplierRepository.existsSuppliersByCompany_NameAndCompany_OrganizationNumberAndTenantId(
                 company.name, company.organizationNumber, tenant.id

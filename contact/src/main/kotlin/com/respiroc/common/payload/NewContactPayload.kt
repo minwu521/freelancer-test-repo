@@ -1,12 +1,12 @@
 package com.respiroc.common.payload
 
-import com.respiroc.customer.domain.model.CustomerType
+import com.respiroc.customer.domain.model.ContactType
 
-data class NewCustomerSupplierPayload(
+data class NewContactPayload(
     val name: String,
     val organizationNumber: String?,
-    val type: CustomerType,
-    val privateCustomer: Boolean,
+    val type: ContactType,
+    val privateContact: Boolean,
     val countryCode: String? = "",
     val city: String? = "",
     val postalCode: String? = "",

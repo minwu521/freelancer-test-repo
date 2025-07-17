@@ -1,9 +1,9 @@
 package com.respiroc.webapp.controller.web
 
-import com.respiroc.common.payload.NewCustomerSupplierPayload
+import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.customer.application.CustomerService
 import com.respiroc.customer.domain.model.Customer
-import com.respiroc.customer.domain.model.CustomerType
+import com.respiroc.customer.domain.model.ContactType
 import com.respiroc.supplier.application.SupplierService
 import com.respiroc.supplier.domain.model.Supplier
 import com.respiroc.webapp.controller.BaseController
@@ -26,8 +26,8 @@ class ContactWebController(
         val tenantId = user().currentTenant!!.id
         val customers = customerService.findAllCustomerByTenantId(tenantId)
         model.addAttribute("contacts", customers)
-        model.addAttribute("searchUrl", "/htmx/contact/customer/search")
-        model.addAttribute("type", "customer")
+        model.addAttribute("searchUrl", "/htmx/contact/${ContactType.CUSTOMER.type}/search")
+        model.addAttribute("type", ContactType.CUSTOMER.type)
         addCommonAttributes(model, "Customer")
         return "contact/contact"
     }
@@ -35,10 +35,10 @@ class ContactWebController(
     @GetMapping("/new")
     fun getForm(model: Model): String {
         model.addAttribute(
-            "customer",
-            CreateCustomerRequest("", "", CustomerType.CUSTOMER.name, false)
+            "contact",
+            CreateCustomerRequest("", "", ContactType.CUSTOMER.type, false)
         )
-        addCommonAttributes(model, "New Customer")
+        addCommonAttributes(model, "New Contact")
         return "contact/contact-form"
     }
 
@@ -54,8 +54,8 @@ class ContactWebController(
         val tenantId = user().currentTenant!!.id
         val suppliers = supplierService.findAllSupplierByTenantId(tenantId)
         model.addAttribute("contacts", suppliers)
-        model.addAttribute("searchUrl", "/htmx/contact/supplier/search")
-        model.addAttribute("type", "supplier")
+        model.addAttribute("searchUrl", "/htmx/contact/${ContactType.SUPPLIER.type}/search")
+        model.addAttribute("type", ContactType.SUPPLIER.type)
         addCommonAttributes(model, "Supplier")
         return "contact/contact"
     }
@@ -84,7 +84,7 @@ class ContactHTMxController(
         else
             customerService.findAllCustomerByTenantId(tenantId)
         model.addAttribute("contacts", customers)
-        model.addAttribute("type", "customer")
+        model.addAttribute("type", ContactType.CUSTOMER.type)
         model.addAttribute(currentTenantAttributeName, user().currentTenant)
         return "fragments/contact-table"
     }
@@ -98,7 +98,7 @@ class ContactHTMxController(
         else
             supplierService.findAllSupplierByTenantId(tenantId)
         model.addAttribute("contacts", suppliers)
-        model.addAttribute("type", "supplier")
+        model.addAttribute("type", ContactType.SUPPLIER.type)
         model.addAttribute(currentTenantAttributeName, user().currentTenant)
         return "fragments/contact-table"
     }
@@ -107,48 +107,42 @@ class ContactHTMxController(
     @HxRequest
     fun getForm(
         model: Model,
-        @RequestParam("privateCustomer", required = false) privateCustomer: Boolean = false,
+        @RequestParam("privateContact", required = false) privateContact: Boolean = false,
     ): String {
         model.addAttribute(
-            "customer",
-            CreateCustomerRequest("", "", CustomerType.CUSTOMER.name, privateCustomer)
+            "contact",
+            CreateCustomerRequest("", "", ContactType.CUSTOMER.type, privateContact)
         )
         return "contact/contact-form :: contactFormFields"
     }
 
     @PostMapping
-    fun createCustomer(@ModelAttribute customer: CreateCustomerRequest): String {
-        val payload = NewCustomerSupplierPayload(
-            name = customer.name,
-            organizationNumber = customer.organizationNumber,
-            type = CustomerType.valueOf(customer.type.uppercase()),
-            privateCustomer = customer.privateCustomer,
-            countryCode = customer.countryCode,
-            postalCode = customer.postalCode,
-            addressPart1 = customer.addressPart1,
-            addressPart2 = customer.addressPart2,
-            city = customer.city,
-            administrativeDivisionCode = customer.administrativeDivisionCode
+    fun createCustomer(@ModelAttribute contact: CreateCustomerRequest): String {
+        val payload = NewContactPayload(
+            name = contact.name,
+            organizationNumber = contact.organizationNumber,
+            type = ContactType.valueOf(contact.type.uppercase()),
+            privateContact = contact.privateContact,
+            countryCode = contact.countryCode,
+            postalCode = contact.postalCode,
+            addressPart1 = contact.addressPart1,
+            addressPart2 = contact.addressPart2,
+            city = contact.city,
+            administrativeDivisionCode = contact.administrativeDivisionCode
         )
         val tenantId = user().currentTenant!!.id
         // TODO: add controller adviser
         // TODO: Fix callout fragment to display error messages without refresh page
         var targetPage = "customer"
         when (payload.type) {
-            CustomerType.CUSTOMER -> {
+            ContactType.CUSTOMER -> {
                 customerService.createNewCustomer(payload, tenantId)
-                targetPage = "customer"
+                targetPage = ContactType.CUSTOMER.type
             }
 
-            CustomerType.SUPPLIER -> {
+            ContactType.SUPPLIER -> {
                 supplierService.createNewSupplier(payload, tenantId)
-                targetPage = "supplier"
-            }
-
-            CustomerType.CUSTOMER_SUPPLIER -> {
-                // TODO: Handle it if any of these throws an error.
-                customerService.createNewCustomer(payload, tenantId)
-                supplierService.createNewSupplier(payload, tenantId)
+                targetPage = ContactType.SUPPLIER.type
             }
         }
         return "redirect:htmx:/contact/${targetPage}?tenantId=${tenantId}"

@@ -10,27 +10,26 @@
         <div id="alert-container" style="margin-bottom: var(--wa-space-m)"></div>
         <wa-card style="margin-bottom: var(--wa-space-m);">
             <div style="padding: var(--wa-space-xl)">
-                <form id="createCustomerForm"
-                      th:object="${customer}"
+                <form id="createContactForm"
+                      th:object="${contact}"
                       th:hx-post="@{/htmx/contact(tenantId=${currentTenant.id})}"
                       hx-indicator="#loading-indicator"
                       hx-disabled-elt="#submitButton"
                       hx-swap="outerHTML">
                     <div class="r-form-group">
-                        <wa-select required label="Type" name="type" th:value="${customer.type}" th:field="*{type}">
-                            <wa-option value="CUSTOMER" th:text="#{contact.customer}"></wa-option>
-                            <wa-option value="SUPPLIER" th:text="#{contact.supplier}"></wa-option>
-                            <wa-option value="customer_supplier" th:text="#{contact.customer_supplier}"></wa-option>
+                        <wa-select required label="Type" name="type" th:value="${contact.type}" th:field="*{type}">
+                            <wa-option value="customer" th:text="#{contact.customer}"></wa-option>
+                            <wa-option value="supplier" th:text="#{contact.supplier}"></wa-option>
                         </wa-select>
                     </div>
                     <div class="r-form-group">
                         <wa-radio-group
                                 required
                                 orientation="horizontal"
-                                name="privateCustomer"
-                                th:label="#{contact.private_customer}"
-                                th:value="${customer.privateCustomer}"
-                                th:attr="hx-get='/htmx/contact/new?tenantId=' + ${user.ctx.currentTenant.id}"
+                                name="privateContact"
+                                th:label="#{contact.private_contact}"
+                                th:value="${contact.privateContact}"
+                                th:attr="hx-get='/htmx/contact/new?tenantId=' + ${currentTenant.id}"
                                 hx-target="#contactFormFields"
                                 hx-trigger="change"
                         >
@@ -41,9 +40,9 @@
                     <div th:fragment="contactFormFields" id="contactFormFields">
                         <div class="r-form-group">
                             <wa-input
-                                    th:unless="${customer.privateCustomer}"
+                                    th:unless="${contact.privateContact}"
                                     id="companyName"
-                                    th:label="#{contact.customer_name}"
+                                    th:label="#{contact.contact_name}"
                                     name="name"
                                     th:field="*{name}"
                                     placeholder="Enter company name or search registry..."
@@ -56,9 +55,9 @@
                                     hx-swap="outerHTML">
                             </wa-input>
                             <wa-input
-                                    th:if="${customer.privateCustomer}"
+                                    th:if="${contact.privateContact}"
                                     id="companyName"
-                                    th:label="#{contact.customer_name}"
+                                    th:label="#{contact.contact_name}"
                                     name="name"
                                     th:field="*{name}"
                                     placeholder="Enter full name of private person..."
@@ -68,7 +67,7 @@
                             </wa-input>
                             <div id="name-dropdown"></div>
                         </div>
-                        <div th:unless="${customer.privateCustomer}" class="r-form-group" id="orgNumberGroup">
+                        <div th:unless="${contact.privateContact}" class="r-form-group" id="orgNumberGroup">
                             <wa-input
                                     id="organizationNumber"
                                     name="organizationNumber"
@@ -79,7 +78,7 @@
                                     autocomplete="off">
                             </wa-input>
                         </div>
-                        <div th:if="${customer.privateCustomer}" class="r-form-grid">
+                        <div th:if="${contact.privateContact}" class="r-form-grid">
                             <wa-select id="countryCode" name="countryCode" th:field="*{countryCode}"
                                        th:label="#{company.create.form.country.label}">
                                 <wa-option value="NO" th:text="#{company.create.form.country.norway}"></wa-option>

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size
 
 data class CreateCustomerRequest(
 
-    @field:NotBlank(message = "Company name is required")
+    @field:NotBlank(message = "Contact name is required")
     val name: String,
 
     @field:Size(max = 36, message = "Organization number must not exceed 36 characters")
@@ -14,8 +14,8 @@ data class CreateCustomerRequest(
     @field:NotBlank(message = "Type is required")
     val type: String,
 
-    @field:NotBlank(message = "Private Customer  is required")
-    val privateCustomer: Boolean,
+    @field:NotBlank(message = "Private Contact is required")
+    val privateContact: Boolean,
 
     val countryCode: String? = "",
     val city: String? = "",

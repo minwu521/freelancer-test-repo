@@ -1,6 +1,6 @@
 package com.respiroc.customer.application
 
-import com.respiroc.common.payload.NewCustomerSupplierPayload
+import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.common.service.BaseService
 import com.respiroc.customer.domain.model.Customer
 import com.respiroc.customer.domain.repository.CustomerRepository
@@ -18,16 +18,16 @@ class CustomerService(
 ) {
 
     fun createNewCustomer(
-        payload: NewCustomerSupplierPayload,
+        payload: NewContactPayload,
         tenantId: Long
     ): Customer {
         val tenant = Tenant().apply { id = tenantId }
-        return if (payload.privateCustomer) createPrivateCustomer(payload, tenant)
+        return if (payload.privateContact) createPrivateCustomer(payload, tenant)
         else createCompanyCustomer(payload, tenant)
     }
 
 
-    private fun createPrivateCustomer(payload: NewCustomerSupplierPayload, tenant: Tenant): Customer {
+    private fun createPrivateCustomer(payload: NewContactPayload, tenant: Tenant): Customer {
         val person = baseService.getOrCreatePerson(payload)
         if (customerRepository.existsCustomersByPerson_NameAndTenantId(person.name, tenant.id))
             throw ContactExistException("Customer already exists")
@@ -39,7 +39,7 @@ class CustomerService(
         )
     }
 
-    private fun createCompanyCustomer(payload: NewCustomerSupplierPayload, tenant: Tenant): Customer {
+    private fun createCompanyCustomer(payload: NewContactPayload, tenant: Tenant): Customer {
         val company = baseService.getOrCreateCompany(payload)
         if (customerRepository.existsCustomersByCompany_NameAndCompany_OrganizationNumberAndTenantId(
                 company.name, company.organizationNumber, tenant.id

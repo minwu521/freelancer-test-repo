@@ -4,7 +4,7 @@ import com.respiroc.company.application.CompanyService
 import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
 import com.respiroc.companylookup.api.CompanyLookupInternalApi
-import com.respiroc.common.payload.NewCustomerSupplierPayload
+import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.util.domain.address.Address
 import com.respiroc.util.domain.person.PrivatePerson
 import jakarta.persistence.EntityManager
@@ -16,7 +16,7 @@ class BaseService(
     private val companyService: CompanyService,
     private val entityManager: EntityManager
 ) {
-    fun getOrCreateCompany(payload: NewCustomerSupplierPayload): Company {
+    fun getOrCreateCompany(payload: NewContactPayload): Company {
         val companyInfo =
             companyLookupApi.getInfo(payload.organizationNumber!!, "NO")
         val companyAddress = companyInfo.address
@@ -34,13 +34,13 @@ class BaseService(
         return companyService.getOrCreateCompany(command)
     }
 
-    fun getOrCreatePerson(payload: NewCustomerSupplierPayload): PrivatePerson {
+    fun getOrCreatePerson(payload: NewContactPayload): PrivatePerson {
         val address = getOrCreateAddress(payload)
         val person = PrivatePerson(name = payload.name, address = address)
         return PrivatePerson.upsertPerson(entityManager, person)
     }
 
-    fun getOrCreateAddress(payload: NewCustomerSupplierPayload): Address {
+    fun getOrCreateAddress(payload: NewContactPayload): Address {
         val address = Address(
             countryIsoCode = payload.countryCode ?: "",
             city = payload.city ?: "",
