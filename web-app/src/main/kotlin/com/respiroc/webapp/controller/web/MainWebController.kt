@@ -10,15 +10,9 @@ class MainWebController() : BaseController() {
 
     @GetMapping("/")
     fun home(): String {
-        return try {
-            val springUser = springUser()
-            if (springUser.ctx.tenants.isEmpty()) {
-                "redirect:/tenant/create"
-            } else {
-                "redirect:/dashboard?tenantId=${springUser.ctx.tenants[0].id}"
-            }
-        } catch (_: Exception) {
-            // User not authenticated
+        return if (isUserLoggedIn()) {
+            "redirect:/dashboard"
+        } else {
             "redirect:/auth/login"
         }
     }
@@ -27,7 +21,7 @@ class MainWebController() : BaseController() {
     fun dashboard(
         model: Model
     ): String {
-        addCommonAttributes(model, "Dashboard", true)
+        addCommonAttributes(model, "Dashboard")
         return "dashboard/index"
     }
 } 

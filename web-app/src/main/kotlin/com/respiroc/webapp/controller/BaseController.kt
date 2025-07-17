@@ -1,7 +1,11 @@
 package com.respiroc.webapp.controller
 
 import com.respiroc.util.context.SpringUser
+import com.respiroc.util.context.TenantInfo
 import com.respiroc.util.context.UserContext
+import com.respiroc.util.context.UserTenantContext
+import com.respiroc.util.exception.MissingTenantContextException
+import org.springframework.security.authentication.AnonymousAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.ui.Model
 
@@ -23,29 +27,52 @@ open class BaseController {
     }
 
     fun tenantId(): Long {
-        return user().currentTenant?.id ?: throw IllegalStateException("No current tenant is set for the user")
+        return user().currentTenant?.id ?: throw MissingTenantContextException()
+    }
+
+    fun currentTenant(): UserTenantContext {
+        return user().currentTenant ?: throw MissingTenantContextException()
+    }
+
+    fun tenants(): List<TenantInfo> {
+        return user().tenants
     }
 
     fun countryCode(): String {
         return user().currentTenant?.countryCode ?: throw IllegalStateException("No current tenant is set for the user")
     }
 
-    fun addCommonAttributes(
+    fun addCommonAttributesForCurrentTenant(
         model: Model,
         title: String,
         useCurrentCompanyAsTitlePrefix: Boolean = false
     ) {
         val springUser = springUser()
+        val currentTenant = currentTenant()
+        val tenants = tenants()
+
         model.addAttribute(userAttributeName, springUser)
+        model.addAttribute(currentTenantAttributeName, currentTenant)
+        model.addAttribute(tenantsAttributeName, tenants)
+        model.addAttribute(titleAttributeName, "${currentTenant.companyName} - ${title}")
+    }
 
-        model.addAttribute(tenantsAttributeName, springUser.ctx.tenants)
+    fun addCommonAttributes(
+        model: Model,
+        title: String,
+    ) {
+        val springUser = springUser()
+        val tenants = tenants()
 
-        val currentTenant = springUser.ctx.currentTenant
-        if (currentTenant != null)
-            model.addAttribute(currentTenantAttributeName, currentTenant)
-        if (useCurrentCompanyAsTitlePrefix && currentTenant != null)
-            model.addAttribute(titleAttributeName, "${currentTenant.companyName} - ${title}")
-        else
-            model.addAttribute(titleAttributeName, title)
+        model.addAttribute(userAttributeName, springUser)
+        model.addAttribute(tenantsAttributeName, tenants)
+        model.addAttribute(titleAttributeName, title)
+    }
+
+    fun isUserLoggedIn(): Boolean {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return authentication != null &&
+                authentication.isAuthenticated &&
+                authentication !is AnonymousAuthenticationToken
     }
 }

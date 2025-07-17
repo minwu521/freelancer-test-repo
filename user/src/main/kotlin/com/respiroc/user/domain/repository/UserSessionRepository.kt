@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserSessionRepository : CustomJpaRepository<UserSession, Long> {
+
+    fun findByToken(token: String): UserSession?
 }

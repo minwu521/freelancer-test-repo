@@ -27,6 +27,22 @@ class TenantWebController : BaseController() {
         model.addAttribute("createCompanyRequest", CreateCompanyRequest("", "", "NO"))
         return "tenant/create"
     }
+
+    @GetMapping("/select")
+    fun selectCompany(model: Model): String {
+        addCommonAttributes(model, "Select Company")
+        
+        // Safely add current tenant if it exists
+        try {
+            val currentTenant = currentTenant()
+            model.addAttribute(currentTenantAttributeName, currentTenant)
+        } catch (e: Exception) {
+            // No current tenant set, which is expected on the select page
+            model.addAttribute(currentTenantAttributeName, null)
+        }
+        
+        return "tenant/select"
+    }
 }
 
 @Controller

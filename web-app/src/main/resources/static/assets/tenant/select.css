@@ -1,0 +1,113 @@
+/* Container and layout */
+.wa-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Loading overlay */
+.wa-loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    gap: 1rem;
+}
+
+.wa-loading-overlay p {
+    margin: 0;
+    color: var(--wa-color-neutral-600);
+}
+
+/* Grid styling */
+.wa-grid {
+    gap: 1.5rem;
+}
+
+/* Card styling */
+.wa-card {
+    transition: all 0.3s ease-in-out;
+    border: 1px solid var(--wa-color-neutral-200);
+}
+
+.wa-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    border-color: var(--wa-color-neutral-300);
+}
+
+/* Button styling */
+.wa-button {
+    transition: all 0.2s ease-in-out;
+}
+
+.wa-button:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+/* Avatar styling */
+.wa-avatar {
+    background: linear-gradient(135deg, var(--wa-color-brand-500) 0%, var(--wa-color-brand-600) 100%);
+    color: white;
+}
+
+/* Badge styling */
+.wa-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    font-weight: 500;
+}
+
+/* Empty state styling */
+.wa-empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--wa-color-neutral-600);
+}
+
+.wa-empty-state wa-icon {
+    color: var(--wa-color-neutral-400);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .wa-container {
+        padding: 1rem;
+    }
+    
+    .wa-grid {
+        --min-column-size: 100%;
+        gap: 1rem;
+    }
+    
+    .wa-flank:end {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .wa-avatar {
+        align-self: center;
+    }
+    
+    .wa-card:hover {
+        transform: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .wa-container {
+        padding: 0.5rem;
+    }
+    
+    .wa-stack.wa-gap-l {
+        gap: 1.5rem;
+    }
+} 

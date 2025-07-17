@@ -26,7 +26,7 @@ class PostingService(
 
     @Transactional(readOnly = true)
     fun getTrialBalance(startDate: LocalDate, endDate: LocalDate): TrialBalanceDTO {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
         val accountNumbers = postingRepository.findDistinctAccountNumbersByTenant(tenantId)
         val accounts = accountService.findAllAccounts().associateBy { it.noAccountNumber }
 
@@ -67,7 +67,7 @@ class PostingService(
 
     @Transactional(readOnly = true)
     fun getPostingsForProfitLoss(startDate: LocalDate, endDate: LocalDate): Map<AccountType, ProfitLossDTO> {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
         val accounts = accountService.findAllAccounts().associateBy { it.noAccountNumber }
 
         val profitLossPostings = postingRepository.findProfitLossPostings(tenantId, startDate, endDate)
@@ -101,7 +101,7 @@ class PostingService(
 
     @Transactional(readOnly = true)
     fun getPostingsForBalanceSheet(startDate: LocalDate, endDate: LocalDate): Map<AccountType, BalanceSheetDTO> {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
         val accounts = accountService.findAllAccounts().associateBy { it.noAccountNumber }
 
         val balanceSheetPostings = postingRepository.findBalanceSheetPostings(tenantId, startDate, endDate)
@@ -139,7 +139,7 @@ class PostingService(
         endDate: LocalDate,
         accountNumber: String?
     ): GeneralLedgerPayload {
-        val tenantId = currentTenantId()
+        val tenantId = tenantId()
         val accounts = accountService.findAllAccounts().associateBy { it.noAccountNumber }
 
         val summaryData = postingRepository.getGeneralLedgerSummary(accountNumber, tenantId, startDate, endDate)
