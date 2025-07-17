@@ -5,7 +5,11 @@ import com.respiroc.ledger.domain.model.AccountType
 import jakarta.annotation.PostConstruct
 import org.springframework.core.io.ClassPathResource
 import org.springframework.stereotype.Service
-import org.yaml.snakeyaml.Yaml
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+
 
 @Service
 class AccountService {
@@ -14,24 +18,14 @@ class AccountService {
 
     @PostConstruct
     fun loadChartOfAccounts() {
-        val yaml = Yaml()
+        val mapper = ObjectMapper(YAMLFactory()).registerKotlinModule()
         val inputStream = ClassPathResource("data/chart-of-accounts.yaml").inputStream
 
-        @Suppress("UNCHECKED_CAST")
-        val data = yaml.load<Map<String, Any>>(inputStream)
-        val accountsList = data["accounts"] as List<Map<String, Any>>
-
-        accounts = accountsList.associate { accountData ->
-            val noAccountNumber = accountData["noAccountNumber"] as String
-            val account = Account(
-                noAccountNumber = noAccountNumber,
-                accountName = accountData["accountName"] as String,
-                accountDescription = accountData["accountDescription"] as String,
-                accountType = AccountType.valueOf(accountData["accountType"] as String)
-            )
-            noAccountNumber to account
-        }
+        val data: Map<String, List<Account>> = mapper.readValue(inputStream)
+        val accountList = data["accounts"] ?: emptyList()
+        accounts = accountList.associateBy { it.noAccountNumber }
     }
+
 
     fun findAccountByNumber(noAccountNumber: String): Account? {
         return accounts[noAccountNumber]
