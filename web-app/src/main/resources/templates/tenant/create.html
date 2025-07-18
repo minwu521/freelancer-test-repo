@@ -15,8 +15,7 @@
                           th:object="${createCompanyRequest}"
                           hx-post="/htmx/tenant/create"
                           hx-target="#form-messages"
-                          hx-swap="innerHTML"
-                          hx-ext="redirect">
+                          hx-swap="innerHTML">
 
                         <div class="form-group">
                             <label for="name" style="display: block; margin-bottom: 0.5rem; font-weight: 500;" th:text="#{company.create.form.name.label}" />
