@@ -1,9 +1,9 @@
 package com.respiroc.common.service
 
+import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.company.application.CompanyService
 import com.respiroc.company.domain.model.Company
 import com.respiroc.companylookup.api.CompanyLookupInternalApi
-import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.util.domain.address.Address
 import com.respiroc.util.domain.person.PrivatePerson
 import com.respiroc.util.payload.CreateCompanyPayload
@@ -18,7 +18,7 @@ class BaseService(
 ) {
     fun getOrCreateCompany(payload: NewContactPayload): Company {
         val companyInfo =
-            companyLookupApi.getInfo(payload.organizationNumber!!, "NO")
+            companyLookupApi.getInfo(payload.organizationNumber!!, payload.countryCode!!)
         val companyAddress = companyInfo.address
         val command = CreateCompanyPayload(
             name = companyInfo.name,

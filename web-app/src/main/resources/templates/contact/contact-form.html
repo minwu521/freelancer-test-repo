@@ -79,6 +79,7 @@
                                     size="medium"
                                     autocomplete="off">
                             </wa-input>
+                            <wa-input style="visibility: hidden" th:field="*{countryCode}" name="countryCode" id="countryCode"></wa-input>
                         </div>
                         <div th:if="${contact.privateContact}" class="wa-grid" style="--min-column-size: 350px;">
                             <wa-select id="countryCode" name="countryCode" th:field="*{countryCode}"

@@ -2,12 +2,15 @@ function selectCompanyFromSearch(element) {
     let isSelectingCompany = true;
     const name = element.getAttribute('data-name');
     const orgNumber = element.getAttribute('data-org-number');
+    const countryCode = element.getAttribute('data-country-code');
     const nameInput = document.getElementById('companyName');
     const orgInput = document.getElementById('organizationNumber');
+    const countrySelect = document.getElementById('countryCode');
     nameInput.value = name;
     if (orgNumber && orgNumber !== 'null') {
         orgInput.value = orgNumber;
     }
+    countrySelect.value = countryCode;
 
     nameInput.dispatchEvent(new Event('change', { bubbles: true }));
     orgInput.dispatchEvent(new Event('change', { bubbles: true }));
