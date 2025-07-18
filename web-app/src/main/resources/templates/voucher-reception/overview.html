@@ -3,6 +3,10 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
+
+    <link rel="resource" type="application/l10n" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 </head>
 <body>
 <main layout:fragment="content">
@@ -30,7 +34,7 @@
                     <th th:text="#{mime_type}" />
                     <th th:text="#{received}" />
                     <th th:text="#{file_created_at}" />
-
+                    <th th:text="action" />
                 </tr>
                 </thead>
                 <tbody>
@@ -40,6 +44,18 @@
                     <td th:text="${document.attachment.mimetype}"/>
                     <td th:text="${#temporals.format(document.receivedAt, 'dd.MM.yyyy HH:mm')}"/>
                     <td th:text="${#temporals.format(document.attachment.createdAt, 'dd.MM.yyyy HH:mm')}"/>
+                    <td>
+                        <wa-button
+                                variant="outline"
+                                size="small"
+                                class="view-pdf-btn"
+                                th:data-document-id="${document.id}"
+                                th:data-filename="${document.attachment.filename}"
+                                th:data-pdf-data="${pdfDataMap[document.id]}">
+                            <wa-icon name="eye"></wa-icon>
+                            View PDF
+                        </wa-button>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -52,6 +68,137 @@
             </div>
 
         </div>
+
+        <wa-drawer label="PDF Viewer" class="drawer-custom-size" style="--size: 50vw;">
+            <div slot="header" class="pdf-header">
+                <h3 id="pdf-filename" class="wa-heading-m"></h3>
+            </div>
+            <div id="pdf-container" style="height: 100%; overflow-y: auto;">
+                <div id="pdf-loading" class="wa-center" style="padding: 2rem;">
+                    <wa-spinner size="large"></wa-spinner>
+                    <p>Loading PDF...</p>
+                </div>
+            </div>
+            <div slot="footer" class="wa-flex wa-gap-m">
+                <wa-button variant="outline" data-drawer="close">Close</wa-button>
+                <wa-button variant="brand" id="download-pdf-btn" style="display: none;">
+                    <wa-icon name="download"></wa-icon>
+                    Download
+                </wa-button>
+            </div>
+        </wa-drawer>
+
+        <script>
+            const drawer = document.querySelector('.drawer-custom-size');
+            const pdfContainer = document.getElementById('pdf-container');
+            const pdfFilename = document.getElementById('pdf-filename');
+            const downloadBtn = document.getElementById('download-pdf-btn');
+            let currentPdfUrl = null;
+
+            document.querySelectorAll('.view-pdf-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const filename = this.dataset.filename;
+                    const pdfDataBase64 = this.dataset.pdfData;
+
+                    pdfContainer.innerHTML = '<div id="pdf-loading" class="wa-center" style="padding: 2rem;"><wa-spinner size="large"></wa-spinner><p>Loading PDF...</p></div>';
+                    pdfFilename.textContent = filename;
+                    drawer.open = true;
+
+                    loadPdfFromBase64(pdfDataBase64, filename);
+                });
+            });
+
+            function loadPdfFromBase64(base64Data, filename) {
+                if (currentPdfUrl) {
+                    URL.revokeObjectURL(currentPdfUrl);
+                }
+
+                try {
+                    const binaryString = atob(base64Data);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        bytes[i] = binaryString.charCodeAt(i);
+                    }
+                    const blob = new Blob([bytes], { type: 'application/pdf' });
+                    currentPdfUrl = URL.createObjectURL(blob);
+
+                    pdfjsLib.getDocument(currentPdfUrl).promise
+                        .then(pdf => {
+                            pdfContainer.innerHTML = '';
+                            const renderPromises = [];
+                            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                                renderPromises.push(renderPdfPage(pdf, pageNum));
+                            }
+
+                            return Promise.all(renderPromises);
+                        })
+                        .then(() => {
+                            downloadBtn.style.display = 'inline-flex';
+                            downloadBtn.onclick = () => downloadPdf(filename);
+                        })
+                        .catch(error => {
+                            console.error('Error loading PDF:', error);
+                            pdfContainer.innerHTML = `
+                                <div class="wa-center" style="padding: 2rem;">
+                                    <wa-icon name="exclamation-triangle" style="font-size: 2rem; color: var(--wa-color-error);"></wa-icon>
+                                    <p class="wa-text-error">Failed to load PDF: ${error.message}</p>
+                                </div>
+                            `;
+                        });
+                } catch (error) {
+                    console.error('Error processing PDF data:', error);
+                    pdfContainer.innerHTML = `
+                        <div class="wa-center" style="padding: 2rem;">
+                            <wa-icon name="exclamation-triangle" style="font-size: 2rem; color: var(--wa-color-error);"></wa-icon>
+                            <p class="wa-text-error">Failed to process PDF data</p>
+                        </div>
+                    `;
+                }
+            }
+
+            function renderPdfPage(pdf, pageNum) {
+                return pdf.getPage(pageNum).then(page => {
+                    const scale = 1.2;
+                    const viewport = page.getViewport({ scale });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    canvas.style.display = 'block';
+                    canvas.style.margin = '0 auto 10px auto';
+                    canvas.style.border = '1px solid #ddd';
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+
+                    return page.render(renderContext).promise.then(() => {
+                        pdfContainer.appendChild(canvas);
+                    });
+                });
+            }
+
+            function downloadPdf(filename) {
+                if (currentPdfUrl) {
+                    const a = document.createElement('a');
+                    a.href = currentPdfUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                }
+            }
+
+            drawer.addEventListener('wa-close', () => {
+                if (currentPdfUrl) {
+                    URL.revokeObjectURL(currentPdfUrl);
+                    currentPdfUrl = null;
+                }
+                downloadBtn.style.display = 'none';
+            });
+        </script>
     </div>
 </main>
 </body>

@@ -135,11 +135,17 @@ class VoucherReceptionWebController(
 
     @GetMapping(value = ["", "/"])
     fun overview(model: Model): String {
-        val springUser = springUser()
+        val currentUser = springUser()
         val documents = voucherReceptionDocumentRepository.findAll()
+
+        val pdfDataMap = documents.associate { doc ->
+            doc.id to Base64.getEncoder().encodeToString(doc.attachment.fileData)
+        }
+
         addCommonAttributesForCurrentTenant(model, "Voucher Reception")
         model.addAttribute("documents", documents)
-        model.addAttribute("tenantSlug", springUser.ctx.currentTenant?.tenantSlug)
+        model.addAttribute("pdfDataMap", pdfDataMap)
+        model.addAttribute("tenantSlug", currentUser.ctx.currentTenant?.tenantSlug)
         return "voucher-reception/overview"
     }
 }
