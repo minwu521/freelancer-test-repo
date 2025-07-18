@@ -3,10 +3,9 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
+    <!-- Include PDF.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/web/pdf_viewer.min.css" />
 
-    <link rel="resource" type="application/l10n" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 </head>
 <body>
 <main layout:fragment="content">
@@ -88,7 +87,13 @@
             </div>
         </wa-drawer>
 
-        <script>
+
+
+        <script type="module">
+            import { getDocument, GlobalWorkerOptions } from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/pdf.min.mjs";
+
+            GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/pdf.worker.min.mjs";
+
             const drawer = document.querySelector('.drawer-custom-size');
             const pdfContainer = document.getElementById('pdf-container');
             const pdfFilename = document.getElementById('pdf-filename');
@@ -96,11 +101,15 @@
             let currentPdfUrl = null;
 
             document.querySelectorAll('.view-pdf-btn').forEach(button => {
-                button.addEventListener('click', function() {
+                button.addEventListener('click', function () {
                     const filename = this.dataset.filename;
                     const pdfDataBase64 = this.dataset.pdfData;
 
-                    pdfContainer.innerHTML = '<div id="pdf-loading" class="wa-center" style="padding: 2rem;"><wa-spinner size="large"></wa-spinner><p>Loading PDF...</p></div>';
+                    pdfContainer.innerHTML = `
+        <div id="pdf-loading" class="wa-center" style="padding: 2rem;">
+          <wa-spinner size="large"></wa-spinner>
+          <p>Loading PDF...</p>
+        </div>`;
                     pdfFilename.textContent = filename;
                     drawer.open = true;
 
@@ -108,7 +117,7 @@
                 });
             });
 
-            function loadPdfFromBase64(base64Data, filename) {
+            async function loadPdfFromBase64(base64Data, filename) {
                 if (currentPdfUrl) {
                     URL.revokeObjectURL(currentPdfUrl);
                 }
@@ -122,37 +131,24 @@
                     const blob = new Blob([bytes], { type: 'application/pdf' });
                     currentPdfUrl = URL.createObjectURL(blob);
 
-                    pdfjsLib.getDocument(currentPdfUrl).promise
-                        .then(pdf => {
-                            pdfContainer.innerHTML = '';
-                            const renderPromises = [];
-                            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                                renderPromises.push(renderPdfPage(pdf, pageNum));
-                            }
+                    const loadingTask = getDocument(currentPdfUrl);
+                    const pdf = await loadingTask.promise;
 
-                            return Promise.all(renderPromises);
-                        })
-                        .then(() => {
-                            downloadBtn.style.display = 'inline-flex';
-                            downloadBtn.onclick = () => downloadPdf(filename);
-                        })
-                        .catch(error => {
-                            console.error('Error loading PDF:', error);
-                            pdfContainer.innerHTML = `
-                                <div class="wa-center" style="padding: 2rem;">
-                                    <wa-icon name="exclamation-triangle" style="font-size: 2rem; color: var(--wa-color-error);"></wa-icon>
-                                    <p class="wa-text-error">Failed to load PDF: ${error.message}</p>
-                                </div>
-                            `;
-                        });
+                    pdfContainer.innerHTML = '';
+                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                        await renderPdfPage(pdf, pageNum);
+                    }
+
+                    downloadBtn.style.display = 'inline-flex';
+                    downloadBtn.onclick = () => downloadPdf(filename);
+
                 } catch (error) {
-                    console.error('Error processing PDF data:', error);
+                    console.error('Error loading PDF:', error);
                     pdfContainer.innerHTML = `
-                        <div class="wa-center" style="padding: 2rem;">
-                            <wa-icon name="exclamation-triangle" style="font-size: 2rem; color: var(--wa-color-error);"></wa-icon>
-                            <p class="wa-text-error">Failed to process PDF data</p>
-                        </div>
-                    `;
+        <div class="wa-center" style="padding: 2rem;">
+          <wa-icon name="exclamation-triangle" style="font-size: 2rem; color: var(--wa-color-error);"></wa-icon>
+          <p class="wa-text-error">Failed to load PDF: ${error.message}</p>
+        </div>`;
                 }
             }
 
