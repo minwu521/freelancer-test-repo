@@ -33,4 +33,3 @@ No other libraries are in use or should be used
 * Prefix our own CSS classes with r-
 * Use modern CSS features, no need to care about older browser support, using polyfills if necessary
   to support older browsers.
-Use the modern Temporal API, if time,zone, calendar functionality is needed
