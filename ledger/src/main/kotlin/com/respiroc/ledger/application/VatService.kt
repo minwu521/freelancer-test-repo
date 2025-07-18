@@ -46,33 +46,11 @@ class VatService {
         return vatCodes.values
     }
 
-    fun findVatCodesByType(vatType: VatType): List<VatCode> {
-        return vatCodes.values.filter { it.vatType == vatType }
-    }
-
-    fun findVatCodesByCategory(vatCategory: VatCategory): List<VatCode> {
-        return vatCodes.values.filter { it.vatCategory == vatCategory }
-    }
-
-    fun searchVatCodesByDescription(searchTerm: String): List<VatCode> {
-        return vatCodes.values.filter {
-            it.description.contains(searchTerm, ignoreCase = true)
-        }
-    }
 
     fun vatCodeExists(code: String): Boolean {
         return vatCodes.containsKey(code)
     }
 
-    fun findInputVatCodes(): List<VatCode> = findVatCodesByType(VatType.INPUT_VAT)
-
-    fun findOutputVatCodes(): List<VatCode> = findVatCodesByType(VatType.OUTPUT_VAT)
-
-    fun findExemptVatCodes(): List<VatCode> {
-        return vatCodes.values.filter {
-            it.vatType == VatType.EXEMPT || it.vatType == VatType.OUTSIDE_SCOPE
-        }
-    }
 
     fun calculateVatAmount(baseAmount: BigDecimal, vatCode: VatCode): BigDecimal {
         if (!vatCode.vatType.requiresVatCalculation()) {
