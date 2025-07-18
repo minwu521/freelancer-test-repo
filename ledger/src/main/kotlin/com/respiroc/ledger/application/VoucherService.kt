@@ -70,14 +70,6 @@ class VoucherService(
         return createVoucher(emptyVoucherPayload)
     }
 
-    @Transactional(readOnly = true)
-    fun findAllVoucherSummaries(): List<VoucherSummaryPayload> {
-        val vouchers = voucherRepository.findVoucherSummariesByTenantId(tenantId())
-
-        return vouchers
-            .filter { it.postings.isNotEmpty() }
-            .map { voucher -> toVoucherSummary(voucher) }
-    }
 
     @Transactional(readOnly = true)
     fun findVoucherSummariesByDateRange(startDate: LocalDate, endDate: LocalDate): List<VoucherSummaryPayload> {
