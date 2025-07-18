@@ -137,7 +137,7 @@ class VoucherReceptionWebController(
     fun overview(model: Model): String {
         val springUser = springUser()
         val documents = voucherReceptionDocumentRepository.findAll()
-        addCommonAttributes(model, "Voucher Reception")
+        addCommonAttributesForCurrentTenant(model, "Voucher Reception")
         model.addAttribute("documents", documents)
         model.addAttribute("tenantSlug", springUser.ctx.currentTenant?.tenantSlug)
         return "voucher-reception/overview"
