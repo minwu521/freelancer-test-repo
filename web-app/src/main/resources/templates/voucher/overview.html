@@ -6,13 +6,13 @@
 <main layout:fragment="content">
     <div class="wa-container">
         <div class="wa-stack wa-gap-s">
-            
+
             <wa-card>
                 <div class="wa-cluster">
                     <div class="wa-stack wa-gap-xs">
                         <label class="wa-body-s" style="font-weight: var(--wa-font-weight-semibold);">Start Date</label>
-                        <wa-input type="date" 
-                                  name="startDate" 
+                        <wa-input type="date"
+                                  name="startDate"
                                   size="small"
                                   th:value="${startDate}"
                                   th:hx-get="'/htmx/voucher/overview'"
@@ -21,11 +21,11 @@
                                   th:hx-trigger="'change'"
                                   th:hx-include="'[name=\'endDate\']'"></wa-input>
                     </div>
-                    
+
                     <div class="wa-stack wa-gap-xs">
                         <label class="wa-body-s" style="font-weight: var(--wa-font-weight-semibold);">End Date</label>
-                        <wa-input type="date" 
-                                  name="endDate" 
+                        <wa-input type="date"
+                                  name="endDate"
                                   size="small"
                                   th:value="${endDate}"
                                   th:hx-get="'/htmx/voucher/overview'"
@@ -44,12 +44,13 @@
                         <div th:if="${#lists.isEmpty(vouchers)}" class="wa-center">
                             <div class="wa-stack wa-gap-m wa-center">
                                 <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
-                                <h3 class="wa-heading-m" th:text="#{no_vouchers_found}" />
+                                <h3 class="wa-heading-m" th:text="#{no_vouchers_found}"/>
                             </div>
                         </div>
-
-                        <table id="voucherTable" style="--wa-table-row-padding: var(--wa-space-xs);" th:unless="${#lists.isEmpty(vouchers)}">
-                            <thead>
+                        <wa-scroller>
+                            <table id="voucherTable" style="--wa-table-row-padding: var(--wa-space-xs);"
+                                   th:unless="${#lists.isEmpty(vouchers)}">
+                                <thead>
                                 <tr>
                                     <th th:text="#{date}"/>
                                     <th th:text="#{description}"/>
@@ -57,8 +58,8 @@
                                     <th th:text="#{vat_code}"/>
                                     <th th:text="#{amount}" style="text-align: right;"/>
                                 </tr>
-                            </thead>
-                            <tbody>
+                                </thead>
+                                <tbody>
                                 <th:block th:each="voucher, voucherStat : ${vouchers}">
 
                                     <tr style="background-color: var(--wa-color-gray-90);">
@@ -66,7 +67,9 @@
                                         <td style="font-weight: 600;">
                                             <a style="color: var(--wa-color-blue-50); text-decoration: none;"
                                                th:href="'/voucher/' + ${voucher.id}">
-                                                <strong th:text="${voucher.number}"/><span style="font-size: var(--wa-font-size-s)" th:text=" ' ' + #{show_voucher}"/>
+                                                <strong th:text="${voucher.number}"/><span
+                                                    style="font-size: var(--wa-font-size-s)"
+                                                    th:text=" ' ' + #{show_voucher}"/>
                                             </a>
                                         </td>
                                         <td></td>
@@ -79,24 +82,27 @@
                                         <td th:text="${posting.description ?: '-'}"/>
                                         <td>
                                             <span th:text="${posting.accountNumber}"/>
-                                            <span th:if="${posting.accountName}" th:text="' - ' + ${posting.accountName}"/>
+                                            <span th:if="${posting.accountName}"
+                                                  th:text="' - ' + ${posting.accountName}"/>
                                         </td>
                                         <td th:text="${posting.vatCode ?: '-'}"/>
                                         <td style="text-align: right;">
-                                            <span th:text="${posting.amount}" />
+                                            <span th:text="${posting.amount}"/>
                                         </td>
                                     </tr>
 
                                     <tr th:unless="${voucherStat.last}" style="height: 0;">
-                                        <td colspan="5" style="padding: 0; border-top: 2px solid var(--wa-color-neutral-200);"></td>
+                                        <td colspan="5"
+                                            style="padding: 0; border-top: 2px solid var(--wa-color-neutral-200);"></td>
                                     </tr>
                                 </th:block>
-                            </tbody>
-                        </table>
+                                </tbody>
+                            </table>
+                        </wa-scroller>
                     </div>
                 </wa-card>
             </div>
-            
+
         </div>
     </div>
 </main>

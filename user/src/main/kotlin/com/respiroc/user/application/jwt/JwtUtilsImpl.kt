@@ -4,13 +4,14 @@ import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.stereotype.Component
 import java.util.Date
 import java.util.function.Function
 import javax.crypto.SecretKey
 
 @Component
-class JwtUtilsImpl: JwtUtils {
+class JwtUtilsImpl : JwtUtils {
 
     companion object {
         const val TENANT_ID_KEY = "tenantId"
@@ -27,7 +28,7 @@ class JwtUtilsImpl: JwtUtils {
     }
 
     override fun extractExpiration(token: String): Date {
-        return extractClaim(token, Function { obj: Claims -> obj.expiration })
+        return extractClaim(token) { obj: Claims -> obj.expiration }
     }
 
     override fun <T> extractClaim(token: String, claimsResolver: Function<Claims, T>): T {
@@ -45,7 +46,7 @@ class JwtUtilsImpl: JwtUtils {
                 .payload
             return claims
         } catch (e: Exception) {
-            throw RuntimeException("Can not extract claims from token")
+            throw BadCredentialsException(e.message, e)
         }
     }
 
