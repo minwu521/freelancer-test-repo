@@ -1,21 +1,17 @@
 package com.respiroc.webapp.controller.web
 
-import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.companylookup.api.CompanyLookupInternalApi
-import com.respiroc.tenant.application.TenantService
 import com.respiroc.user.application.UserService
-import com.respiroc.util.constant.TenantRoleCode
+import com.respiroc.util.payload.CreateCompanyPayload
 import com.respiroc.webapp.controller.BaseController
 import com.respiroc.webapp.controller.request.CreateCompanyRequest
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
+import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.*
 
 @Controller
 @RequestMapping(value = ["/tenant"])
@@ -23,16 +19,21 @@ class TenantWebController : BaseController() {
 
     @GetMapping("/create")
     fun createCompany(model: Model): String {
-        addCommonAttributes(model, "Create Company")
         model.addAttribute("createCompanyRequest", CreateCompanyRequest("", "", "NO"))
-        return "tenant/create"
+
+        try {
+            addCommonAttributesForCurrentTenant(model, "Create Company")
+            return "tenant/create"
+        } catch (_: Exception) {
+            addCommonAttributes(model, "Create Company")
+            return "tenant/create"
+        }
     }
 }
 
 @Controller
 @RequestMapping("/htmx/tenant")
 class TenantHTMXController(
-    private val tenantService: TenantService,
     private val userService: UserService,
     private val companyLookupApi: CompanyLookupInternalApi
 ) : BaseController() {
@@ -41,8 +42,10 @@ class TenantHTMXController(
     @HxRequest
     fun createCompanyHTMX(
         @Valid @ModelAttribute createCompanyRequest: CreateCompanyRequest,
+        @CookieValue("token", required = true) token: String,
         bindingResult: BindingResult,
-        model: Model
+        model: Model,
+        response: HttpServletResponse
     ): String {
         if (bindingResult.hasErrors()) {
             model.addAttribute(
@@ -56,7 +59,7 @@ class TenantHTMXController(
             val companyInfo =
                 companyLookupApi.getInfo(createCompanyRequest.organizationNumber, createCompanyRequest.countryCode)
             val companyAddress = companyInfo.address
-            val command = CreateCompanyPayload(
+            val payload = CreateCompanyPayload(
                 name = companyInfo.name,
                 organizationNumber = companyInfo.registrationNumber!!,
                 countryCode = companyInfo.countryCode,
@@ -68,12 +71,10 @@ class TenantHTMXController(
                 administrativeDivisionCode = null
             )
 
-            // TODO: check for exist user tenant company
-            val tenant = tenantService.createNewTenant(command)
-            val tenantRole = tenantService.findTenantRoleByCode(TenantRoleCode.OWNER)
-            userService.addUserTenantRole(tenant, tenantRole, user())
-
-            return "redirect:htmx:/dashboard?tenantId=${tenant.id}"
+            val tenant = userService.createTenantForUser(payload, user())
+            val result = userService.selectTenant(user(), tenant.id, token)
+            setJwtCookie(result.token, response)
+            return "redirect:htmx:/"
 
         } catch (e: Exception) {
             model.addAttribute(

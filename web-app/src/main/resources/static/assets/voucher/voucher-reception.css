@@ -1,0 +1,64 @@
+.r-voucher-reception-container {
+    background: var(--wa-color-surface-default);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.r-voucher-reception{
+    padding: var(--wa-space-m);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+wa-copy-button::part(button) {
+    color: white ;
+    fill: white ;
+    background: transparent ;
+    transition: none;
+    animation: none;
+}
+
+
+.r-voucher-reception-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.875rem;
+}
+
+.r-voucher-reception-table th {
+    background: var(--wa-color-surface-raised);
+    padding: 1rem 0.75rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--wa-color-gray-30);
+    border-bottom: 2px solid var(--wa-color-gray-90);
+
+}
+
+.r-voucher-reception-table th.r-amount-header {
+    text-align: right;
+}
+
+.r-voucher-reception-table td {
+    padding: 0.875rem 0.75rem;
+    border-bottom: 1px solid var(--wa-color-surface-raised);
+}
+
+.r-voucher-reception-table tr:hover {
+    background-color: var(--wa-color-surface-raised);
+}
+
+
+
+@media (max-width: 768px) {
+
+    .r-voucher-reception-table {
+        font-size: 0.75rem;
+    }
+
+    .r-voucher-reception-table th,
+    .r-voucher-reception-table td {
+        padding: 0.5rem 0.375rem;
+    }
+}

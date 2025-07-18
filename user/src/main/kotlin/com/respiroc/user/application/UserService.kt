@@ -1,18 +1,21 @@
 package com.respiroc.user.application
 
+import com.respiroc.tenant.application.TenantService
 import com.respiroc.tenant.domain.model.Tenant
 import com.respiroc.tenant.domain.model.TenantPermission
 import com.respiroc.tenant.domain.model.TenantRole
-import com.respiroc.user.application.payload.ForgotPayload
 import com.respiroc.user.application.payload.LoginPayload
 import com.respiroc.user.application.jwt.JwtUtils
+import com.respiroc.user.application.payload.SelectTenantPayload
 import com.respiroc.user.domain.model.*
 import com.respiroc.user.domain.repository.UserRepository
 import com.respiroc.user.domain.repository.UserSessionRepository
 import com.respiroc.user.domain.repository.UserTenantRepository
 import com.respiroc.user.domain.repository.UserTenantRoleRepository
+import com.respiroc.util.constant.TenantRoleCode
 import com.respiroc.util.context.*
 import com.respiroc.util.currency.CurrencyService
+import com.respiroc.util.payload.CreateCompanyPayload
 import org.springframework.security.authentication.AccountStatusUserDetailsChecker
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
@@ -27,6 +30,7 @@ import java.time.temporal.ChronoUnit
 @Transactional
 class UserService(
     private val userRepository: UserRepository,
+    private val tenantService: TenantService,
     private val userSessionRepository: UserSessionRepository,
     private val userTenantRoleRepository: UserTenantRoleRepository,
     private val userTenantRepository: UserTenantRepository,
@@ -60,55 +64,58 @@ class UserService(
         return login(user)
     }
 
-    fun changePassword(
-        user: SpringUser,
-        oldPassword: String,
-        newPassword: String
-    ) {
-        TODO("Not yet implemented")
+    fun selectTenant(user: UserContext, tenatId: Long, token: String): SelectTenantPayload {
+        val userSession = userSessionRepository.findByToken(token)
+        if (userSession != null) {
+            val newToken = jwt.generateToken(user.email, tenatId, JWT_TOKEN_PERIOD)
+
+            userSession.token = newToken
+            userSessionRepository.save(userSession)
+
+            val user = userSession.user
+            user.lastTenantId = tenatId
+            userRepository.save(user)
+
+            return SelectTenantPayload(newToken)
+        }
+        throw BadCredentialsException("Token is not valid")
     }
 
-    fun logout(token: String) {
-        TODO("Not yet implemented")
+    fun logout(token: String): Boolean {
+        return userSessionRepository.findByToken(token)?.let { session ->
+            session.tokenRevokedAt = Instant.now()
+            userSessionRepository.save(session)
+            true
+        } ?: false
     }
 
-    fun forgetPassword(
-        email: String,
-        ipAddress: String
-    ): ForgotPayload {
-        TODO("Not yet implemented")
-    }
-
-    fun resetPassword(token: String, newPassword: String) {
-        TODO("Not yet implemented")
-    }
-
-    fun setPassword(user: SpringUser, newPassword: String) {
-        TODO("Not yet implemented")
-    }
 
     fun findByToken(token: String): UserContext? {
         return userRepository.findByToken(token, Instant.now())?.let { user ->
             if (jwt.isTokenValid(token = token, subject = user.email)) {
-                user.toUserContext()
+                val tenantId = jwt.extractTenantId(token)
+                user.toUserContext(tenantId)
             } else {
                 null
             }
         }
     }
 
-    fun findByEmail(email: String): UserContext? {
-        TODO("Not yet implemented")
-    }
-
     fun findTenantRoles(userId: Long, tenantId: Long): List<TenantRoleContext> {
-        return userRepository.findUserWithTenantRoles(userId, tenantId)!!.userTenants.single().roles.map {
-            it.tenantRole.toTenantRoleContext()
-        }
+        // TODO : There is bug here: Collection has more than one element. There is more than one tenant
+        return userRepository.findUserWithTenantRoles(userId, tenantId)!!
+            .userTenants.single { it.tenantId == tenantId }
+            .roles.map {
+                it.tenantRole.toTenantRoleContext()
+            }
     }
 
-    fun generateToken(user: SpringUser): String {
-        TODO("Not yet implemented")
+    fun createTenantForUser(payload: CreateCompanyPayload, user: UserContext): Tenant {
+        // TODO: check for exist user tenant company
+        val tenant = tenantService.createNewTenant(payload)
+        val tenantRole = tenantService.findTenantRoleByCode(TenantRoleCode.OWNER)
+        addUserTenantRole(tenant, tenantRole, user)
+        return tenant
     }
 
     fun addUserTenantRole(
@@ -147,10 +154,10 @@ class UserService(
     }
 
     private fun login(user: User): LoginPayload {
-        val springUser = SpringUser(user.toUserContext())
+        val springUser = SpringUser(user.toUserContext(user.lastTenantId))
         AccountStatusUserDetailsChecker().check(springUser)
 
-        val token = jwt.generateToken(springUser.username, JWT_TOKEN_PERIOD)
+        val token = jwt.generateToken(user.email, user.lastTenantId, JWT_TOKEN_PERIOD)
 
         val userSession = UserSession()
         userSession.user = user
@@ -162,20 +169,34 @@ class UserService(
         user.lastLoginAt = Instant.now()
         userRepository.save(user)
 
-        return LoginPayload(token, springUser)
+        return LoginPayload(token)
     }
 
-    private fun User.toUserContext(): UserContext {
+    private fun User.toUserContext(tenantId: Long?): UserContext {
         return UserContext(
             id = this.id,
             email = this.email,
             password = this.passwordHash,
             isEnabled = this.isEnabled,
             isLocked = this.isLocked,
-            currentTenant = null, // Should be set on tenant filter process
+            currentTenant = this.toCurrentTenant(tenantId),
             tenants = this.getTenantsInfo(),
             roles = this.roles.map { it -> it.toRoleContext() }.toList()
         )
+    }
+
+    private fun User.toCurrentTenant(tenantId: Long?): UserTenantContext? {
+        return tenantId
+            ?.let { id -> userTenants.singleOrNull { it.tenantId == id }?.tenant }
+            ?.let { tenant ->
+                UserTenantContext(
+                    id = tenantId,
+                    companyName = tenant.getCompanyName(),
+                    countryCode = currencyService.getCompanyCurrency(tenant.getCompanyCountryCode()),
+                    roles = findTenantRoles(this.id, tenantId),
+                    tenantSlug = tenant.slug
+                )
+            }
     }
 
     private fun User.getTenantsInfo(): List<TenantInfo> {

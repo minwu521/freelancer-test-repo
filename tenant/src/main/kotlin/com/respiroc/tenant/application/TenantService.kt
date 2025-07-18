@@ -2,7 +2,7 @@ package com.respiroc.tenant.application
 
 
 import com.respiroc.company.application.CompanyService
-import com.respiroc.company.application.payload.CreateCompanyPayload
+import com.respiroc.util.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
 import com.respiroc.tenant.domain.model.Tenant
 import com.respiroc.tenant.domain.model.TenantRole
@@ -29,8 +29,8 @@ class TenantService(
         return tenantRepository.saveAndFlush(tenant)
     }
 
-    fun createNewTenant(command: CreateCompanyPayload): Tenant {
-        val company = companyService.getOrCreateCompany(command)
+    fun createNewTenant(payload: CreateCompanyPayload): Tenant {
+        val company = companyService.getOrCreateCompany(payload)
         val tenant = Tenant()
         tenant.company = company
         tenant.slug = generateSlug(company.name)

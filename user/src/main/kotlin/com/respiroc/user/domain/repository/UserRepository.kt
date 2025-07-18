@@ -25,7 +25,6 @@ interface UserRepository : CustomJpaRepository<User, Long> {
         """)
     fun findByToken(@Param("token") token: String, @Param("time") time: Instant): User?
 
-
     @Query("""
         SELECT user FROM User user
         LEFT JOIN FETCH user.userTenants userTenants

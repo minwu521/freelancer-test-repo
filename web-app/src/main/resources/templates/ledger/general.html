@@ -15,11 +15,11 @@
                                   name="startDate" 
                                   size="small"
                                   th:value="${startDate}"
-                                  th:hx-get="'/htmx/ledger/general?tenantId=' + ${user.ctx.currentTenant.id}"
-                                  hx-target="#tableContent"
-                                  hx-indicator="#loading-indicator"
-                                  hx-trigger="change"
-                                  hx-include="[name='endDate'], [name='accountNumber']"></wa-input>
+                                  th:hx-get="'/htmx/ledger/general'"
+                                  th:hx-target="'#tableContent'"
+                                  th:hx-indicator="'#loading-indicator'"
+                                  th:hx-trigger="'change'"
+                                  th:hx-include="'[name=\'endDate\'], [name=\'accountNumber\']'"></wa-input>
                     </div>
                     
                     <div class="wa-stack wa-gap-xs">
@@ -28,11 +28,11 @@
                                   name="endDate" 
                                   size="small"
                                   th:value="${endDate}"
-                                  th:hx-get="'/htmx/ledger/general?tenantId=' + ${user.ctx.currentTenant.id}"
-                                  hx-target="#tableContent"
-                                  hx-indicator="#loading-indicator"
-                                  hx-trigger="change"
-                                  hx-include="[name='startDate'], [name='accountNumber']"></wa-input>
+                                  th:hx-get="'/htmx/ledger/general'"
+                                  th:hx-target="'#tableContent'"
+                                  th:hx-indicator="'#loading-indicator'"
+                                  th:hx-trigger="'change'"
+                                  th:hx-include="'[name=\'startDate\'], [name=\'accountNumber\']'"></wa-input>
                     </div>
                 </div>
             </wa-card>
@@ -102,7 +102,7 @@
                                             </td>
                                             <td>
                                                 <a th:if="${posting.voucherId != null}"
-                                                   th:href="'/voucher/' + ${posting.voucherId} + '?tenantId=' + ${user.ctx.currentTenant.id}"
+                                                   th:href="'/voucher/' + ${posting.voucherId}"
                                                    style="color: var(--wa-color-blue-50); text-decoration: none;"
                                                    th:text="${posting.voucherNumber}">
                                                     5-2020

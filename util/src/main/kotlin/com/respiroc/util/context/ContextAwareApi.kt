@@ -1,5 +1,7 @@
 package com.respiroc.util.context
 
+import com.respiroc.util.exception.MissingTenantContextException
+
 /**
  * Interface for APIs that need access to user context and tenant information.
  * Provides default implementations using Spring Security context.
@@ -18,12 +20,12 @@ interface ContextAwareApi {
     /**
      * Extracts the tenant ID from the current user context.
      * @return Current tenant ID from the user's context
-     * @throws IllegalStateException if no user is authenticated or no current tenant is set
+     * @throws MissingTenantContextException if no user is authenticated or no current tenant is set
      */
-    fun currentTenantId(): Long {
+    fun tenantId(): Long {
         val userContext = user()
         return userContext.currentTenant?.id
-            ?: throw IllegalStateException("No current tenant is set for the user")
+            ?: throw MissingTenantContextException()
     }
 
     /**

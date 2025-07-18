@@ -27,13 +27,18 @@
                            th:text="${currentTenant != null ? currentTenant.companyName : 'Select Company'}">
                     Select Company
                 </wa-button>
-                <wa-dropdown-item th:each="tenant : ${tenants}"
-                                  th:onclick="'switchCompany(' + ${tenant.id} + ')'"
-                                  th:class="${currentTenant != null and currentTenant.id == tenant.id} ? 'selected' : ''">
+                <wa-dropdown-item
+                        th:each="tenant : ${tenants}"
+                        th:hx-post="@{/htmx/auth/select-tenant(tenantId=${tenant.id})}"
+                        th:hx-target="'body'"
+                        th:hx-swap="'innerHTML'"
+                        th:hx-indicator="'#loading-indicator'"
+                        th:disabled="${currentTenant?.id == tenant.id}">
+
                     <span th:text="${tenant.companyName}" />
                 </wa-dropdown-item>
                 <wa-divider></wa-divider>
-                <wa-dropdown-item onclick="window.open('/tenant/create', '_blank')">
+                <wa-dropdown-item onclick="window.open('/tenant/create')">
                     <wa-icon slot="icon" name="plus"></wa-icon>
                     <span th:text="#{layout.company.selector.create}" />
                 </wa-dropdown-item>
