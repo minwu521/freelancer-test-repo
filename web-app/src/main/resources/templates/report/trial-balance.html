@@ -8,42 +8,42 @@
 <body>
 <main layout:fragment="content">
     <div>
-        
+
         <div class="r-trial-balance-container">
-            
+
             <div class="r-filters-section">
                 <div class="r-filters-form" th:if="${user != null and user.ctx.currentTenant != null}">
-                    
+
                     <div class="r-filter-group">
-                        <label class="r-filter-label" for="startDate" th:text="#{start_date}" />
+                        <label class="r-filter-label" for="startDate" th:text="#{start_date}"/>
                         <wa-input type="date"
-                               size="small"
-                               id="startDate" 
-                               name="startDate"
-                               th:value="${startDate}"
-                               th:hx-get="'/htmx/report/trial-balance'"
-                               th:hx-target="'#content-area'"
-                               th:hx-indicator="'#loading-indicator'"
-                               th:hx-swap="'innerHTML'"
-                               th:hx-trigger="'change'"
-                               th:hx-include="'[name=\'endDate\']'"></wa-input>
+                                  size="small"
+                                  id="startDate"
+                                  name="startDate"
+                                  th:value="${startDate}"
+                                  th:hx-get="'/htmx/report/trial-balance'"
+                                  th:hx-target="'#content-area'"
+                                  th:hx-indicator="'#loading-indicator'"
+                                  th:hx-swap="'innerHTML'"
+                                  th:hx-trigger="'change'"
+                                  th:hx-include="'[name=\'endDate\']'"></wa-input>
                     </div>
-                    
+
                     <div class="r-filter-group">
-                        <label class="r-filter-label" for="endDate" th:text="#{end_date}" />
+                        <label class="r-filter-label" for="endDate" th:text="#{end_date}"/>
                         <wa-input type="date"
-                               size="small"
-                               id="endDate" 
-                               name="endDate"
-                               th:value="${endDate}"
-                               th:hx-get="'/htmx/report/trial-balance'"
-                               th:hx-target="'#content-area'"
-                               th:hx-indicator="'#loading-indicator'"
-                               th:hx-swap="'innerHTML'"
-                               th:hx-trigger="'change'"
-                               th:hx-include="'[name=\'startDate\']'"></wa-input>
+                                  size="small"
+                                  id="endDate"
+                                  name="endDate"
+                                  th:value="${endDate}"
+                                  th:hx-get="'/htmx/report/trial-balance'"
+                                  th:hx-target="'#content-area'"
+                                  th:hx-indicator="'#loading-indicator'"
+                                  th:hx-swap="'innerHTML'"
+                                  th:hx-trigger="'change'"
+                                  th:hx-include="'[name=\'startDate\']'"></wa-input>
                     </div>
-                    
+
                     <!-- Loading Indicator -->
                     <div class="r-filter-group">
                         <div id="loading-indicator" class="htmx-indicator r-loading-indicator">
@@ -53,72 +53,76 @@
                     </div>
                 </div>
             </div>
-            
+
             <div id="content-area">
                 <div th:fragment="tableContent">
                     <div th:unless="${trialBalanceData.entries.empty}">
                         <div style="overflow-x: auto;">
-                            <table class="r-trial-balance-table">
-                                <thead>
+                            <wa-scroller>
+                                <table class="r-trial-balance-table">
+                                    <thead>
                                     <tr>
-                                        <th style="width: 15%;" th:text="#{account}" />
-                                        <th style="width: 35%;" th:text="#{account_name}" />
-                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{opening_balance}" />
-                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{difference}" />
-                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{closing_balance}" />
+                                        <th style="width: 15%;" th:text="#{account}"/>
+                                        <th style="width: 35%;" th:text="#{account_name}"/>
+                                        <th class="r-amount-header" style="width: 16.67%;"
+                                            th:text="#{opening_balance}"/>
+                                        <th class="r-amount-header" style="width: 16.67%;" th:text="#{difference}"/>
+                                        <th class="r-amount-header" style="width: 16.67%;"
+                                            th:text="#{closing_balance}"/>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                    </thead>
+                                    <tbody>
                                     <tr th:each="entry : ${trialBalanceData.entries}">
                                         <td>
-                                            <span class="r-account-number" th:text="${entry.accountNumber}" />
+                                            <span class="r-account-number" th:text="${entry.accountNumber}"/>
                                         </td>
                                         <td>
-                                            <span class="r-account-name" th:text="${entry.accountName}" />
+                                            <span class="r-account-name" th:text="${entry.accountName}"/>
                                         </td>
                                         <td class="r-amount-cell">
                                             <span th:class="${entry.openingBalanceClass}"
-                                                  th:text="${#numbers.formatDecimal(entry.openingBalance, 1, 2)}" />
+                                                  th:text="${#numbers.formatDecimal(entry.openingBalance, 1, 2)}"/>
                                         </td>
                                         <td class="r-amount-cell">
                                             <span th:class="${entry.differenceClass}"
-                                                  th:text="${#numbers.formatDecimal(entry.difference, 1, 2)}" />
+                                                  th:text="${#numbers.formatDecimal(entry.difference, 1, 2)}"/>
                                         </td>
                                         <td class="r-amount-cell">
                                             <span th:class="${entry.closingBalanceClass}"
-                                                  th:text="${#numbers.formatDecimal(entry.closingBalance, 1, 2)}" />
+                                                  th:text="${#numbers.formatDecimal(entry.closingBalance, 1, 2)}"/>
                                         </td>
                                     </tr>
-                                </tbody>
-                                <tfoot>
+                                    </tbody>
+                                    <tfoot>
                                     <tr class="r-total-row">
                                         <td colspan="2"><strong>Total</strong></td>
                                         <td class="r-amount-cell">
-                                            <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalOpeningBalance, 1, 2)}" />
+                                            <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalOpeningBalance, 1, 2)}"/>
                                         </td>
                                         <td class="r-amount-cell">
-                                            <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalDifference, 1, 2)}" />
+                                            <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalDifference, 1, 2)}"/>
                                         </td>
                                         <td class="r-amount-cell">
-                                            <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalClosingBalance, 1, 2)}" />
+                                            <strong th:text="${#numbers.formatDecimal(trialBalanceData.totalClosingBalance, 1, 2)}"/>
                                         </td>
                                     </tr>
-                                </tfoot>
-                            </table>
+                                    </tfoot>
+                                </table>
+                            </wa-scroller>
                         </div>
                     </div>
-                    
+
                     <div th:if="${trialBalanceData.entries.empty}" class="r-empty-state">
                         <div class="r-empty-state-icon">
                             <wa-icon name="table"></wa-icon>
                         </div>
-                        <h3 th:text="#{no_Data_available}" />
-                        <p th:text="#{no_posting_found}" />
-                        <p th:text="#{try_adjusting_date}" />
+                        <h3 th:text="#{no_Data_available}"/>
+                        <p th:text="#{no_posting_found}"/>
+                        <p th:text="#{try_adjusting_date}"/>
                     </div>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </main>
