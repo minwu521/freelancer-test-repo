@@ -12,7 +12,7 @@
             <div style="padding: var(--wa-space-xl)">
                 <form id="createContactForm"
                       th:object="${contact}"
-                      th:hx-post="@{/htmx/contact(tenantId=${currentTenant.id})}"
+                      hx-post="/htmx/contact"
                       hx-indicator="#loading-indicator"
                       hx-disabled-elt="#submitButton"
                       class="wa-grid" style="--min-column-size: 1000px;"
@@ -30,7 +30,7 @@
                                 name="privateContact"
                                 th:label="#{contact.private_contact}"
                                 th:value="${contact.privateContact}"
-                                th:attr="hx-get='/htmx/contact/new?tenantId=' + ${currentTenant.id}"
+                                hx-get="/htmx/contact/new"
                                 hx-target="#contactFormFields"
                                 hx-trigger="change"
                         >
@@ -56,6 +56,7 @@
                                     hx-target="#name-dropdown"
                                     hx-swap="outerHTML">
                             </wa-input>
+                            <div id="name-dropdown"></div>
                             <wa-input
                                     th:if="${contact.privateContact}"
                                     id="companyName"
@@ -67,7 +68,6 @@
                                     required
                                     autocomplete="off">
                             </wa-input>
-                            <div id="name-dropdown"></div>
                         </div>
                         <div th:unless="${contact.privateContact}" id="orgNumberGroup">
                             <wa-input

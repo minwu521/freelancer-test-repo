@@ -22,7 +22,7 @@
                     size="small"
                     variant="danger"
                     th:hx-target="'#row-' + ${contact.id}"
-                    th:hx-delete="@{/contact/{type}/{id}(id=${contact.id}, type=${type}, tenantId=${currentTenant?.id})}"
+                    th:hx-delete="@{/contact/{type}/{id}(id=${contact.id}, type=${type})}"
                     th:hx-indicator="'#loading-indicator-' + ${contact.id}"
                     hx-disabled-elt="this"
                     hx-swap="outerHTML swap:0.5s"

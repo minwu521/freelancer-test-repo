@@ -2,8 +2,8 @@ package com.respiroc.webapp.controller.web
 
 import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.customer.application.CustomerService
-import com.respiroc.customer.domain.model.Customer
 import com.respiroc.customer.domain.model.ContactType
+import com.respiroc.customer.domain.model.Customer
 import com.respiroc.supplier.application.SupplierService
 import com.respiroc.supplier.domain.model.Supplier
 import com.respiroc.webapp.controller.BaseController
@@ -23,12 +23,11 @@ class ContactWebController(
 
     @GetMapping("/customer")
     fun getCustomers(model: Model): String {
-        val tenantId = user().currentTenant!!.id
-        val customers = customerService.findAllCustomerByTenantId(tenantId)
+        val customers = customerService.findAllCustomerByTenantId(tenantId())
         model.addAttribute("contacts", customers)
         model.addAttribute("searchUrl", "/htmx/contact/${ContactType.CUSTOMER.type}/search")
         model.addAttribute("type", ContactType.CUSTOMER.type)
-        addCommonAttributes(model, "Customer")
+        addCommonAttributesForCurrentTenant(model, "Customer")
         return "contact/contact"
     }
 
@@ -38,33 +37,30 @@ class ContactWebController(
             "contact",
             CreateCustomerRequest("", "", ContactType.CUSTOMER.type, false)
         )
-        addCommonAttributes(model, "New Contact")
+        addCommonAttributesForCurrentTenant(model, "New Contact")
         return "contact/contact-form"
     }
 
     @DeleteMapping("/customer/{id}")
     @ResponseBody
     fun deleteCustomer(@PathVariable(name = "id") id: Long) {
-        val userTenantId = user().currentTenant!!.id
-        customerService.deleteByIdAndTenantId(id, userTenantId)
+        customerService.deleteByIdAndTenantId(id, tenantId())
     }
 
     @GetMapping("/supplier")
     fun getSupplier(model: Model): String {
-        val tenantId = user().currentTenant!!.id
-        val suppliers = supplierService.findAllSupplierByTenantId(tenantId)
+        val suppliers = supplierService.findAllSupplierByTenantId(tenantId())
         model.addAttribute("contacts", suppliers)
         model.addAttribute("searchUrl", "/htmx/contact/${ContactType.SUPPLIER.type}/search")
         model.addAttribute("type", ContactType.SUPPLIER.type)
-        addCommonAttributes(model, "Supplier")
+        addCommonAttributesForCurrentTenant(model, "Supplier")
         return "contact/contact"
     }
 
     @DeleteMapping("/supplier/{id}")
     @ResponseBody
     fun deleteSupplier(@PathVariable(name = "id") id: Long) {
-        val userTenantId = user().currentTenant!!.id
-        supplierService.deleteByIdAndTenantId(id, userTenantId)
+        supplierService.deleteByIdAndTenantId(id, tenantId())
     }
 }
 
@@ -77,7 +73,7 @@ class ContactHTMxController(
 
     @GetMapping("/customer/search")
     fun searchCustomers(@RequestParam("name") name: String, model: Model): String {
-        val tenantId = user().currentTenant!!.id
+        val tenantId = tenantId()
         val isExistName = !(name.isBlank())
         val customers: List<Customer> = if (isExistName)
             customerService.findByNameContainingAndTenantId(name, tenantId)
@@ -85,13 +81,12 @@ class ContactHTMxController(
             customerService.findAllCustomerByTenantId(tenantId)
         model.addAttribute("contacts", customers)
         model.addAttribute("type", ContactType.CUSTOMER.type)
-        model.addAttribute(currentTenantAttributeName, user().currentTenant)
         return "fragments/contact-table"
     }
 
     @GetMapping("/supplier/search")
     fun searchSuppliers(@RequestParam("name") name: String, model: Model): String {
-        val tenantId = user().currentTenant!!.id
+        val tenantId = tenantId()
         val isExistName = !(name.isBlank())
         val suppliers: List<Supplier> = if (isExistName)
             supplierService.findByNameContainingAndTenantId(name, tenantId)
@@ -99,7 +94,6 @@ class ContactHTMxController(
             supplierService.findAllSupplierByTenantId(tenantId)
         model.addAttribute("contacts", suppliers)
         model.addAttribute("type", ContactType.SUPPLIER.type)
-        model.addAttribute(currentTenantAttributeName, user().currentTenant)
         return "fragments/contact-table"
     }
 
@@ -133,7 +127,7 @@ class ContactHTMxController(
         val tenantId = user().currentTenant!!.id
         // TODO: add controller adviser
         // TODO: Fix callout fragment to display error messages without refresh page
-        var targetPage = "customer"
+        var targetPage: String
         when (payload.type) {
             ContactType.CUSTOMER -> {
                 customerService.createNewCustomer(payload, tenantId)
@@ -145,6 +139,6 @@ class ContactHTMxController(
                 targetPage = ContactType.SUPPLIER.type
             }
         }
-        return "redirect:htmx:/contact/${targetPage}?tenantId=${tenantId}"
+        return "redirect:htmx:/contact/${targetPage}"
     }
 }

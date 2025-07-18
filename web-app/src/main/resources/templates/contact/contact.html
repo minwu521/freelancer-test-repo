@@ -19,15 +19,14 @@
                           id="search-input">
                     <wa-icon name="search" slot="start"></wa-icon>
                 </wa-input>
-                <input type="hidden" name="tenantId" th:value="${currentTenant.id}"/>
             </form>
-            <wa-button size="small" th:href="@{/contact/new(tenantId=${currentTenant.id})}"
+            <wa-button size="small" href="/contact/new"
                        variant="neutral" th:text="#{contact.create}">
             </wa-button>
         </div>
         <wa-progress-bar id="loading-indicator" indeterminate class="htmx-indicator"
                          style="margin-bottom: var(--wa-space-xs)"></wa-progress-bar>
-        <div th:replace="~{fragments/contact-table :: table(contacts=${contacts}, type=${type}, currentTenant=${currentTenant})}"></div>
+        <div th:replace="~{fragments/contact-table :: table(contacts=${contacts}, type=${type})}"></div>
     </div>
 </main>
 <th:block layout:fragment="scripts">

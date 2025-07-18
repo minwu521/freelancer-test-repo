@@ -1,12 +1,12 @@
 package com.respiroc.common.service
 
 import com.respiroc.company.application.CompanyService
-import com.respiroc.company.application.payload.CreateCompanyPayload
 import com.respiroc.company.domain.model.Company
 import com.respiroc.companylookup.api.CompanyLookupInternalApi
 import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.util.domain.address.Address
 import com.respiroc.util.domain.person.PrivatePerson
+import com.respiroc.util.payload.CreateCompanyPayload
 import jakarta.persistence.EntityManager
 import org.springframework.stereotype.Service
 
