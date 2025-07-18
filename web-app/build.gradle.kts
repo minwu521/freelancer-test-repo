@@ -9,6 +9,7 @@ dependencies {
     implementation(project(":tenant"))
     implementation(project(":company"))
     implementation(project(":ledger"))
+    implementation(project(":contact"))
 
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")

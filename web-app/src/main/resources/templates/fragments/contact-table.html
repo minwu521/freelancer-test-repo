@@ -1,0 +1,35 @@
+<table class="r-custom-table" id="customer-table">
+    <thead>
+    <tr>
+        <th th:text="#{contact.table.name}"></th>
+        <th th:text="#{contact.table.type}"></th>
+        <th th:text="#{contact.table.person_or_company}"></th>
+        <th th:text="#{contact.organization_number}"></th>
+        <th class="r-text-right" th:text="#{contact.table.actions}"></th>
+    </tr>
+    </thead>
+    <tbody id="customer-table-body">
+    <tr th:if="${contacts == null || contacts.isEmpty()}">
+        <td colspan="4" class="r-no-data" th:text="#{contact.table.not_found}"></td>
+    </tr>
+    <tr th:each="contact : ${contacts}" th:id="'row-' + ${contact.id}">
+        <td th:data-label="#{contact.table.name}" th:text="${contact.company==null? contact.person?.name:contact.company.name}"></td>
+        <td th:data-label="#{contact.table.type}" th:text="${type}"></td>
+        <td th:data-label="#{contact.table.person_or_company}" th:text="${contact.company == null} ? #{contact.private_person} : #{contact.company}"></td>
+        <td th:data-label="#{contact.organization_number}" th:text="${contact.company?.organizationNumber}"></td>
+        <td th:data-label="#{contact.table.actions}" class="r-text-right">
+            <wa-button
+                    size="small"
+                    variant="danger"
+                    th:hx-target="'#row-' + ${contact.id}"
+                    th:hx-delete="@{/contact/{type}/{id}(id=${contact.id}, type=${type})}"
+                    th:hx-indicator="'#loading-indicator-' + ${contact.id}"
+                    hx-disabled-elt="this"
+                    hx-swap="outerHTML swap:0.5s"
+                    th:text="#{contact.table.delete}"
+                    th:hx-confirm="#{contact.table.delete_confirm}">
+            </wa-button>
+        </td>
+    </tr>
+    </tbody>
+</table>

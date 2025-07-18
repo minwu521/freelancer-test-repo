@@ -29,7 +29,7 @@ class CompanyService(
         return company
     }
 
-    fun createCompany(command: CreateCompanyPayload): Company {
+    private fun createCompany(command: CreateCompanyPayload): Company {
         val address = getOrCreateAddress(command)
         val company = Company()
         company.name = command.name
@@ -39,7 +39,7 @@ class CompanyService(
         return companyRepository.save(company)
     }
 
-    fun getOrCreateAddress(command: CreateCompanyPayload): Address? {
+    private fun getOrCreateAddress(command: CreateCompanyPayload): Address? {
         if (!isValidAddress(command)) return null
         val address = Address(
             city = command.city!!,
@@ -52,7 +52,7 @@ class CompanyService(
         return Address.upsertAddress(entityManager, address)
     }
 
-    fun isValidAddress(command: CreateCompanyPayload): Boolean {
+    private fun isValidAddress(command: CreateCompanyPayload): Boolean {
         return !(command.addressPart1 == null || command.city == null || command.addressCountryCode == null)
     }
 }

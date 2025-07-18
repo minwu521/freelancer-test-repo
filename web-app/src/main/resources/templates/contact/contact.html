@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" th:href="@{/assets/contact/contact.css}">
+    <link rel="stylesheet" th:href="@{/assets/fragments/contact-table.css}">
+</head>
+<body>
+<main layout:fragment="content">
+    <div>
+        <div class="r-table-toolbar">
+            <form th:hx-get="${searchUrl}"
+                  hx-trigger="keyup changed delay:500ms"
+                  hx-target="#customer-table"
+                  hx-indicator="#loading-indicator"
+                  hx-swap="innerHTML">
+                <wa-input th:placeholder="#{contact.search}" size="small" name="name" type="text"
+                          id="search-input">
+                    <wa-icon name="search" slot="start"></wa-icon>
+                </wa-input>
+            </form>
+            <wa-button size="small" href="/contact/new"
+                       variant="neutral" th:text="#{contact.create}">
+            </wa-button>
+        </div>
+        <wa-progress-bar id="loading-indicator" indeterminate class="htmx-indicator"
+                         style="margin-bottom: var(--wa-space-xs)"></wa-progress-bar>
+        <div th:replace="~{fragments/contact-table :: table(contacts=${contacts}, type=${type})}"></div>
+    </div>
+</main>
+<th:block layout:fragment="scripts">
+    <script th:src="@{/assets/contact/contact.js}"></script>
+</th:block>
+</body>
+</html>

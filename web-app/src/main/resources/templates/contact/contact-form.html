@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+<head>
+    <link rel="stylesheet" th:href="@{/assets/contact/contact-form.css}">
+</head>
+<body>
+<main layout:fragment="content">
+    <div>
+        <div id="alert-container" style="margin-bottom: var(--wa-space-m)"></div>
+        <wa-card style="margin-bottom: var(--wa-space-m);">
+            <div style="padding: var(--wa-space-xl)">
+                <form id="createContactForm"
+                      th:object="${contact}"
+                      hx-post="/htmx/contact"
+                      hx-indicator="#loading-indicator"
+                      hx-disabled-elt="#submitButton"
+                      class="wa-grid" style="--min-column-size: 1000px;"
+                      hx-swap="outerHTML">
+                    <div>
+                        <wa-select required label="Type" name="type" th:value="${contact.type}" th:field="*{type}">
+                            <wa-option value="customer" th:text="#{contact.customer}"></wa-option>
+                            <wa-option value="supplier" th:text="#{contact.supplier}"></wa-option>
+                        </wa-select>
+                    </div>
+                    <div>
+                        <wa-radio-group
+                                required
+                                orientation="horizontal"
+                                name="privateContact"
+                                th:label="#{contact.private_contact}"
+                                th:value="${contact.privateContact}"
+                                hx-get="/htmx/contact/new"
+                                hx-target="#contactFormFields"
+                                hx-trigger="change"
+                        >
+                            <wa-radio value="false" th:text="#{contact.company}"></wa-radio>
+                            <wa-radio value="true" th:text="#{contact.private_person}"></wa-radio>
+                        </wa-radio-group>
+                    </div>
+                    <div th:fragment="contactFormFields" id="contactFormFields" class="wa-grid"
+                         style="--min-column-size: 1000px;">
+                        <div>
+                            <wa-input
+                                    th:unless="${contact.privateContact}"
+                                    id="companyName"
+                                    th:label="#{contact.contact_name}"
+                                    name="name"
+                                    th:field="*{name}"
+                                    placeholder="Enter company name or search registry..."
+                                    size="medium"
+                                    required
+                                    autocomplete="off"
+                                    hx-get="/htmx/company/search"
+                                    hx-trigger="input changed delay:200ms"
+                                    hx-target="#name-dropdown"
+                                    hx-swap="outerHTML">
+                            </wa-input>
+                            <div id="name-dropdown"></div>
+                            <wa-input
+                                    th:if="${contact.privateContact}"
+                                    id="companyName"
+                                    th:label="#{contact.contact_name}"
+                                    name="name"
+                                    th:field="*{name}"
+                                    placeholder="Enter full name of private person..."
+                                    size="medium"
+                                    required
+                                    autocomplete="off">
+                            </wa-input>
+                        </div>
+                        <div th:unless="${contact.privateContact}" id="orgNumberGroup">
+                            <wa-input
+                                    id="organizationNumber"
+                                    name="organizationNumber"
+                                    th:label="#{contact.organization_number}"
+                                    th:field="*{organizationNumber}"
+                                    placeholder="Enter organization number..."
+                                    size="medium"
+                                    autocomplete="off">
+                            </wa-input>
+                            <wa-input style="visibility: hidden" th:field="*{countryCode}" name="countryCode" id="countryCode"></wa-input>
+                        </div>
+                        <div th:if="${contact.privateContact}" class="wa-grid" style="--min-column-size: 350px;">
+                            <wa-select id="countryCode" name="countryCode" th:field="*{countryCode}"
+                                       th:label="#{company.create.form.country.label}">
+                                <wa-option value="NO" th:text="#{company.create.form.country.norway}"></wa-option>
+                            </wa-select>
+                            <wa-input id="city"
+                                      name="city"
+                                      th:field="*{city}"
+                                      th:label="#{contact.form.city}">
+                            </wa-input>
+                            <wa-input id="administrativeDivisionCode"
+                                      name="administrativeDivisionCode"
+                                      th:field="*{administrativeDivisionCode}"
+                                      th:label="#{contact.form.administrativeDivisionCode}">
+                            </wa-input>
+                            <wa-input id="postalCode"
+                                      name="postalCode"
+                                      th:field="*{postalCode}"
+                                      th:label="#{contact.form.postal}">
+                            </wa-input>
+                            <wa-input id="addressPart1"
+                                      name="addressPart1"
+                                      th:field="*{addressPart1}"
+                                      th:label="#{contact.form.addressPart1}">
+                            </wa-input>
+                            <wa-input id="addressPart2"
+                                      name="addressPart2"
+                                      th:field="*{addressPart2}"
+                                      th:label="#{contact.form.addressPart2}">
+                            </wa-input>
+                        </div>
+                        <div>
+                            <wa-button type="submit" variant="success" size="small" id="submitButton"
+                                       th:text="#{contact.create}">
+                            </wa-button>
+                            <wa-spinner id="loading-indicator" class="htmx-indicator"
+                                        style="font-size: var(--wa-space-xl)"></wa-spinner>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </wa-card>
+    </div>
+</main>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/assets/contact/contact-form.js}"></script>
+</th:block>
+</body>
+</html>

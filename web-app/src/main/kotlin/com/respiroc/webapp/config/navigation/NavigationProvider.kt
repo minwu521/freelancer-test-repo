@@ -35,6 +35,15 @@ class NavigationProvider {
                     NavigationSectionItem(label = "Profit & Loss", url = "/report/profit-loss"),
                     NavigationSectionItem(label = "Balance Sheet", url = "/report/balance-sheet")
                 )
+            ),
+
+            NavigationSection(
+                title = "Contact", icon = "users",
+                items = listOf(
+                    NavigationSectionItem(label = "Customers", url = "/contact/customer"),
+                    NavigationSectionItem(label = "Suppliers", url = "/contact/supplier"),
+                    NavigationSectionItem(label = "New Customers/Suppliers", url = "/contact/new")
+                )
             )
         )
     }
