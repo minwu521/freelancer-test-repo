@@ -5,48 +5,26 @@
     <link rel="stylesheet" th:href="@{/assets/voucher/advanced-voucher.css}">
 
     <th:block th:replace="~{fragments/r-combobox :: r-combobox-dependencies}"></th:block>
-    
-    <style>
-        /* Spinner styles for save button during HTMX requests */
-        #saveButton.htmx-request {
-            position: relative;
-            pointer-events: none;
-        }
-        
-        #saveButton.htmx-request::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 16px;
-            height: 16px;
-            margin: -8px 0 0 -8px;
-            border: 2px solid transparent;
-            border-top: 2px solid currentColor;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            z-index: 1;
-        }
-        
-        #saveButton.htmx-request > * {
-            opacity: 0.3;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-    </style>
 </head>
 
 <body>
 <main layout:fragment="content">
     <div>
 
-        <form hx-indicator="#saveButton"
+        <div id="form-messages"></div>
+
+        <div class="htmx-indicator" id="loading-indicator" style="display: none;">
+            <div>
+                <wa-icon name="clock" style="margin-right: 0.5rem;"/>
+                <span th:text="#{voucher_saving}"/>
+            </div>
+        </div>
+
+        <form hx-indicator="#loading-indicator"
+              hx-target="#form-messages"
               th:hx-post="@{/htmx/voucher/update/{voucherId}(voucherId=${voucherId}, tenantId=${user.ctx.currentTenant?.id})}"
-              hx-swap="none"
               id="voucherForm"
+              hx-swap="innerHTML"
         >
 
             <div class="r-posting-form">
@@ -241,4 +219,4 @@
     <script th:src="@{/assets/voucher/advanced-voucher.js}"></script>
 </th:block>
 </body>
-</html> 
+</html>
