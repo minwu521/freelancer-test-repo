@@ -18,12 +18,6 @@
                       class="wa-grid" style="--min-column-size: 1000px;"
                       hx-swap="outerHTML">
                     <div>
-                        <wa-select required label="Type" name="type" th:value="${contact.type}" th:field="*{type}">
-                            <wa-option value="customer" th:text="#{contact.customer}"></wa-option>
-                            <wa-option value="supplier" th:text="#{contact.supplier}"></wa-option>
-                        </wa-select>
-                    </div>
-                    <div>
                         <wa-radio-group
                                 required
                                 orientation="horizontal"
