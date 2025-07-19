@@ -1,34 +1,27 @@
 package com.respiroc.webapp.config
 
+import com.nimbusds.jose.jwk.source.ImmutableSecret
 import com.respiroc.user.application.UserService
-import com.respiroc.util.context.SpringUser
-import jakarta.servlet.FilterChain
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.servlet.http.HttpServletResponse
-import org.apache.commons.lang3.StringUtils
-import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.oauth2.jwt.JwtDecoder
+import org.springframework.security.oauth2.jwt.JwtEncoder
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource
-import org.springframework.web.cors.CorsConfiguration
-import org.springframework.web.cors.CorsConfigurationSource
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource
-import org.springframework.web.filter.OncePerRequestFilter
+import java.util.Base64
+import javax.crypto.SecretKey
+import javax.crypto.spec.SecretKeySpec
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig {
-
-    @Autowired
-    lateinit var userService: UserService
+class WebSecurityConfig(
+    @param:Value("\${jwt.secret}") private val secret: String
+) {
 
     private val publicPaths = arrayOf(
         "/",
@@ -40,26 +33,30 @@ class WebSecurityConfig {
         "/htmx/auth/signup",
         "/error/**",
         "/actuator/**",
-        // Cloudflare worker calls this to add attachment to a tenant's voucher reception
         "/api/voucher-reception"
     )
 
     @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+    fun securityFilterChain(
+        http: HttpSecurity,
+        userService: UserService,
+        jwtCookieBearerTokenResolver: JwtCookieBearerTokenResolver
+    ): SecurityFilterChain {
         return http
             .authorizeHttpRequests { requests ->
                 requests
                     .requestMatchers(*publicPaths).permitAll()
                     .anyRequest().authenticated()
             }
-            .cors { }
+            .sessionManagement { session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
             .csrf { it.disable() }
-            .httpBasic { it.disable() }
-            .formLogin { it.disable() }
-            .addFilterBefore(
-                TokenAuthenticationFilter(userService),
-                UsernamePasswordAuthenticationFilter::class.java
-            )
+            .oauth2ResourceServer { oauth2 ->
+                oauth2
+                    .jwt { jwt ->
+                        jwt.jwtAuthenticationConverter(UserJwtAuthenticationConverter(userService))
+                    }
+                    .bearerTokenResolver(jwtCookieBearerTokenResolver)
+            }
             .exceptionHandling {
                 it.authenticationEntryPoint { request, response, authException ->
                     response.sendRedirect(
@@ -71,48 +68,15 @@ class WebSecurityConfig {
     }
 
     @Bean
-    fun corsConfigurationSource(): CorsConfigurationSource {
-        val configuration = CorsConfiguration()
-        configuration.applyPermitDefaultValues()
-        configuration.allowedMethods = listOf(
-            HttpMethod.GET.name(),
-            HttpMethod.HEAD.name(),
-            HttpMethod.POST.name(),
-            HttpMethod.PATCH.name(),
-            HttpMethod.PUT.name(),
-            HttpMethod.DELETE.name()
-        )
-        val source = UrlBasedCorsConfigurationSource()
-        source.registerCorsConfiguration("/**", configuration)
-        return source
-    }
+    fun jwtDecoder(): JwtDecoder =
+        NimbusJwtDecoder.withSecretKey(secretKey()).build()
 
-    class TokenAuthenticationFilter(private val userService: UserService) : OncePerRequestFilter() {
-        override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-            if (SecurityContextHolder.getContext().authentication == null) {
-                var token = ""
+    @Bean
+    fun jwtEncoder(): JwtEncoder =
+        NimbusJwtEncoder(ImmutableSecret(secretKey()))
 
-                val cookies = request.cookies
-                if (cookies != null) {
-                    val jwtCookie = cookies.find { it.name == "token" }
-                    if (jwtCookie != null && StringUtils.isNotEmpty(jwtCookie.value)) {
-                        token = jwtCookie.value
-                    }
-                }
-
-                if (StringUtils.isNotEmpty(token)) {
-                    val user = userService.findByToken(token)
-                    if (user != null) {
-                        val userDetails: UserDetails = SpringUser(user)
-                        val usernamePasswordAuthenticationToken =
-                            UsernamePasswordAuthenticationToken(userDetails, null, userDetails.authorities)
-                        usernamePasswordAuthenticationToken.details =
-                            WebAuthenticationDetailsSource().buildDetails(request)
-                        SecurityContextHolder.getContext().authentication = usernamePasswordAuthenticationToken
-                    }
-                }
-            }
-            chain.doFilter(request, response)
-        }
+    private fun secretKey(): SecretKey {
+        val decoded = Base64.getDecoder().decode(secret)
+        return SecretKeySpec(decoded, "HmacSHA256")
     }
 } 
