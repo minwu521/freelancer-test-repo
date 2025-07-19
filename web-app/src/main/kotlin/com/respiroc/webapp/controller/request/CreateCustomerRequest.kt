@@ -12,9 +12,6 @@ data class CreateCustomerRequest(
     @field:Size(max = 36, message = "Organization number must not exceed 36 characters")
     val organizationNumber: String?,
 
-    @field:NotBlank(message = "Type is required")
-    val type: String,
-
     @field:NotBlank(message = "Private Contact is required")
     val privateContact: Boolean,
 
