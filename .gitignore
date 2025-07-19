@@ -62,3 +62,6 @@ package-lock.json
 GEMINI.md
 CLAUDE.md
 .junie
+
+# secrets
+maskinporten_private_key.json
