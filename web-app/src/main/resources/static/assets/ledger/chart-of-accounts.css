@@ -21,10 +21,6 @@
 
 }
 
-.r-chart-of-accounts-table th.r-amount-header {
-    text-align: right;
-}
-
 .r-chart-of-accounts-table td {
     padding: 0.875rem 0.75rem;
     border-bottom: 1px solid var(--wa-color-surface-raised);

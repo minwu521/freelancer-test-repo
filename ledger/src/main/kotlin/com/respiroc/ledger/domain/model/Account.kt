@@ -16,7 +16,3 @@ enum class AccountType {
     COST_OF_GOODS_SOLD
 }
 
-fun AccountType.increasesWithDebit(): Boolean = when (this) {
-    AccountType.ASSET, AccountType.EXPENSE, AccountType.COST_OF_GOODS_SOLD -> true
-    AccountType.LIABILITY, AccountType.EQUITY, AccountType.REVENUE -> false
-} 

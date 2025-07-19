@@ -10,9 +10,6 @@ import java.time.LocalDate
 @Repository
 interface VoucherRepository : CustomJpaRepository<Voucher, Long> {
 
-    @Query("SELECT v FROM Voucher v WHERE v.tenantId = :tenantId ORDER BY v.number DESC")
-    fun findVoucherSummariesByTenantId(@Param("tenantId") tenantId: Long): List<Voucher>
-
     @Query("SELECT v FROM Voucher v WHERE v.tenantId = :tenantId AND v.date BETWEEN :startDate AND :endDate ORDER BY v.number DESC")
     fun findVoucherSummariesByTenantIdAndDateRange(
         @Param("tenantId") tenantId: Long,

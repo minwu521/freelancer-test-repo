@@ -12,7 +12,7 @@ class CurrencyService {
     companion object {
         private val logger = LoggerFactory.getLogger(CurrencyService::class.java)
         private val conversionCache = ConcurrentHashMap<String, Double>()
-        
+
         // Country to currency mapping
         private val countryCurrencyMap = mapOf(
             "NO" to "NOK", // Norway
@@ -69,22 +69,14 @@ class CurrencyService {
 
     fun convertCurrency(amount: BigDecimal, fromCurrency: String, toCurrency: String = "NOK"): BigDecimal {
         if (fromCurrency == toCurrency) return amount
-        
+
         val conversionFactor = getRate(fromCurrency, toCurrency)
         return amount.multiply(BigDecimal.valueOf(conversionFactor))
             .setScale(2, java.math.RoundingMode.HALF_UP)
-    }
-
-    fun convertCurrency(amount: Double, fromCurrency: String, toCurrency: String = "NOK"): Double {
-        val conversionFactor = getRate(fromCurrency, toCurrency)
-        return amount * conversionFactor
     }
 
     fun getSupportedCurrencies(): List<String> {
         return listOf("NOK", "DKK", "SEK", "EUR", "USD", "GBP", "CHF", "CAD", "AUD", "JPY")
     }
 
-    fun isCurrencySupported(currency: String): Boolean {
-        return getSupportedCurrencies().contains(currency.uppercase())
-    }
-} 
+}

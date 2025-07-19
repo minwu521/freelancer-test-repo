@@ -30,35 +30,6 @@
     color: var(--wa-color-gray-30);
 }
 
-.r-filter-input {
-    padding: 0.75rem;
-    border: 1px solid var(--wa-color-surface-raised);
-    border-radius: 8px;
-    font-size: 0.875rem;
-    min-width: 140px;
-}
-
-.r-filter-input:focus {
-    outline: none;
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-}
-
-.r-filter-button {
-    padding: 0.75rem 1.5rem;
-    background: var(--wa-color-blue-70);
-    color: var(--wa-color-surface-default);
-    border: none;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.r-filter-button:hover {
-    background: var(--wa-color-blue-40);
-}
-
 .r-balance-sheet-table {
     width: 100%;
     border-collapse: collapse;
@@ -117,36 +88,6 @@
     padding: 1rem 0.75rem;
 }
 
-.r-positive-amount {
-    color: var(--wa-color-green-50);
-}
-
-.r-negative-amount {
-    color: var(--wa-color-red-50);
-}
-
-.r-zero-amount {
-    color: var(--wa-color-gray-30);
-}
-
-.r-period-display {
-    background: var(--wa-color-surface-default);
-    padding: 1rem 1.5rem;
-    border-left: 4px solid var(--wa-color-blue-70);
-    margin-bottom: 1rem;
-}
-
-.r-period-title {
-    font-weight: 600;
-    color: var(--wa-color-blue-40);
-    margin-bottom: 0.25rem;
-}
-
-.r-period-subtitle {
-    color: var(--wa-color-gray-50);
-    font-size: 0.875rem;
-}
-
 .r-empty-state {
     text-align: center;
     padding: 3rem;
@@ -180,10 +121,6 @@
     .r-filters-form {
         flex-direction: column;
         align-items: stretch;
-    }
-
-    .r-filter-input {
-        min-width: auto;
     }
 
     .r-balance-sheet-table {

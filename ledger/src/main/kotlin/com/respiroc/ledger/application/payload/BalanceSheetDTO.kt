@@ -1,4 +1,4 @@
-package com.respiroc.ledger.api.payload
+package com.respiroc.ledger.application.payload
 
 import java.math.BigDecimal
 

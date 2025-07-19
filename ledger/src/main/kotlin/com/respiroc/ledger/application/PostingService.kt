@@ -1,7 +1,7 @@
 package com.respiroc.ledger.application
 
-import com.respiroc.ledger.api.payload.BalanceSheetEntry
-import com.respiroc.ledger.api.payload.BalanceSheetDTO
+import com.respiroc.ledger.application.payload.BalanceSheetEntry
+import com.respiroc.ledger.application.payload.BalanceSheetDTO
 import com.respiroc.ledger.application.payload.TrialBalanceEntry
 import com.respiroc.ledger.application.payload.TrialBalanceDTO
 import com.respiroc.ledger.application.payload.GeneralLedgerPayload
