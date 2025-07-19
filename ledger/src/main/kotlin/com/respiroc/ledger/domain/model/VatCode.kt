@@ -26,14 +26,6 @@ enum class VatCategory {
 }
 
 /**
- * Determines if this VAT type represents deductible input VAT
- */
-fun VatType.isDeductible(): Boolean = when (this) {
-    VatType.INPUT_VAT, VatType.REVERSE_CHARGE -> true
-    VatType.OUTPUT_VAT, VatType.EXEMPT, VatType.OUTSIDE_SCOPE -> false
-}
-
-/**
  * Determines if this VAT type requires VAT calculation
  */
 fun VatType.requiresVatCalculation(): Boolean = when (this) {
