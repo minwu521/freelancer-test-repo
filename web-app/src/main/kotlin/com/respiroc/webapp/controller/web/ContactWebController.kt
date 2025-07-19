@@ -1,6 +1,5 @@
 package com.respiroc.webapp.controller.web
 
-import com.respiroc.common.payload.NewContactPayload
 import com.respiroc.customer.application.CustomerService
 import com.respiroc.customer.domain.model.ContactType
 import com.respiroc.customer.domain.model.Customer
@@ -8,10 +7,12 @@ import com.respiroc.supplier.application.SupplierService
 import com.respiroc.supplier.domain.model.Supplier
 import com.respiroc.webapp.controller.BaseController
 import com.respiroc.webapp.controller.request.CreateCustomerRequest
+import com.respiroc.webapp.controller.request.toPayload
 import io.github.wimdeblauwe.htmx.spring.boot.mvc.HxRequest
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import java.util.Locale.getDefault
 
 
 @Controller
@@ -25,19 +26,20 @@ class ContactWebController(
     fun getCustomers(model: Model): String {
         val customers = customerService.findAllCustomerByTenantId(tenantId())
         model.addAttribute("contacts", customers)
-        model.addAttribute("searchUrl", "/htmx/contact/${ContactType.CUSTOMER.type}/search")
         model.addAttribute("type", ContactType.CUSTOMER.type)
-        addCommonAttributesForCurrentTenant(model, "Customer")
+        addCommonAttributesForCurrentTenant(model, ContactType.CUSTOMER.type)
         return "contact/contact"
     }
 
-    @GetMapping("/new")
-    fun getForm(model: Model): String {
+    @GetMapping("/{type}/new")
+    fun getContactForm(@PathVariable type: String, model: Model): String {
+        val contactType = ContactType.valueOf(type.uppercase(getDefault()))
         model.addAttribute(
             "contact",
-            CreateCustomerRequest("", "", ContactType.CUSTOMER.type, false)
+            CreateCustomerRequest("", "", false)
         )
-        addCommonAttributesForCurrentTenant(model, "New Contact")
+        addCommonAttributesForCurrentTenant(model, "New ${contactType.type}")
+        model.addAttribute("type", contactType.type)
         return "contact/contact-form"
     }
 
@@ -51,9 +53,8 @@ class ContactWebController(
     fun getSupplier(model: Model): String {
         val suppliers = supplierService.findAllSupplierByTenantId(tenantId())
         model.addAttribute("contacts", suppliers)
-        model.addAttribute("searchUrl", "/htmx/contact/${ContactType.SUPPLIER.type}/search")
         model.addAttribute("type", ContactType.SUPPLIER.type)
-        addCommonAttributesForCurrentTenant(model, "Supplier")
+        addCommonAttributesForCurrentTenant(model, ContactType.SUPPLIER.type)
         return "contact/contact"
     }
 
@@ -97,48 +98,36 @@ class ContactHTMxController(
         return "fragments/contact-table"
     }
 
-    @GetMapping("/new")
+    @GetMapping("/{type}/new")
     @HxRequest
     fun getForm(
         model: Model,
+        @PathVariable type: String,
         @RequestParam("privateContact", required = false) privateContact: Boolean = false,
     ): String {
+        val contactType = ContactType.valueOf(type.uppercase(getDefault()))
         model.addAttribute(
             "contact",
-            CreateCustomerRequest("", "", ContactType.CUSTOMER.type, privateContact)
+            CreateCustomerRequest("", "", privateContact)
         )
+        model.addAttribute("type", contactType.type)
         return "contact/contact-form :: contactFormFields"
     }
 
-    @PostMapping
+    @PostMapping("/customer")
     fun createCustomer(@ModelAttribute contact: CreateCustomerRequest): String {
-        val payload = NewContactPayload(
-            name = contact.name,
-            organizationNumber = contact.organizationNumber,
-            type = ContactType.valueOf(contact.type.uppercase()),
-            privateContact = contact.privateContact,
-            countryCode = contact.countryCode,
-            postalCode = contact.postalCode,
-            addressPart1 = contact.addressPart1,
-            addressPart2 = contact.addressPart2,
-            city = contact.city,
-            administrativeDivisionCode = contact.administrativeDivisionCode
-        )
-        val tenantId = user().currentTenant!!.id
         // TODO: add controller adviser
         // TODO: Fix callout fragment to display error messages without refresh page
-        var targetPage: String
-        when (payload.type) {
-            ContactType.CUSTOMER -> {
-                customerService.createNewCustomer(payload, tenantId)
-                targetPage = ContactType.CUSTOMER.type
-            }
-
-            ContactType.SUPPLIER -> {
-                supplierService.createNewSupplier(payload, tenantId)
-                targetPage = ContactType.SUPPLIER.type
-            }
-        }
-        return "redirect:htmx:/contact/${targetPage}"
+        customerService.createNewCustomer(contact.toPayload(), tenantId())
+        return "redirect:htmx:/contact/customer"
     }
+
+    @PostMapping("/supplier")
+    fun createSupplier(@ModelAttribute contact: CreateCustomerRequest): String {
+        // TODO: add controller adviser
+        // TODO: Fix callout fragment to display error messages without refresh page
+        supplierService.createNewSupplier(contact.toPayload(), tenantId())
+        return "redirect:htmx:/contact/supplier"
+    }
+
 }
