@@ -40,10 +40,9 @@ class JwtService(
         return extractExpiration(token).isBefore(Instant.now())
     }
 
-    fun isTokenValid(token: String, subject: String): Boolean {
+    fun isTokenValid(token: String): Boolean {
         return try {
-            val extractSubject = extractSubject(token)
-            extractSubject == subject && !isTokenExpired(token)
+            !isTokenExpired(token)
         } catch (_: JwtException) {
             false
         }

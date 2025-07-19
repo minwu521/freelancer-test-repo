@@ -2,6 +2,7 @@ package com.respiroc.webapp.config
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret
 import com.respiroc.user.application.UserService
+import com.respiroc.webapp.service.JwtService
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -40,6 +41,7 @@ class WebSecurityConfig(
     fun securityFilterChain(
         http: HttpSecurity,
         userService: UserService,
+        jwtService: JwtService,
         jwtCookieBearerTokenResolver: JwtCookieBearerTokenResolver
     ): SecurityFilterChain {
         return http
@@ -53,7 +55,7 @@ class WebSecurityConfig(
             .oauth2ResourceServer { oauth2 ->
                 oauth2
                     .jwt { jwt ->
-                        jwt.jwtAuthenticationConverter(UserJwtAuthenticationConverter(userService))
+                        jwt.jwtAuthenticationConverter(UserJwtAuthenticationConverter(userService, jwtService))
                     }
                     .bearerTokenResolver(jwtCookieBearerTokenResolver)
             }
