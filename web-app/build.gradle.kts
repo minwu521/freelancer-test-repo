@@ -21,7 +21,7 @@ dependencies {
     implementation("nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect")
     implementation("io.github.wimdeblauwe:htmx-spring-boot:4.0.1")
     implementation("io.github.wimdeblauwe:htmx-spring-boot-thymeleaf:4.0.1")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+//    developmentOnly("org.springframework.boot:spring-boot-devtools")
 
     // converting images to pdf, invoices etc.
     implementation("com.itextpdf:itext7-core:9.2.0")
