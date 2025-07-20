@@ -40,3 +40,6 @@ ssh:
 env:
   secret:
     - JWT_SECRET
+    - DB_URL_PROD
+    - DB_USERNAME_PROD
+    - DB_PASSWORD_PROD
