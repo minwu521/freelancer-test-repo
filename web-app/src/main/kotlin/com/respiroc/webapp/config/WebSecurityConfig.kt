@@ -3,7 +3,9 @@ package com.respiroc.webapp.config
 import com.nimbusds.jose.jwk.source.ImmutableSecret
 import com.respiroc.user.application.UserService
 import com.respiroc.util.context.SpringUser
+import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -13,10 +15,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator
 import org.springframework.security.oauth2.core.OAuth2TokenValidator
 import org.springframework.security.oauth2.jwt.*
 import org.springframework.security.oauth2.server.resource.web.BearerTokenResolver
+import org.springframework.security.web.AuthenticationEntryPoint
 import org.springframework.security.web.SecurityFilterChain
 import java.time.Duration
 import java.util.*
@@ -28,6 +32,10 @@ import javax.crypto.spec.SecretKeySpec
 class WebSecurityConfig(
     @param:Value("\${jwt.secret}") private val secret: String
 ) {
+
+    companion object {
+        const val JWT_COOKIE_NAME = "token"
+    }
 
     private val publicPaths = arrayOf(
         "/",
@@ -63,13 +71,7 @@ class WebSecurityConfig(
                             .decoder(jwtDecoder())
                     }
                     .bearerTokenResolver(JwtCookieBearerTokenResolver())
-            }
-            .exceptionHandling {
-                it.authenticationEntryPoint { request, response, authException ->
-                    response.sendRedirect(
-                        "/auth/login"
-                    )
-                }
+                    .authenticationEntryPoint(JwtAuthenticationEntryPoint())
             }
             .build()
     }
@@ -100,6 +102,23 @@ class WebSecurityConfig(
     // --------------------------------
     // Inner classes
     // --------------------------------
+
+    internal class JwtAuthenticationEntryPoint : AuthenticationEntryPoint {
+
+        override fun commence(
+            request: HttpServletRequest,
+            response: HttpServletResponse,
+            authException: AuthenticationException
+        ) {
+            val expiredCookie = Cookie(JWT_COOKIE_NAME, null)
+            expiredCookie.maxAge = 0
+            expiredCookie.path = "/"
+            expiredCookie.isHttpOnly = true
+            response.addCookie(expiredCookie)
+
+            response.sendRedirect("/auth/login")
+        }
+    }
 
     internal class UserJwtAuthenticationConverter(
         private val userService: UserService
