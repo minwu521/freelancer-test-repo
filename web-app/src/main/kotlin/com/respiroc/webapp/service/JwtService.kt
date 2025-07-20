@@ -15,7 +15,7 @@ class JwtService(
 
     companion object {
         const val TENANT_ID_KEY = "tenantId"
-        const val DEFAULT_PERIOD: Long = 10 * 1000
+        const val DEFAULT_PERIOD: Long = 24 * 60 * 60 * 1000
     }
 
     fun generateToken(subject: String, tenantId: Long?, period: Long = DEFAULT_PERIOD): String {
