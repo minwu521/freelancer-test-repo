@@ -37,7 +37,6 @@ subprojects {
     dependencies {
         "implementation"("org.jetbrains.kotlin:kotlin-reflect")
         "implementation"("com.fasterxml.jackson.module:jackson-module-kotlin")
-        "implementation"("org.apache.commons:commons-lang3:3.18.0")
         "implementation"("org.springframework.boot:spring-boot-starter-validation")
     }
 

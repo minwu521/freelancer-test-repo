@@ -5,7 +5,6 @@ import com.respiroc.util.context.SpringUser
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -95,12 +94,12 @@ class WebSecurityConfig {
                 val cookies = request.cookies
                 if (cookies != null) {
                     val jwtCookie = cookies.find { it.name == "token" }
-                    if (jwtCookie != null && StringUtils.isNotEmpty(jwtCookie.value)) {
+                    if (jwtCookie != null && !jwtCookie.value.isNullOrEmpty()) {
                         token = jwtCookie.value
                     }
                 }
 
-                if (StringUtils.isNotEmpty(token)) {
+                if (token.isNotEmpty()) {
                     val user = userService.findByToken(token)
                     if (user != null) {
                         val userDetails: UserDetails = SpringUser(user)
