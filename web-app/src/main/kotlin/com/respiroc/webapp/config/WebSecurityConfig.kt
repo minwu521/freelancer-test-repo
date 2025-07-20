@@ -135,10 +135,6 @@ class WebSecurityConfig(
 
     internal class JwtCookieBearerTokenResolver : BearerTokenResolver {
 
-        companion object {
-            const val JWT_COOKIE_NAME = "token"
-        }
-
         override fun resolve(request: HttpServletRequest?): String? {
             val cookies = request?.cookies ?: return null
             return cookies.find { it.name == JWT_COOKIE_NAME }?.value
