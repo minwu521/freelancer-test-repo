@@ -65,3 +65,4 @@ CLAUDE.md
 
 # secrets
 maskinporten_private_key.json
+.env
