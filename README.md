@@ -1,6 +1,6 @@
 ## ReAI accounting system
 
-(ReAI)[https://reai.no] is an "AI first" accounting system and ERP. 
+[ReAI](https://reai.no) is an "AI first" accounting system and ERP. 
 
 Features: 
 
