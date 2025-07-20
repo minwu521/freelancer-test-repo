@@ -63,12 +63,7 @@ class UserService(
         userRepository.save(userDb)
     }
 
-    fun logout(token: String): Boolean {
-        TODO("Implement blacklist later")
-    }
-
-
-    fun findByIdAndTenantId(id: Long, tenantId: Long): UserContext? {
+    fun findByIdAndTenantId(id: Long, tenantId: Long?): UserContext? {
         return userRepository.findById(id).getOrNull()?.toUserContext(tenantId)
     }
 

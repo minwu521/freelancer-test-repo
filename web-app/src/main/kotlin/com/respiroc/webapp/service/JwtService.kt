@@ -21,12 +21,16 @@ class JwtService(
     fun generateToken(subject: String, tenantId: Long?, period: Long = DEFAULT_PERIOD): String {
         val headers = JwsHeader.with(MacAlgorithm.HS256).build()
 
-        val claims = JwtClaimsSet.builder()
+        val claimsBuilder = JwtClaimsSet.builder()
             .subject(subject)
-            .claim(TENANT_ID_KEY, tenantId)
             .issuedAt(Instant.now())
             .expiresAt(Instant.now().plusMillis(period))
-            .build()
+
+        if (tenantId != null) {
+            claimsBuilder.claim(TENANT_ID_KEY, tenantId)
+        }
+
+        val claims = claimsBuilder.build()
 
         return jwtEncoder.encode(JwtEncoderParameters.from(headers, claims)).tokenValue
     }
