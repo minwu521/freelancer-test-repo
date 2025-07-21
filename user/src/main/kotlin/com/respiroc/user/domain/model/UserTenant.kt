@@ -2,7 +2,6 @@ package com.respiroc.user.domain.model
 
 import com.respiroc.tenant.domain.model.Tenant
 import jakarta.persistence.*
-import org.hibernate.annotations.TenantId
 
 @Entity
 @Table(name = "user_tenants")
