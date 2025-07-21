@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="#{login.page.title}" />
+    <title th:text="#{login.page.title}"/>
     <th:block th:replace="~{layout/libs :: common-libs}"></th:block>
-    <link rel="stylesheet" th:href="@{/assets/login/login.css}">
 </head>
 
 <body>
-<div class="main">
-    <div class="wa-center">
-        <wa-card style="max-width: 45ch; margin: 0 auto">
+<div class="wa-stack wa-align-items-center" style="justify-content: center; height: 100vh">
+    <div style="width: 340px">
+        <wa-card style="width: 100%">
             <!-- Messages container for HTMX -->
             <div id="message-container">
             </div>
@@ -32,7 +31,7 @@
 
         <!-- Footer -->
         <div style="text-align: center; margin-top: 0.5rem">
-            <p class="wa-body-xs" th:text="#{login.footer.security.message}" />
+            <p class="wa-body-xs" th:text="#{login.footer.security.message}"/>
         </div>
     </div>
 </div>
