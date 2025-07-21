@@ -3,16 +3,12 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
-    <!-- Include PDF.js CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/web/pdf_viewer.min.css" />
-
 </head>
 <body>
 <main layout:fragment="content">
     <div class="r-voucher-reception-container">
         <wa-callout variant="neutral" class="r-voucher-reception">
             <h1 class="wa-heading-xl" th:text="#{voucher_reception}" />
-
             <p class="wa-text">
                 <span th:text="#{voucher_reception_info}" />
                 <wa-tag variant="brand" appearance="accent">
@@ -21,10 +17,7 @@
             </p>
         </wa-callout>
 
-
-
         <div style="overflow-x: auto;">
-
             <table class="r-voucher-reception-table">
                 <thead>
                 <tr>
@@ -45,6 +38,7 @@
                     <td th:text="${#temporals.format(document.attachment.createdAt, 'dd.MM.yyyy HH:mm')}"/>
                     <td>
                         <wa-button
+                                data-drawer="open" data-target=".drawer-custom-size"
                                 variant="outline"
                                 size="small"
                                 class="view-pdf-btn"
@@ -65,18 +59,17 @@
                     <h2 class="wa-heading-m" th:text="#{no_voucher_reception_found}" />
                 </div>
             </div>
-
         </div>
 
+        <!-- PDF Preview Drawer -->
         <wa-drawer label="PDF Viewer" class="drawer-custom-size" style="--size: 50vw;">
             <div slot="header" class="pdf-header">
                 <h3 id="pdf-filename" class="wa-heading-m"></h3>
             </div>
             <div id="pdf-container" style="height: 100%; overflow-y: auto;">
-                <div id="pdf-loading" class="wa-center" style="padding: 2rem;">
-                    <wa-spinner size="large"></wa-spinner>
-                    <p>Loading PDF...</p>
-                </div>
+                <embed id="pdf-embed" type="application/pdf" style="width: 100%; height: 80vh; border: none;"
+                       th:attr="src='data:application/pdf;base64,'+ "
+                />
             </div>
             <div slot="footer" class="wa-flex wa-gap-m">
                 <wa-button variant="outline" data-drawer="close">Close</wa-button>
@@ -87,114 +80,54 @@
             </div>
         </wa-drawer>
 
+<!--        <script>-->
+<!--            const drawer = document.querySelector('.drawer-custom-size');-->
+<!--            const pdfEmbed = document.getElementById('pdf-embed');-->
+<!--            const pdfFilename = document.getElementById('pdf-filename');-->
+<!--            const downloadBtn = document.getElementById('download-pdf-btn');-->
 
+<!--            let currentPdfUrl = null;-->
 
-        <script type="module">
-            import { getDocument, GlobalWorkerOptions } from "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/pdf.min.mjs";
+<!--            document.querySelectorAll('.view-pdf-btn').forEach(button => {-->
+<!--                button.addEventListener('click', function () {-->
+<!--                    const base64 = this.dataset.pdfData;-->
+<!--                    const filename = this.dataset.filename;-->
+<!--                    const binary = atob(base64);-->
+<!--                    const len = binary.length;-->
+<!--                    const bytes = new Uint8Array(len);-->
+<!--                    for (let i = 0; i < len; i++) {-->
+<!--                        bytes[i] = binary.charCodeAt(i);-->
+<!--                    }-->
+<!--                    const blob = new Blob([bytes], { type: 'application/pdf' });-->
+<!--                    if (currentPdfUrl) URL.revokeObjectURL(currentPdfUrl);-->
+<!--                    currentPdfUrl = URL.createObjectURL(blob);-->
 
-            GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/5.3.93/pdf.worker.min.mjs";
+<!--                    pdfEmbed.src = currentPdfUrl;-->
+<!--                    pdfFilename.textContent = filename;-->
 
-            const drawer = document.querySelector('.drawer-custom-size');
-            const pdfContainer = document.getElementById('pdf-container');
-            const pdfFilename = document.getElementById('pdf-filename');
-            const downloadBtn = document.getElementById('download-pdf-btn');
-            let currentPdfUrl = null;
+<!--                    downloadBtn.style.display = 'inline-flex';-->
+<!--                    downloadBtn.onclick = () => {-->
+<!--                        const a = document.createElement('a');-->
+<!--                        a.href = currentPdfUrl;-->
+<!--                        a.download = filename;-->
+<!--                        document.body.appendChild(a);-->
+<!--                        a.click();-->
+<!--                        document.body.removeChild(a);-->
+<!--                    };-->
 
-            document.querySelectorAll('.view-pdf-btn').forEach(button => {
-                button.addEventListener('click', function () {
-                    const filename = this.dataset.filename;
-                    const pdfDataBase64 = this.dataset.pdfData;
+<!--                    drawer.open = true;-->
+<!--                });-->
+<!--            });-->
 
-                    pdfContainer.innerHTML = `
-        <div id="pdf-loading" class="wa-center" style="padding: 2rem;">
-          <wa-spinner size="large"></wa-spinner>
-          <p>Loading PDF...</p>
-        </div>`;
-                    pdfFilename.textContent = filename;
-                    drawer.open = true;
-
-                    loadPdfFromBase64(pdfDataBase64, filename);
-                });
-            });
-
-            async function loadPdfFromBase64(base64Data, filename) {
-                if (currentPdfUrl) {
-                    URL.revokeObjectURL(currentPdfUrl);
-                }
-
-                try {
-                    const binaryString = atob(base64Data);
-                    const bytes = new Uint8Array(binaryString.length);
-                    for (let i = 0; i < binaryString.length; i++) {
-                        bytes[i] = binaryString.charCodeAt(i);
-                    }
-                    const blob = new Blob([bytes], { type: 'application/pdf' });
-                    currentPdfUrl = URL.createObjectURL(blob);
-
-                    const loadingTask = getDocument(currentPdfUrl);
-                    const pdf = await loadingTask.promise;
-
-                    pdfContainer.innerHTML = '';
-                    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-                        await renderPdfPage(pdf, pageNum);
-                    }
-
-                    downloadBtn.style.display = 'inline-flex';
-                    downloadBtn.onclick = () => downloadPdf(filename);
-
-                } catch (error) {
-                    console.error('Error loading PDF:', error);
-                    pdfContainer.innerHTML = `
-        <div class="wa-center" style="padding: 2rem;">
-          <wa-icon name="exclamation-triangle" style="font-size: 2rem; color: var(--wa-color-error);"></wa-icon>
-          <p class="wa-text-error">Failed to load PDF: ${error.message}</p>
-        </div>`;
-                }
-            }
-
-            function renderPdfPage(pdf, pageNum) {
-                return pdf.getPage(pageNum).then(page => {
-                    const scale = 1.2;
-                    const viewport = page.getViewport({ scale });
-
-                    const canvas = document.createElement("canvas");
-                    const context = canvas.getContext("2d");
-                    canvas.height = viewport.height;
-                    canvas.width = viewport.width;
-                    canvas.style.display = 'block';
-                    canvas.style.margin = '0 auto 10px auto';
-                    canvas.style.border = '1px solid #ddd';
-
-                    const renderContext = {
-                        canvasContext: context,
-                        viewport: viewport
-                    };
-
-                    return page.render(renderContext).promise.then(() => {
-                        pdfContainer.appendChild(canvas);
-                    });
-                });
-            }
-
-            function downloadPdf(filename) {
-                if (currentPdfUrl) {
-                    const a = document.createElement('a');
-                    a.href = currentPdfUrl;
-                    a.download = filename;
-                    document.body.appendChild(a);
-                    a.click();
-                    document.body.removeChild(a);
-                }
-            }
-
-            drawer.addEventListener('wa-close', () => {
-                if (currentPdfUrl) {
-                    URL.revokeObjectURL(currentPdfUrl);
-                    currentPdfUrl = null;
-                }
-                downloadBtn.style.display = 'none';
-            });
-        </script>
+<!--            drawer.addEventListener('wa-close', () => {-->
+<!--                if (currentPdfUrl) {-->
+<!--                    URL.revokeObjectURL(currentPdfUrl);-->
+<!--                    currentPdfUrl = null;-->
+<!--                }-->
+<!--                pdfEmbed.removeAttribute('src');-->
+<!--                downloadBtn.style.display = 'none';-->
+<!--            });-->
+<!--        </script>-->
     </div>
 </main>
 </body>
