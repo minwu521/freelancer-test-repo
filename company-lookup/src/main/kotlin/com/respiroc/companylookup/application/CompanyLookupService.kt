@@ -4,7 +4,6 @@ import com.respiroc.companylookup.api.CompanyLookupInternalApi
 import com.respiroc.companylookup.domain.model.CompanyInfo
 import com.respiroc.companylookup.domain.model.CompanySearchResult
 import com.respiroc.companylookup.infrastructure.CompanyLookupProvider
-import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 
 @Service

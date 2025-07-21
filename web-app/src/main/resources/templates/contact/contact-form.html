@@ -12,25 +12,19 @@
             <div style="padding: var(--wa-space-xl)">
                 <form id="createContactForm"
                       th:object="${contact}"
-                      hx-post="/htmx/contact"
+                      th:hx-post="@{/htmx/contact/{type}(type=${type.toLowerCase()})}"
                       hx-indicator="#loading-indicator"
                       hx-disabled-elt="#submitButton"
                       class="wa-grid" style="--min-column-size: 1000px;"
                       hx-swap="outerHTML">
                     <div>
-                        <wa-select required label="Type" name="type" th:value="${contact.type}" th:field="*{type}">
-                            <wa-option value="customer" th:text="#{contact.customer}"></wa-option>
-                            <wa-option value="supplier" th:text="#{contact.supplier}"></wa-option>
-                        </wa-select>
-                    </div>
-                    <div>
                         <wa-radio-group
                                 required
                                 orientation="horizontal"
                                 name="privateContact"
-                                th:label="#{contact.private_contact}"
+                                th:label="|#{contact.private} ${type}|"
                                 th:value="${contact.privateContact}"
-                                hx-get="/htmx/contact/new"
+                                th:hx-get="@{/htmx/contact/{type}/new(type=${type.toLowerCase()})}"
                                 hx-target="#contactFormFields"
                                 hx-trigger="change"
                         >
@@ -44,7 +38,7 @@
                             <wa-input
                                     th:unless="${contact.privateContact}"
                                     id="companyName"
-                                    th:label="#{contact.contact_name}"
+                                    th:label="|${type} #{contact.name}|"
                                     name="name"
                                     th:field="*{name}"
                                     placeholder="Enter company name or search registry..."
@@ -60,7 +54,7 @@
                             <wa-input
                                     th:if="${contact.privateContact}"
                                     id="companyName"
-                                    th:label="#{contact.contact_name}"
+                                    th:label="|${type} #{contact.name}|"
                                     name="name"
                                     th:field="*{name}"
                                     placeholder="Enter full name of private person..."
@@ -79,7 +73,8 @@
                                     size="medium"
                                     autocomplete="off">
                             </wa-input>
-                            <wa-input style="visibility: hidden" th:field="*{countryCode}" name="countryCode" id="countryCode"></wa-input>
+                            <wa-input style="visibility: hidden" th:field="*{countryCode}" name="countryCode"
+                                      id="countryCode"></wa-input>
                         </div>
                         <div th:if="${contact.privateContact}" class="wa-grid" style="--min-column-size: 350px;">
                             <wa-select id="countryCode" name="countryCode" th:field="*{countryCode}"
@@ -114,7 +109,7 @@
                         </div>
                         <div>
                             <wa-button type="submit" variant="success" size="small" id="submitButton"
-                                       th:text="#{contact.create}">
+                                       th:text="|#{contact.create} ${type}|">
                             </wa-button>
                             <wa-spinner id="loading-indicator" class="htmx-indicator"
                                         style="font-size: var(--wa-space-xl)"></wa-spinner>

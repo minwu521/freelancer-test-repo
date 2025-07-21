@@ -35,7 +35,7 @@ data class PostingLine(
     val rowNumber: Int = 0
 ) {
     fun getAccountNumber(): String {
-        return if (debitAccount.isNotBlank()) debitAccount else creditAccount
+        return debitAccount.ifBlank { creditAccount }
     }
 
     fun getAccountType(): String {

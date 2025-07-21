@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" class="wa-cloak wa-theme-matter">
+<html lang="en" dir="ltr" xmlns:th="http://www.thymeleaf.org" class="wa-theme-matter wa-palette-mild wa-brand-purple">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,7 @@
                     <wa-input th:label="#{email.label}" type="email" id="email" name="email" required></wa-input>
                     <wa-input th:label="#{password.label}" type="password" id="password" name="password" required></wa-input>
                     <a href="/auth/signup" th:text="#{login.form.signup.link}"/>
-                    <wa-button type="submit" th:text="#{login.form.submit.button}"></wa-button>
+                    <wa-button type="submit" variant="brand" th:text="#{login.form.submit.button}"></wa-button>
                 </div>
             </form>
         </wa-card>

@@ -25,12 +25,13 @@
               th:hx-post="@{/htmx/voucher/update/{voucherId}(voucherId=${voucherId}, tenantId=${user.ctx.currentTenant?.id})}"
               id="voucherForm"
               hx-swap="innerHTML"
+              class="wa-stack"
         >
 
-            <div class="r-posting-form">
-                <div class="form-header">
-                    <h4 style="margin: 0;" th:text="${'Voucher ' + voucher.displayNumber}"/>
-                    <wa-button th:text="#{voucher_upload_files}"/>
+            <wa-card>
+                <div slot="header" class="wa-split">
+                    <h4 th:text="${'Voucher ' + voucher.displayNumber}"/>
+                    <wa-button appearance="plain" th:text="#{voucher_upload_files}"/>
                 </div>
 
                 <div class="wa-stack">
@@ -49,12 +50,11 @@
                                   type="text"/>
                     </div>
                 </div>
-            </div>
+            </wa-card>
 
-            <div class="r-posting-form">
-                <div class="form-header">
-                    <h4 style="margin: 0;" th:text="#{postings}"/>
-                    <small th:text="#{debits.credits}"/>
+            <wa-card>
+                <div slot="header">
+                    <h4 th:text="#{postings}"/>
                 </div>
 
 
@@ -199,7 +199,7 @@
                                variant="success"
                     />
                 </div>
-            </div>
+            </wa-card>
         </form>
 
 
@@ -219,4 +219,4 @@
     <script th:src="@{/assets/voucher/advanced-voucher.js}"></script>
 </th:block>
 </body>
-</html> 
+</html>

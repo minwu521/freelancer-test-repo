@@ -59,7 +59,7 @@ open class BaseController {
         model.addAttribute(userAttributeName, springUser)
         model.addAttribute(currentTenantAttributeName, currentTenant)
         model.addAttribute(tenantsAttributeName, tenants)
-        model.addAttribute(titleAttributeName, "${currentTenant.companyName} - ${title}")
+        model.addAttribute(titleAttributeName, "${currentTenant.companyName} - $title")
     }
 
     fun addCommonAttributes(

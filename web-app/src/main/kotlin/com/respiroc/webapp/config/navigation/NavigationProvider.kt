@@ -25,7 +25,7 @@ class NavigationProvider {
                 items = listOf(
                     NavigationSectionItem(label = "General Ledger", url = "/ledger/general"),
                     NavigationSectionItem(label = "Chart of Accounts", url = "/ledger/chart-of-accounts"),
-                    )
+                )
             ),
 
             NavigationSection(
@@ -42,7 +42,8 @@ class NavigationProvider {
                 items = listOf(
                     NavigationSectionItem(label = "Customers", url = "/contact/customer"),
                     NavigationSectionItem(label = "Suppliers", url = "/contact/supplier"),
-                    NavigationSectionItem(label = "New Customers/Suppliers", url = "/contact/new")
+                    NavigationSectionItem(label = "New Customer", url = "/contact/customer/new"),
+                    NavigationSectionItem(label = "New Supplier", url = "/contact/supplier/new")
                 )
             )
         )

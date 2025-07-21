@@ -1,19 +1,6 @@
 // HTMX Configuration
 htmx.config.globalViewTransitions = true;
 
-// Company switching function
-function switchCompany(tenantId) {
-    const dashboardUrl = new URL('/dashboard', window.location.origin);
-    dashboardUrl.searchParams.set('tenantId', tenantId);
-    window.open(dashboardUrl.toString(), '_blank');
-}
-
-// Get current tenant ID from URL
-function getCurrentTenantId() {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('tenantId');
-}
-
 // Show loading states
 document.addEventListener('htmx:beforeRequest', function (evt) {
     const target = evt.target;

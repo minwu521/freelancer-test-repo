@@ -10,18 +10,18 @@
 <main layout:fragment="content">
     <div>
         <div class="r-table-toolbar">
-            <form th:hx-get="${searchUrl}"
+            <form th:hx-get="@{/htmx/contact/{type}/search(type=${type.toLowerCase()})}"
                   hx-trigger="keyup changed delay:500ms"
                   hx-target="#customer-table"
                   hx-indicator="#loading-indicator"
                   hx-swap="innerHTML">
-                <wa-input th:placeholder="#{contact.search}" size="small" name="name" type="text"
+                <wa-input th:placeholder="|#{contact.search} ${type}|" size="small" name="name" type="text"
                           id="search-input">
                     <wa-icon name="search" slot="start"></wa-icon>
                 </wa-input>
             </form>
-            <wa-button size="small" href="/contact/new"
-                       variant="neutral" th:text="#{contact.create}">
+            <wa-button size="small" th:href="@{/contact/{type}/new(type=${type.toLowerCase()})}"
+                       variant="neutral" th:text="|#{contact.create} ${type}|">
             </wa-button>
         </div>
         <wa-progress-bar id="loading-indicator" indeterminate class="htmx-indicator"

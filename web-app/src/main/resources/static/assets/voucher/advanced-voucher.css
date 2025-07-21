@@ -1,26 +1,4 @@
 
-.r-posting-form {
-    background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.r-posting-form.mb-4 {
-    margin-bottom: 2rem !important;
-}
-
-.form-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 0.75rem;
-    border-bottom: 1px solid #e2e8f0;
-}
-
 .balance-row {
     background: #f8f9fa;
     border-top: 1px solid #dee2e6;
@@ -35,21 +13,6 @@
     text-align: right;
     font-size: 0.8rem;
     font-weight: 600;
-}
-
-.balance-error {
-    color: #dc2626 !important;
-}
-
-.balance-success {
-    color: #16a34a !important;
-}
-
-.converted-amount {
-    font-size: 0.7rem;
-    color: #6b7280;
-    font-style: italic;
-    margin-top: 2px;
 }
 
 .posting-table {
@@ -75,15 +38,6 @@
 
 .htmx-request .htmx-indicator {
     opacity: 1;
-}
-
-.htmx-request.htmx-indicator {
-    opacity: 1;
-}
-
-.field-error {
-    border: 2px solid #dc2626 !important;
-    background-color: #fef2f2 !important;
 }
 
 .error-message {

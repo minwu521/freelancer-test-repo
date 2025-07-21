@@ -14,7 +14,7 @@ wa-page[view='mobile'] {
     --aside-width: auto;
 }
 
-[slot='header'] {
+wa-page > [slot='header'] {
     --wa-link-decoration-default: none;
     border-block-end: var(--wa-border-width-s) var(--wa-border-style) var(--wa-color-surface-border);
 }

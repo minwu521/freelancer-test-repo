@@ -1,6 +1,6 @@
 package com.respiroc.webapp.controller.web
 
-import com.respiroc.ledger.api.payload.BalanceSheetDTO
+import com.respiroc.ledger.application.payload.BalanceSheetDTO
 import com.respiroc.ledger.application.payload.ProfitLossDTO
 import com.respiroc.ledger.application.PostingService
 import com.respiroc.ledger.domain.model.AccountType
