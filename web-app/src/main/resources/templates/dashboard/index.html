@@ -6,21 +6,10 @@
 
 <body>
 <main layout:fragment="content">
-    <div>
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <p>
-                            <span th:text="#{dashboard.welcome.message}" />
-                            <span th:text="${user.username}" />
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </div>
+    <p>
+        <span th:text="#{dashboard.welcome.message}"/>
+        <span th:text="${user.username}"/>
+    </p>
 </main>
 </body>
 </html> 

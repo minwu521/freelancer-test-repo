@@ -48,13 +48,6 @@ main {
     font-size: var(--wa-font-size-s);
 }
 
-/* Auth layout styling */
-.wa-center main {
-    max-width: 400px;
-    width: 100%;
-    padding: var(--wa-space-xl);
-}
-
 /* Dynamic aside width based on content */
 wa-page[data-aside-visible="false"] {
     --aside-width: 0;
