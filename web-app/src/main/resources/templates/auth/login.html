@@ -14,8 +14,6 @@
             <!-- Messages container for HTMX -->
             <div id="message-container">
             </div>
-
-            <!-- Login Form -->
             <form hx-post="/htmx/auth/login"
                   hx-target="#message-container"
                   hx-swap="innerHTML">
@@ -28,8 +26,6 @@
                 </div>
             </form>
         </wa-card>
-
-        <!-- Footer -->
         <div style="text-align: center; margin-top: 0.5rem">
             <p class="wa-body-xs" th:text="#{login.footer.security.message}"/>
         </div>
