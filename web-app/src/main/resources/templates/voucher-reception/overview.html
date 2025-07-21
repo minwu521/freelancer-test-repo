@@ -3,6 +3,32 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
+    <style>
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-size: 1.2rem;
+            color: #666;
+        }
+
+        .loading-spinner::before {
+            content: '';
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
 </head>
 <body>
 <main layout:fragment="content">
@@ -35,6 +61,8 @@
                     hx-target="#pdf-embed"
                     hx-swap="outerHTML"
                     data-drawer="open drawer-custom-size"
+                    hx-trigger="click delay:200ms"
+                    style="cursor: pointer;"
                 >
                     <td th:text="${document.attachment.filename}"/>
                     <td th:text="${document.senderEmail ?: '-'}"/>
@@ -55,7 +83,7 @@
 
         <wa-drawer id="drawer-custom-size" class="drawer-custom-size" style="--size: 45vw; --spacing: 0">
             <div id="pdf-container" style="height: 100%; overflow-y: hidden;">
-                <embed id="pdf-embed" type="application/pdf" style="width: 100%; height: 100%; border: none;"/>
+                <embed id="pdf-embed" type="application/pdf" style="width: 100%; height: 100%; border: none; display: none;"/>
             </div>
         </wa-drawer>
     </div>
