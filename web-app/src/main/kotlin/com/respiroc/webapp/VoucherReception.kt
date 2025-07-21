@@ -7,6 +7,9 @@ import com.respiroc.webapp.controller.BaseController
 import jakarta.persistence.*
 import org.hibernate.annotations.CreationTimestamp
 import org.slf4j.LoggerFactory
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.stereotype.Repository
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
 import java.util.*
 
@@ -130,7 +134,8 @@ class VoucherReceptionDocument {
 @Controller
 @RequestMapping("/voucher-reception")
 class VoucherReceptionWebController(
-    private val voucherReceptionDocumentRepository: VoucherReceptionDocumentRepository
+    private val voucherReceptionDocumentRepository: VoucherReceptionDocumentRepository,
+    private val voucherReceptionService: VoucherReceptionService
 ) : BaseController() {
 
     @GetMapping(value = ["", "/"])
@@ -148,4 +153,16 @@ class VoucherReceptionWebController(
         model.addAttribute("tenantSlug", currentUser.ctx.currentTenant?.tenantSlug)
         return "voucher-reception/overview"
     }
+
+    @GetMapping("/document/{id}/pdf")
+    fun getDocumentData(@PathVariable id: Long): ResponseEntity<ByteArray> {
+        val document = voucherReceptionDocumentRepository.findById(id)
+            .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found") }
+
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_PDF)
+            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${document.attachment.filename}\"")
+            .body(document.attachment.fileData)
+    }
+
 }
