@@ -155,14 +155,14 @@ class VoucherReceptionWebController(
     }
 
     @GetMapping("/document/{id}/pdf")
-    fun getDocumentData(@PathVariable id: Long): ResponseEntity<ByteArray> {
+    fun getDocumentData(@PathVariable id: Long): ResponseEntity<String> {
         val document = voucherReceptionDocumentRepository.findById(id)
             .orElseThrow { ResponseStatusException(HttpStatus.NOT_FOUND, "Document not found") }
 
-        return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_PDF)
-            .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"${document.attachment.filename}\"")
-            .body(document.attachment.fileData)
+        val base64Data = Base64.getEncoder().encodeToString(document.attachment.fileData)
+        val dataUrl = "data:application/pdf;base64,$base64Data"
+        return ResponseEntity.ok().contentType(MediaType.TEXT_HTML)
+            .body("""<embed id="pdf-embed" type="application/pdf" src="$dataUrl" style="width: 100%; height: 100%; border: none;"/>""");
     }
 
 }

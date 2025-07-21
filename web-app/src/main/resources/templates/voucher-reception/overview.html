@@ -27,33 +27,20 @@
                     <th th:text="#{mime_type}"/>
                     <th th:text="#{received}"/>
                     <th th:text="#{file_created_at}"/>
-                    <th th:text="action"/>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="document : ${documents}">
+                <tr th:each="document : ${documents}"
+                    th:hx-get="@{/voucher-reception/document/{id}/pdf(id=${document.id})}"
+                    hx-target="#pdf-embed"
+                    hx-swap="outerHTML"
+                    data-drawer="open drawer-custom-size"
+                >
                     <td th:text="${document.attachment.filename}"/>
                     <td th:text="${document.senderEmail ?: '-'}"/>
                     <td th:text="${document.attachment.mimetype}"/>
                     <td th:text="${#temporals.format(document.receivedAt, 'dd.MM.yyyy HH:mm')}"/>
                     <td th:text="${#temporals.format(document.attachment.createdAt, 'dd.MM.yyyy HH:mm')}"/>
-                    <td>
-                        <wa-button
-                                variant="outline"
-                                size="small"
-                                class="view-pdf-btn"
-                                th:data-document-id="${document.id}"
-                                th:data-filename="${document.attachment.filename}"
-                                th:data-pdf-data="${pdfDataMap[document.id]}"
-                                data-drawer="open drawer-custom-size"
-                                th:hx-get="@{/voucher-reception/document/{id}/pdf(id=${document.id})}"
-                                hx-target="#pdf-embed"
-                                hx-swap="outerHTML"
-                                htmx-indicator=".htmx-loading">
-                            <wa-icon name="eye"></wa-icon>
-                            View PDF
-                        </wa-button>
-                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -71,8 +58,6 @@
                 <embed id="pdf-embed" type="application/pdf" style="width: 100%; height: 100%; border: none;"/>
             </div>
         </wa-drawer>
-
-        <div class="htmx-loading" style="display: none;">Loading...</div>
     </div>
 </main>
 </body>
