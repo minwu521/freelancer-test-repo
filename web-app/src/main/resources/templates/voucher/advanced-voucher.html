@@ -13,20 +13,19 @@
 
         <div id="form-messages"></div>
 
-        <div class="htmx-indicator" id="loading-indicator" style="display: none;">
+        <div style="display: none;">
             <div>
                 <wa-icon name="clock" style="margin-right: 0.5rem;"/>
                 <span th:text="#{voucher_saving}"/>
             </div>
         </div>
 
-        <form hx-indicator="#loading-indicator"
-              hx-target="#form-messages"
+        <form th:hx-indicator="'#loading-indicator'"
+              th:hx-target="'#form-messages'"
               th:hx-post="@{/htmx/voucher/update/{voucherId}(voucherId=${voucherId}, tenantId=${user.ctx.currentTenant?.id})}"
               id="voucherForm"
-              hx-swap="innerHTML"
-              class="wa-stack"
-        >
+              th:hx-swap="'innerHTML'"
+              class="wa-stack">
 
             <wa-card>
                 <div slot="header" class="wa-split">
@@ -195,9 +194,11 @@
 
                     <wa-button id="saveButton"
                                size="small"
-                               th:text="#{voucher_update}" type="submit"
-                               variant="success"
-                    />
+                               type="submit"
+                               variant="success">
+                        <span th:text="#{voucher_update}"></span>
+                        <wa-spinner id="loading-indicator" class="htmx-indicator"></wa-spinner>
+                    </wa-button>
                 </div>
             </wa-card>
         </form>
