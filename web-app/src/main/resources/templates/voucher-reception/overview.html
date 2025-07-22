@@ -8,33 +8,36 @@
 <main layout:fragment="content">
     <div class="r-voucher-reception-container">
         <wa-callout variant="neutral" class="r-voucher-reception">
-            <h1 class="wa-heading-xl" th:text="#{voucher_reception}" />
-
+            <h1 class="wa-heading-xl" th:text="#{voucher_reception}"/>
             <p class="wa-text">
-                <span th:text="#{voucher_reception_info}" />
+                <span th:text="#{voucher_reception_info}"/>
                 <wa-tag variant="brand" appearance="accent">
-                    <span th:text="${tenantSlug + '@ea.reai.no'}" /><wa-copy-button th:value="${tenantSlug + '@ea.reai.no'}"></wa-copy-button>
+                    <span th:text="${tenantSlug + '@ea.reai.no'}"/>
+                    <wa-copy-button th:value="${tenantSlug + '@ea.reai.no'}"></wa-copy-button>
                 </wa-tag>
             </p>
         </wa-callout>
 
-
-
         <div style="overflow-x: auto;">
-
             <table class="r-voucher-reception-table">
                 <thead>
                 <tr>
-                    <th th:text="#{filename}" />
-                    <th th:text="#{sender_email}" />
-                    <th th:text="#{mime_type}" />
-                    <th th:text="#{received}" />
-                    <th th:text="#{file_created_at}" />
-
+                    <th th:text="#{filename}"/>
+                    <th th:text="#{sender_email}"/>
+                    <th th:text="#{mime_type}"/>
+                    <th th:text="#{received}"/>
+                    <th th:text="#{file_created_at}"/>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="document : ${documents}">
+                <tr th:each="document : ${documents}"
+                    th:hx-get="@{/voucher-reception/document/{id}/pdf(id=${document.id})}"
+                    hx-target="#pdf-embed"
+                    hx-swap="outerHTML"
+                    data-drawer="open drawer-custom-size"
+                    hx-trigger="click delay:200ms"
+                    style="cursor: pointer;"
+                >
                     <td th:text="${document.attachment.filename}"/>
                     <td th:text="${document.senderEmail ?: '-'}"/>
                     <td th:text="${document.attachment.mimetype}"/>
@@ -47,11 +50,16 @@
             <div class="wa-center" th:if="${#lists.isEmpty(documents)}">
                 <div class="wa-stack wa-center wa-gap-m">
                     <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
-                    <h2 class="wa-heading-m" th:text="#{no_voucher_reception_found}" />
+                    <h2 class="wa-heading-m" th:text="#{no_voucher_reception_found}"/>
                 </div>
             </div>
-
         </div>
+
+        <wa-drawer id="drawer-custom-size" class="drawer-custom-size" style="--size: 45vw; --spacing: 0">
+            <div id="pdf-container" style="height: 100%; overflow-y: hidden;">
+                <embed id="pdf-embed" type="application/pdf" style="width: 100%; height: 100%; border: none; display: none;"/>
+            </div>
+        </wa-drawer>
     </div>
 </main>
 </body>
