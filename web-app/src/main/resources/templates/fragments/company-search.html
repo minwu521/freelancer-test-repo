@@ -7,7 +7,7 @@
 
 <div th:fragment="error" th:if="${error}" id="name-dropdown">
     <div class="search-dropdown" style="display: block;">
-        <div class="search-item" style="color: #dc2626;">
+        <div class="search-item" style="color: var(--wa-color-danger);">
             <div class="search-item-name" th:text="#{company.search.error.title}"/>
             <div class="search-item-details" th:text="${error}"/>
         </div>
