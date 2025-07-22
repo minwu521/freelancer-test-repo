@@ -192,17 +192,16 @@
                                type="button"
                                variant="neutral"/>
 
-                    <wa-button id="saveButton"
+                    <wa-button class="r-spinner-button"
+                               id="saveButton"
                                size="small"
                                type="submit"
                                variant="success">
                         <span th:text="#{voucher_update}"></span>
-                        <wa-spinner id="loading-indicator" class="htmx-indicator"></wa-spinner>
                     </wa-button>
                 </div>
             </wa-card>
         </form>
-
 
     </div>
 </main>
