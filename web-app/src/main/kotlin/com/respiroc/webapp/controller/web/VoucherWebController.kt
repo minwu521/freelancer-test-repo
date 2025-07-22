@@ -153,15 +153,13 @@ class VoucherHTMXController(
         }
 
         try {
-            val callout = voucherWebService.updateVoucherWithPostings(
+            voucherWebService.updateVoucherWithPostings(
                 voucherId,
                 createVoucherRequest,
                 countryCode()
             )
 
-            model.addAttribute(calloutAttributeName, callout)
-
-            return "fragments/callout-message"
+            return "fragments/empty"
         } catch (e: Exception) {
             model.addAttribute(calloutAttributeName, Callout.Error("Failed to update voucher: ${e.message}"))
             return "fragments/callout-message"
