@@ -89,9 +89,8 @@ class UserService(
         role: TenantRole,
         user: UserContext
     ) {
-        val existUser = userRepository.findByEmail(user.email) ?: throw UserPrincipalNotFoundException("User not found")
-        val userTenant = getOrCreateUserTenant(existUser.id, tenant.id)
-        val userTenantRoleId = UserTenantRoleId(tenant.id, existUser.id)
+        val userTenant = getOrCreateUserTenant(user.id, tenant.id)
+        val userTenantRoleId = UserTenantRoleId(tenant.id, user.id)
         val userTenantRole = UserTenantRole(userTenantRoleId, userTenant, role)
         userTenantRoleRepository.save(userTenantRole)
     }
@@ -99,13 +98,9 @@ class UserService(
     fun getOrCreateUserTenant(userId: Long, tenantId: Long): UserTenant {
         return userTenantRepository.findUserTenantByUserIdAndTenantId(userId, tenantId)
             ?: run {
-                val tenant = Tenant()
-                tenant.id = tenantId
-                val user = User()
-                user.id = userId
                 val userTenant = UserTenant()
-                userTenant.tenant = tenant
-                userTenant.user = user
+                userTenant.tenantId = tenantId
+                userTenant.userId = userId
                 userTenantRepository.save(userTenant)
             }
     }
