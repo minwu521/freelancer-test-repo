@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/reai
+    username: postgres
+    password: postgres
+  flyway:
+    validate-on-migrate: false
+
+jwt:
+  secret: dGVzdFNlY3JldDEyMzQ1Njc4OTA=

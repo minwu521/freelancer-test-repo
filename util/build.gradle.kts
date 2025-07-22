@@ -2,6 +2,10 @@ plugins {
     id("org.springframework.boot")
 }
 
+tasks.bootJar {
+    enabled = false
+}
+
 dependencies {
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")

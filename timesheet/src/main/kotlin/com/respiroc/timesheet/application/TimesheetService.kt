@@ -1,0 +1,65 @@
+package com.respiroc.timesheet.application
+
+import com.respiroc.timesheet.domain.model.TimesheetEntry
+import com.respiroc.timesheet.domain.repository.TimesheetRepository
+import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
+import java.math.BigDecimal
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
+import java.util.*
+
+@Service
+@Transactional
+class TimesheetService(
+    private val timesheetRepository: TimesheetRepository
+) {
+    
+    fun getWeeklyEntries(tenantId: Long, targetDate: LocalDate): List<TimesheetEntry> {
+        val weekStart = targetDate.with(TemporalAdjusters.previousOrSame(
+            WeekFields.of(Locale.getDefault()).firstDayOfWeek))
+        val weekEnd = weekStart.plusDays(6)
+        
+        return timesheetRepository.findEntriesByWeek(tenantId, weekStart, weekEnd)
+    }
+    
+    fun saveEntry(entry: TimesheetEntry): TimesheetEntry {
+        return timesheetRepository.save(entry)
+    }
+    
+    fun updateHours(entryId: Long, tenantId: Long, hours: BigDecimal): TimesheetEntry? {
+        val entry = timesheetRepository.findById(entryId).orElse(null)
+        if (entry == null || entry.tenantId != tenantId) return null
+        val updatedEntry = entry.copy(hours = hours)
+        return timesheetRepository.save(updatedEntry)
+    }
+    
+    fun deleteEntry(entryId: Long, tenantId: Long): Boolean {
+        val entry = timesheetRepository.findById(entryId).orElse(null)
+        if (entry == null || entry.tenantId != tenantId) return false
+        timesheetRepository.delete(entry)
+        return true
+    }
+    
+    fun getEmployeeNames(tenantId: Long): List<String> {
+        return timesheetRepository.findDistinctEmployeeNames(tenantId)
+    }
+    
+    fun getProjects(tenantId: Long): List<String> {
+        return timesheetRepository.findDistinctProjects(tenantId)
+    }
+    
+    fun getActivities(tenantId: Long): List<String> {
+        return timesheetRepository.findDistinctActivities(tenantId)
+    }
+    
+    fun generateReport(tenantId: Long, startDate: LocalDate, endDate: LocalDate, employeeName: String?): List<TimesheetEntry> {
+        val entries = timesheetRepository.findEntriesByWeek(tenantId, startDate, endDate)
+        return if (employeeName != null) {
+            entries.filter { it.employeeName == employeeName }
+        } else {
+            entries
+        }
+    }
+}

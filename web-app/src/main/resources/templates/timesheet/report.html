@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title th:text="${title}">Timesheet Report</title>
+    <th:block layout:fragment="head">
+        <link rel="stylesheet" th:href="@{/assets/timesheet/timesheet.css}">
+    </th:block>
+</head>
+
+<body>
+    <div layout:fragment="content" class="report-container">
+        <div class="report-header">
+            <h1>Timesheet Report</h1>
+            <a th:href="@{/timesheet}" class="back-button">&larr; Back to Timesheet</a>
+        </div>
+
+        <div class="report-filters">
+            <form th:action="@{/timesheet/report}" method="get">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="start-date">Start Date:</label>
+                        <input type="date" id="start-date" name="startDate" th:value="${startDate}">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="end-date">End Date:</label>
+                        <input type="date" id="end-date" name="endDate" th:value="${endDate}">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="employee-filter">Employee:</label>
+                        <select id="employee-filter" name="employeeName">
+                            <option value="">All Employees</option>
+                            <option th:each="employee : ${employees}" 
+                                    th:value="${employee}" 
+                                    th:text="${employee}"
+                                    th:selected="${employee == selectedEmployee}">Employee</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="filter-button">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="report-content">
+            <div th:if="${#lists.isEmpty(entries)}" class="no-data">
+                <p>No timesheet entries found for the selected criteria.</p>
+            </div>
+            
+            <div th:unless="${#lists.isEmpty(entries)}">
+                <table class="report-table">
+                    <thead>
+                        <tr>
+                            <th>Employee</th>
+                            <th>Date</th>
+                            <th>Project</th>
+                            <th>Activity</th>
+                            <th>Hours</th>
+                            <th>Comments</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="entry : ${entries}">
+                            <td th:text="${entry.employeeName}">Employee</td>
+                            <td th:text="${#temporals.format(entry.entryDate, 'MMM dd, yyyy')}">Date</td>
+                            <td th:text="${entry.project}">Project</td>
+                            <td th:text="${entry.activity}">Activity</td>
+                            <td th:text="${entry.hours}">Hours</td>
+                            <td th:text="${entry.comments ?: '-'}">Comments</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="report-summary">
+                    <p><strong>Total Entries:</strong> <span th:text="${#lists.size(entries)}">0</span></p>
+                    <p><strong>Total Hours:</strong> 
+                        <span th:text="${#aggregates.sum(entries.![hours])}">0.00</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

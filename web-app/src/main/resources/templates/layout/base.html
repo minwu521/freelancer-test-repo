@@ -11,10 +11,7 @@
     <!-- Custom head content -->
     <th:block layout:fragment="head"></th:block>
 
-    <th:block th:if="${@environment.getActiveProfiles().length > 0}">
-        <!-- live reload in dev    -->
-        <script src="http://localhost:35729/livereload.js"></script>
-    </th:block>
+    <!-- LiveReload disabled to avoid connection errors -->
 </head>
 <body class="wa-cloak">
 

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title th:text="${title}">Timesheet</title>
+    <th:block layout:fragment="head">
+        <link rel="stylesheet" th:href="@{/assets/timesheet/timesheet.css}">
+    </th:block>
+</head>
+
+<body>
+    <div layout:fragment="content" class="timesheet-container">
+        <div class="timesheet-header">
+            <h1>Weekly Timesheet</h1>
+            <div class="week-navigation">
+                <a th:href="@{/timesheet(targetDate=${currentDate.minusWeeks(1)})}" class="nav-button">
+                    &larr; Previous Week
+                </a>
+                <span class="current-week" th:text="${#temporals.format(currentDate, 'MMM dd, yyyy')}">Current Week</span>
+                <a th:href="@{/timesheet(targetDate=${currentDate.plusWeeks(1)})}" class="nav-button">
+                    Next Week &rarr;
+                </a>
+            </div>
+        </div>
+
+        <div class="employee-selector">
+            <label for="employee-select">Employee:</label>
+            <select id="employee-select">
+                <option value="">Select Employee</option>
+                <option th:each="employee : ${employees}" 
+                        th:value="${employee}" 
+                        th:text="${employee}">Employee Name</option>
+            </select>
+        </div>
+
+        <div class="timesheet-grid">
+            <table class="timesheet-table">
+                <thead>
+                    <tr>
+                        <th>Project</th>
+                        <th>Activity</th>
+                        <th>Mon</th>
+                        <th>Tue</th>
+                        <th>Wed</th>
+                        <th>Thu</th>
+                        <th>Fri</th>
+                        <th>Sat</th>
+                        <th>Sun</th>
+                        <th>Total</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="timesheet-body">
+                    <!-- Existing entries will be populated here -->
+                    <tr th:each="entry : ${entries}" 
+                        th:data-employee="${entry.employeeName}"
+                        th:data-project="${entry.project}"
+                        th:data-activity="${entry.activity}">
+                        <td th:text="${entry.project}">Project</td>
+                        <td th:text="${entry.activity}">Activity</td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="1"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="2"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="3"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="4"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="5"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="6"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="7"></td>
+                        <td class="total-hours">0.00</td>
+                        <td>
+                            <button class="delete-row" onclick="deleteRow(this)">Delete</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="add-row-section">
+            <div class="form-row">
+                <select id="new-project">
+                    <option value="">Select Project</option>
+                    <option th:each="project : ${projects}" 
+                            th:value="${project}" 
+                            th:text="${project}">Project</option>
+                    <option value="__new__">+ Add New Project</option>
+                </select>
+                
+                <select id="new-activity">
+                    <option value="">Select Activity</option>
+                    <option th:each="activity : ${activities}" 
+                            th:value="${activity}" 
+                            th:text="${activity}">Activity</option>
+                    <option value="__new__">+ Add New Activity</option>
+                </select>
+                
+                <button onclick="addNewRow()">Add Row</button>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button onclick="saveTimesheet()" class="save-button">Save All Changes</button>
+            <a th:href="@{/timesheet/report}" class="report-button">Generate Report</a>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script th:src="@{/assets/timesheet/timesheet.js}"></script>
+    </th:block>
+</body>
+</html>
