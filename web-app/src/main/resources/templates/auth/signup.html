@@ -6,13 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="#{signup.page.title}" />
     <th:block th:replace="~{layout/libs :: common-libs}"></th:block>
-    <link rel="stylesheet" th:href="@{/assets/signup/signup.css}">
 </head>
 
 <body>
-<div class="main">
-    <div class="wa-center">
-        <wa-card style="max-width: 45ch; margin: 0 auto">
+<div class="wa-stack wa-align-items-center" style="justify-content: center; height: 100vh">
+    <div style="width: 340px">
+        <wa-card style="width: 100%">
             <div id="message-container">
             </div>
 
