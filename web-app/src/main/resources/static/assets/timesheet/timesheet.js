@@ -119,6 +119,18 @@ function updateAllRowTotals() {
     rows.forEach(updateRowTotal);
 }
 
+// Store comments locally to prevent losing them
+let commentStorage = {};
+
+function getCommentKey(employeeName, project, activity, dayNumber) {
+    const currentDateElement = document.querySelector('[data-current-date]');
+    const currentDate = currentDateElement ? 
+        new Date(currentDateElement.getAttribute('data-current-date')) : 
+        new Date();
+    const entryDate = calculateDateFromDay(currentDate, dayNumber);
+    return `${employeeName}-${project}-${activity}-${entryDate}`;
+}
+
 function showCommentRow(hourInput) {
     // Hide all comment rows first
     document.querySelectorAll('.comment-row').forEach(row => {
@@ -126,6 +138,7 @@ function showCommentRow(hourInput) {
     });
     
     const mainRow = hourInput.closest('tr');
+    const dayNumber = hourInput.getAttribute('data-day');
     
     // Check if comment row already exists
     let commentRow = mainRow.nextElementSibling;
@@ -134,6 +147,9 @@ function showCommentRow(hourInput) {
         commentRow = createCommentRow(mainRow);
         mainRow.insertAdjacentElement('afterend', commentRow);
     }
+    
+    // Update the comment row for the focused day
+    updateCommentRowForDay(commentRow, dayNumber);
     
     // Show the comment row
     commentRow.style.display = '';
@@ -146,27 +162,93 @@ function createCommentRow(mainRow) {
     commentRow.setAttribute('data-project', mainRow.getAttribute('data-project'));
     commentRow.setAttribute('data-activity', mainRow.getAttribute('data-activity'));
     
+    // Initial empty structure - will be filled by updateCommentRowForDay
     commentRow.innerHTML = `
-        <td colspan="2" class="comment-label">Comments:</td>
-        <td><textarea class="comment-input" data-day="1" placeholder="Mon"></textarea></td>
-        <td><textarea class="comment-input" data-day="2" placeholder="Tue"></textarea></td>
-        <td><textarea class="comment-input" data-day="3" placeholder="Wed"></textarea></td>
-        <td><textarea class="comment-input" data-day="4" placeholder="Thu"></textarea></td>
-        <td><textarea class="comment-input" data-day="5" placeholder="Fri"></textarea></td>
-        <td><textarea class="comment-input" data-day="6" placeholder="Sat"></textarea></td>
-        <td><textarea class="comment-input" data-day="7" placeholder="Sun"></textarea></td>
+        <td colspan="2" class="comment-label">Comment:</td>
+        <td colspan="7" class="comment-cell"></td>
         <td colspan="2"></td>
     `;
     
-    // Add event listeners to comment inputs
-    const commentInputs = commentRow.querySelectorAll('.comment-input');
-    commentInputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            saveIndividualEntry(this);
-        });
+    return commentRow;
+}
+
+function updateCommentRowForDay(commentRow, dayNumber) {
+    const dayNames = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const dayName = dayNames[parseInt(dayNumber) - 1];
+    
+    const employeeName = commentRow.getAttribute('data-employee');
+    const project = commentRow.getAttribute('data-project');
+    const activity = commentRow.getAttribute('data-activity');
+    const commentKey = getCommentKey(employeeName, project, activity, dayNumber);
+    
+    const commentCell = commentRow.querySelector('.comment-cell');
+    if (commentCell) {
+        commentCell.innerHTML = `
+            <textarea class="comment-input" data-day="${dayNumber}" placeholder="Comment for ${dayName}"></textarea>
+        `;
+        
+        const commentInput = commentCell.querySelector('.comment-input');
+        if (commentInput) {
+            // Load existing comment from local storage first, then from server if not found
+            if (commentStorage[commentKey]) {
+                commentInput.value = commentStorage[commentKey];
+            } else {
+                loadExistingComment(commentRow, dayNumber);
+            }
+            
+            // Add event listeners
+            commentInput.addEventListener('input', function() {
+                // Store comment locally as user types
+                commentStorage[commentKey] = this.value;
+            });
+            
+            commentInput.addEventListener('blur', function() {
+                // Save to server
+                saveIndividualEntry(this);
+            });
+        }
+    }
+}
+
+function loadExistingComment(commentRow, dayNumber) {
+    const employeeName = commentRow.getAttribute('data-employee');
+    const project = commentRow.getAttribute('data-project');
+    const activity = commentRow.getAttribute('data-activity');
+    
+    // Calculate the date for this day
+    const currentDateElement = document.querySelector('[data-current-date]');
+    const currentDate = currentDateElement ? 
+        new Date(currentDateElement.getAttribute('data-current-date')) : 
+        new Date();
+    const entryDate = calculateDateFromDay(currentDate, dayNumber);
+    
+    // Fetch existing comment from server
+    const params = new URLSearchParams({
+        employeeName: employeeName,
+        project: project,
+        activity: activity,
+        entryDate: entryDate
     });
     
-    return commentRow;
+    fetch(`/timesheet/entry/comment?${params}`)
+        .then(response => {
+            if (response.ok) {
+                return response.text();
+            }
+            return '';
+        })
+        .then(comment => {
+            const commentInput = commentRow.querySelector(`.comment-input[data-day="${dayNumber}"]`);
+            if (commentInput && comment) {
+                commentInput.value = comment;
+                // Store in local storage for future use
+                const commentKey = getCommentKey(employeeName, project, activity, dayNumber);
+                commentStorage[commentKey] = comment;
+            }
+        })
+        .catch(error => {
+            console.log('No existing comment found:', error);
+        });
 }
 
 function addNewEmployee() {
@@ -339,12 +421,17 @@ function saveIndividualEntry(input) {
             }
         }
         comments = input.value || '';
+        console.log('DEBUG: Saving comment -', { employeeName, project, activity, dayNumber, hours, comments });
     }
     
     if (hours === 0 && !comments) return; // Don't save if both are empty
     
     // Calculate the actual date based on current week and day number
-    const currentDate = new Date(); // This should come from the page context
+    // Try to get the current date from the page context, fallback to today
+    const currentDateElement = document.querySelector('[data-current-date]');
+    const currentDate = currentDateElement ? 
+        new Date(currentDateElement.getAttribute('data-current-date')) : 
+        new Date();
     const entryDate = calculateDateFromDay(currentDate, dayNumber);
     
     const formData = new FormData();
@@ -355,13 +442,18 @@ function saveIndividualEntry(input) {
     formData.append('hours', hours);
     formData.append('comments', comments);
     
+    console.log('DEBUG: Sending to server -', { employeeName, project, activity, entryDate, hours, comments });
+    
     fetch('/timesheet/entry', {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
+    .then(response => {
+        console.log('DEBUG: Response status:', response.status);
+        return response.text();
+    })
     .then(data => {
-        console.log('Entry saved:', data);
+        console.log('DEBUG: Server response:', data);
     })
     .catch(error => {
         console.error('Error saving entry:', error);

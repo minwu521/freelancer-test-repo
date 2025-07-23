@@ -10,7 +10,7 @@
 </head>
 
 <body>
-    <div layout:fragment="content" class="timesheet-container">
+    <div layout:fragment="content" class="timesheet-container" th:data-current-date="${currentDate}">
         <div class="timesheet-header">
             <h1>Weekly Timesheet</h1>
             <div class="week-navigation">

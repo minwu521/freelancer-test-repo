@@ -98,6 +98,20 @@ class TimesheetWebController(
         return if (deleted) "Entry deleted" else "Entry not found"
     }
     
+    @GetMapping("/entry/comment")
+    @ResponseBody
+    fun getComment(
+        @AuthenticationPrincipal user: SpringUser,
+        @RequestParam employeeName: String,
+        @RequestParam project: String,
+        @RequestParam activity: String,
+        @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) entryDate: LocalDate
+    ): String {
+        val tenantId = user.ctx.currentTenant?.id ?: throw IllegalStateException("No tenant selected")
+        val comment = timesheetService.getComment(tenantId, employeeName, project, activity, entryDate)
+        return comment ?: ""
+    }
+    
     @GetMapping("/report")
     fun generateReport(
         @AuthenticationPrincipal user: SpringUser,

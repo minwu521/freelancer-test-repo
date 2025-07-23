@@ -54,6 +54,10 @@ class TimesheetService(
         return timesheetRepository.findDistinctActivities(tenantId)
     }
     
+    fun getComment(tenantId: Long, employeeName: String, project: String, activity: String, entryDate: LocalDate): String? {
+        return timesheetRepository.findComment(tenantId, employeeName, project, activity, entryDate)
+    }
+    
     fun generateReport(tenantId: Long, startDate: LocalDate, endDate: LocalDate, employeeName: String?): List<TimesheetEntry> {
         val entries = timesheetRepository.findEntriesByWeek(tenantId, startDate, endDate)
         return if (employeeName != null) {

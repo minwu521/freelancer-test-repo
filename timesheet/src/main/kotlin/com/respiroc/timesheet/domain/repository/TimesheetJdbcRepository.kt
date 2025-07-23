@@ -92,4 +92,16 @@ class TimesheetJdbcRepository(
         val sql = "DELETE FROM timesheet_entries WHERE id = ?"
         jdbcTemplate.update(sql, entry.id)
     }
+    
+    fun findComment(tenantId: Long, employeeName: String, project: String, activity: String, entryDate: LocalDate): String? {
+        val sql = """
+            SELECT comments FROM timesheet_entries 
+            WHERE tenant_id = ? AND employee_name = ? AND project = ? AND activity = ? AND entry_date = ?
+        """
+        return try {
+            jdbcTemplate.queryForObject(sql, String::class.java, tenantId, employeeName, project, activity, entryDate)
+        } catch (e: Exception) {
+            null
+        }
+    }
 }
