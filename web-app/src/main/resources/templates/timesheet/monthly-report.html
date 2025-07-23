@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/base}">
+
+<head>
+    <title th:text="${title}">Monthly Time Report</title>
+    <th:block layout:fragment="head">
+        <link rel="stylesheet" th:href="@{/assets/timesheet/monthly-report.css}">
+    </th:block>
+</head>
+
+<body>
+    <div layout:fragment="content" class="monthly-report-container">
+        <div class="report-header">
+            <h1>Monthly time report</h1>
+            <div class="report-controls">
+                <form method="get" class="report-form">
+                    <div class="form-group">
+                        <label for="monthYear">Month/Year:</label>
+                        <input type="month" id="monthYear" name="monthYear" th:value="${monthYear}" 
+                               onchange="this.form.submit()">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="employeeName">Employee:</label>
+                        <select id="employeeName" name="employeeName" onchange="this.form.submit()">
+                            <option th:each="employee : ${employees}" 
+                                    th:value="${employee}" 
+                                    th:text="${employee}"
+                                    th:selected="${employee == selectedEmployee}">
+                            </option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="hideEmployeesWithApprovedHours"> 
+                            Hide employees with approved hours
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="save-btn">Save</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="report-content" th:if="${reportData}">
+            <div class="report-title">
+                <h2 th:text="'Monthly time report - ' + ${reportData.monthYear}">Monthly time report - July 2025</h2>
+            </div>
+            
+            <div class="report-table-container">
+                <table class="monthly-report-table">
+                    <thead>
+                        <tr>
+                            <th class="project-activity-header">Project / Activity</th>
+                            <th class="total-header">Total</th>
+                            <!-- Day headers 1-31 -->
+                            <th th:each="day : ${#numbers.sequence(1, 31)}" 
+                                th:text="${day}" 
+                                class="day-header">1</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Project/Activity rows -->
+                        <tr th:each="pa : ${reportData.projectActivities}" class="project-row">
+                            <td class="project-activity-cell" th:text="${pa.project + ' / ' + pa.activity}">Project / Activity</td>
+                            <td class="total-cell" th:text="${pa.totalHours}">0.0</td>
+                            <td th:each="day, iterStat : ${#numbers.sequence(0, 30)}" 
+                                class="day-cell"
+                                th:text="${pa.dailyHours[day] != null ? pa.dailyHours[day] : ''}">
+                            </td>
+                        </tr>
+                        
+                        <!-- Total row -->
+                        <tr class="total-row">
+                            <td class="project-activity-cell"><strong>Total</strong></td>
+                            <td class="total-cell">
+                                <strong th:text="${#aggregates.sum(reportData.projectActivities.![totalHours])}">0.0</strong>
+                            </td>
+                            <td th:each="day, iterStat : ${#numbers.sequence(0, 30)}" 
+                                class="day-cell">
+                                <strong th:text="${reportData.dailyHours[day] != null ? reportData.dailyHours[day] : ''}"></strong>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Summary Section -->
+            <div class="summary-section">
+                <h3>Summary</h3>
+                <table class="summary-table">
+                    <tr>
+                        <td>Standard time</td>
+                        <td th:text="${reportData.summary.standardTime}">160.0</td>
+                    </tr>
+                    <tr>
+                        <td>Surplus hours in period</td>
+                        <td th:text="${reportData.summary.surplusHoursInPeriod}">-119.0</td>
+                    </tr>
+                    <tr>
+                        <td>Accumulated surplus</td>
+                        <td th:text="${reportData.summary.accumulatedSurplus}">-1534.0</td>
+                    </tr>
+                    <tr>
+                        <td>Chargeable hours</td>
+                        <td th:text="${reportData.summary.chargeableHours}">36.0</td>
+                    </tr>
+                    <tr>
+                        <td>Non-chargeable hours with pay</td>
+                        <td th:text="${reportData.summary.nonChargeableHoursWithPay}">31.0</td>
+                    </tr>
+                    <tr>
+                        <td>Hours with pay</td>
+                        <td th:text="${reportData.summary.hoursWithPay}">31.0</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Flextime Balance Section -->
+            <div class="flextime-section">
+                <h3>Flextime balance</h3>
+                <table class="flextime-table">
+                    <tr>
+                        <td>Opening balance</td>
+                        <td th:text="${reportData.flextimeBalance.openingBalance}">-915.0</td>
+                    </tr>
+                    <tr>
+                        <td>Surplus hours in period</td>
+                        <td th:text="${reportData.flextimeBalance.surplusHoursInPeriod}">-119.0</td>
+                    </tr>
+                    <tr>
+                        <td>Payment/day deduction (hours)</td>
+                        <td th:text="${reportData.flextimeBalance.paymentDayDeduction}">0.0</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Closing balance</strong></td>
+                        <td><strong th:text="${reportData.flextimeBalance.closingBalance}">-1534.0</strong></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Holiday Leave Section -->
+            <div class="holiday-section">
+                <h3>Holiday leave days</h3>
+                <table class="holiday-table">
+                    <tr>
+                        <td>Holiday taken year-to-date</td>
+                        <td th:text="${reportData.holidayLeave.holidayTakenYearToDate + ' d 0h'}">0d 0h</td>
+                    </tr>
+                    <tr>
+                        <td>Opening balance</td>
+                        <td th:text="${reportData.holidayLeave.openingBalance + ' d 0h'}">25d 0h</td>
+                    </tr>
+                    <tr>
+                        <td>Payment/day deduction (hours)</td>
+                        <td th:text="${reportData.holidayLeave.paymentDayDeduction + ' d 0h'}">0d 0h</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Closing balance</strong></td>
+                        <td><strong th:text="${reportData.holidayLeave.closingBalance + ' d 0h'}">25d 0h</strong></td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Approval Section -->
+            <div class="approval-section">
+                <label>
+                    <input type="checkbox" id="approved"> Approved
+                </label>
+                <p class="approval-date">Date up to and including: 
+                    <input type="date" id="approvalDate" th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <th:block layout:fragment="scripts">
+        <script th:src="@{/assets/timesheet/monthly-report.js}"></script>
+    </th:block>
+</body>
+</html>

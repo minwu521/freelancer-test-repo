@@ -22,6 +22,46 @@ data class WeeklyTimesheetRow(
     val comments: Array<String?> = arrayOfNulls(7) // Mon-Sun comments
 )
 
+data class MonthlyReportData(
+    val employeeName: String,
+    val monthYear: String,
+    val dailyHours: Array<BigDecimal?> = arrayOfNulls(31), // 1-31 days
+    val projectActivities: List<MonthlyProjectActivity>,
+    val summary: MonthlyReportSummary,
+    val flextimeBalance: FlextimeBalance,
+    val holidayLeave: HolidayLeave
+)
+
+data class MonthlyProjectActivity(
+    val project: String,
+    val activity: String,
+    val totalHours: BigDecimal,
+    val dailyHours: Array<BigDecimal?> = arrayOfNulls(31)
+)
+
+data class MonthlyReportSummary(
+    val standardTime: BigDecimal,
+    val surplusHoursInPeriod: BigDecimal,
+    val accumulatedSurplus: BigDecimal,
+    val chargeableHours: BigDecimal,
+    val nonChargeableHoursWithPay: BigDecimal,
+    val hoursWithPay: BigDecimal
+)
+
+data class FlextimeBalance(
+    val openingBalance: BigDecimal,
+    val surplusHoursInPeriod: BigDecimal,
+    val paymentDayDeduction: BigDecimal,
+    val closingBalance: BigDecimal
+)
+
+data class HolidayLeave(
+    val holidayTakenYearToDate: BigDecimal,
+    val openingBalance: BigDecimal,
+    val paymentDayDeduction: BigDecimal,
+    val closingBalance: BigDecimal
+)
+
 @Controller
 @RequestMapping("/timesheet")
 class TimesheetWebController(
@@ -196,5 +236,125 @@ class TimesheetWebController(
         model.addAttribute("tenants", user.ctx.tenants)
         
         return "timesheet/report"
+    }
+    
+    @GetMapping("/monthly-report")
+    fun monthlyReport(
+        @AuthenticationPrincipal user: SpringUser,
+        @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM") monthYear: String?,
+        @RequestParam(required = false) employeeName: String?,
+        model: Model
+    ): String {
+        val currentMonthYear = monthYear ?: LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM"))
+        val tenantId = user.ctx.currentTenant?.id ?: throw IllegalStateException("No tenant selected")
+        val employees = timesheetService.getEmployeeNames(tenantId)
+        
+        val selectedEmployee = employeeName ?: employees.firstOrNull() ?: ""
+        
+        if (selectedEmployee.isNotEmpty()) {
+            val reportData = generateMonthlyReport(tenantId, selectedEmployee, currentMonthYear)
+            model.addAttribute("reportData", reportData)
+        }
+        
+        model.addAttribute("monthYear", currentMonthYear)
+        model.addAttribute("selectedEmployee", selectedEmployee)
+        model.addAttribute("employees", employees)
+        model.addAttribute("title", "Monthly Time Report")
+        model.addAttribute("user", user)
+        model.addAttribute("currentTenant", user.ctx.currentTenant)
+        model.addAttribute("tenants", user.ctx.tenants)
+        
+        return "timesheet/monthly-report"
+    }
+    
+    private fun generateMonthlyReport(tenantId: Long, employeeName: String, monthYear: String): MonthlyReportData {
+        val (year, month) = monthYear.split("-").map { it.toInt() }
+        val startDate = LocalDate.of(year, month, 1)
+        val endDate = startDate.withDayOfMonth(startDate.lengthOfMonth())
+        
+        val entries = timesheetService.generateReport(tenantId, startDate, endDate, employeeName)
+        
+        // Group entries by project/activity
+        val projectActivities = entries.groupBy { "${it.project}/${it.activity}" }
+            .map { (projectActivity, entryList) ->
+                val (project, activity) = projectActivity.split("/", limit = 2)
+                val dailyHours = arrayOfNulls<BigDecimal>(31)
+                var totalHours = BigDecimal.ZERO
+                
+                entryList.forEach { entry ->
+                    val dayOfMonth = entry.entryDate.dayOfMonth - 1 // 0-based index
+                    dailyHours[dayOfMonth] = entry.hours
+                    totalHours = totalHours.add(entry.hours)
+                }
+                
+                MonthlyProjectActivity(project, activity, totalHours, dailyHours)
+            }
+        
+        // Calculate daily totals
+        val dailyHours = arrayOfNulls<BigDecimal>(31)
+        for (day in 0..30) {
+            var dayTotal = BigDecimal.ZERO
+            projectActivities.forEach { pa ->
+                pa.dailyHours[day]?.let { dayTotal = dayTotal.add(it) }
+            }
+            if (dayTotal > BigDecimal.ZERO) {
+                dailyHours[day] = dayTotal
+            }
+        }
+        
+        // Calculate summary (simplified calculations for now)
+        val totalHours = entries.sumOf { it.hours }
+        val workingDaysInMonth = calculateWorkingDaysInMonth(year, month)
+        val standardTime = BigDecimal.valueOf(workingDaysInMonth * 8L) // 8 hours per day
+        val surplusHours = totalHours.subtract(standardTime)
+        
+        val summary = MonthlyReportSummary(
+            standardTime = standardTime,
+            surplusHoursInPeriod = surplusHours,
+            accumulatedSurplus = surplusHours, // Simplified - should track over time
+            chargeableHours = totalHours,
+            nonChargeableHoursWithPay = BigDecimal.ZERO,
+            hoursWithPay = totalHours
+        )
+        
+        val flextimeBalance = FlextimeBalance(
+            openingBalance = BigDecimal.ZERO, // Should be calculated from previous period
+            surplusHoursInPeriod = surplusHours,
+            paymentDayDeduction = BigDecimal.ZERO,
+            closingBalance = surplusHours // Simplified
+        )
+        
+        val holidayLeave = HolidayLeave(
+            holidayTakenYearToDate = BigDecimal.ZERO,
+            openingBalance = BigDecimal.valueOf(25), // Standard 25 days
+            paymentDayDeduction = BigDecimal.ZERO,
+            closingBalance = BigDecimal.valueOf(25)
+        )
+        
+        return MonthlyReportData(
+            employeeName = employeeName,
+            monthYear = "${java.time.format.DateTimeFormatter.ofPattern("MMMM yyyy").format(startDate)}",
+            dailyHours = dailyHours,
+            projectActivities = projectActivities,
+            summary = summary,
+            flextimeBalance = flextimeBalance,
+            holidayLeave = holidayLeave
+        )
+    }
+    
+    private fun calculateWorkingDaysInMonth(year: Int, month: Int): Int {
+        val startDate = LocalDate.of(year, month, 1)
+        val endDate = startDate.withDayOfMonth(startDate.lengthOfMonth())
+        var workingDays = 0
+        var currentDate = startDate
+        
+        while (!currentDate.isAfter(endDate)) {
+            if (currentDate.dayOfWeek.value <= 5) { // Monday to Friday
+                workingDays++
+            }
+            currentDate = currentDate.plusDays(1)
+        }
+        
+        return workingDays
     }
 }
