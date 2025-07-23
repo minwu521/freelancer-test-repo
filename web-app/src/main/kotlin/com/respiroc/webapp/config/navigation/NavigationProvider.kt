@@ -51,7 +51,7 @@ class NavigationProvider {
                 title = "Timesheet", icon = "clock",
                 items = listOf(
                     NavigationSectionItem(label = "Weekly View", url = "/timesheet"),
-                    NavigationSectionItem(label = "Reports", url = "/timesheet/report")
+                    NavigationSectionItem(label = "Monthly Report", url = "/timesheet/monthly-report")
                 )
             )
         )

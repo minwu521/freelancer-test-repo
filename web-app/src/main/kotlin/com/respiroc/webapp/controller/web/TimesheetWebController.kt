@@ -88,6 +88,10 @@ class TimesheetWebController(
         // Calculate week start (Monday)
         val weekStart = currentDate.with(TemporalAdjusters.previousOrSame(
             WeekFields.of(Locale.getDefault()).firstDayOfWeek))
+        val weekEnd = weekStart.plusDays(6)
+        
+        // Get report data for current week
+        val weeklyReportEntries = timesheetService.generateReport(tenantId, weekStart, weekEnd, null)
         
         // Group entries by employee/project/activity
         val groupedEntries = entries.groupBy { 
@@ -115,6 +119,9 @@ class TimesheetWebController(
         model.addAttribute("employees", employees)
         model.addAttribute("projects", projects)
         model.addAttribute("activities", activities)
+        model.addAttribute("weeklyReportEntries", weeklyReportEntries)
+        model.addAttribute("weekStart", weekStart)
+        model.addAttribute("weekEnd", weekEnd)
         model.addAttribute("title", "Timesheet")
         model.addAttribute("user", user)
         model.addAttribute("currentTenant", user.ctx.currentTenant)

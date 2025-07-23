@@ -128,8 +128,56 @@
 
         <div class="actions">
             <button onclick="saveTimesheet()" class="save-button">Save All Changes</button>
-            <a th:href="@{/timesheet/report}" class="report-button">Generate Report</a>
-            <a th:href="@{/timesheet/monthly-report}" class="report-button">Monthly Report</a>
+        </div>
+        
+        <!-- Weekly Time Report Section -->
+        <div class="weekly-report-section">
+            <div class="report-header">
+                <h2>Weekly Time Report</h2>
+                <div class="report-period">
+                    <span th:text="'Week of ' + ${#temporals.format(weekStart, 'MMM dd')} + ' - ' + ${#temporals.format(weekEnd, 'MMM dd, yyyy')}">
+                        Week of Jul 21 - Jul 27, 2025
+                    </span>
+                </div>
+            </div>
+            
+            <div class="report-content">
+                <div th:if="${#lists.isEmpty(weeklyReportEntries)}" class="no-data">
+                    <p>No timesheet entries found for this week.</p>
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(weeklyReportEntries)}">
+                    <table class="weekly-report-table">
+                        <thead>
+                            <tr>
+                                <th>Employee</th>
+                                <th>Date</th>
+                                <th>Project</th>
+                                <th>Activity</th>
+                                <th>Hours</th>
+                                <th>Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="entry : ${weeklyReportEntries}">
+                                <td th:text="${entry.employeeName}">Employee</td>
+                                <td th:text="${#temporals.format(entry.entryDate, 'MMM dd, yyyy')}">Date</td>
+                                <td th:text="${entry.project}">Project</td>
+                                <td th:text="${entry.activity}">Activity</td>
+                                <td th:text="${entry.hours}">Hours</td>
+                                <td th:text="${entry.comments ?: '-'}">Comments</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="report-summary">
+                        <p><strong>Total Entries:</strong> <span th:text="${#lists.size(weeklyReportEntries)}">0</span></p>
+                        <p><strong>Total Hours:</strong> 
+                            <span th:text="${#aggregates.sum(weeklyReportEntries.![hours])}">0.00</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
