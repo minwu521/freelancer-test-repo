@@ -42,6 +42,15 @@ class TimesheetService(
         return true
     }
     
+    fun deleteEntry(tenantId: Long, employeeName: String, project: String, activity: String, entryDate: LocalDate): Boolean {
+        val entry = timesheetRepository.findByUniqueKey(tenantId, employeeName, project, activity, entryDate)
+        if (entry != null) {
+            timesheetRepository.delete(entry)
+            return true
+        }
+        return false
+    }
+    
     fun getEmployeeNames(tenantId: Long): List<String> {
         return timesheetRepository.findDistinctEmployeeNames(tenantId)
     }
@@ -65,5 +74,9 @@ class TimesheetService(
         } else {
             entries
         }
+    }
+    
+    fun cleanupDuplicates(tenantId: Long) {
+        timesheetRepository.removeDuplicates(tenantId)
     }
 }

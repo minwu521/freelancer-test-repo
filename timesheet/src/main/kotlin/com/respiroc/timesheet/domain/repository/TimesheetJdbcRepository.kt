@@ -55,18 +55,35 @@ class TimesheetJdbcRepository(
     
     fun save(entry: TimesheetEntry): TimesheetEntry {
         if (entry.id == null) {
-            val sql = """
-                INSERT INTO timesheet_entries 
-                (tenant_id, employee_name, project, activity, entry_date, hours, comments, completed)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-                RETURNING id
-            """
-            val id = jdbcTemplate.queryForObject(
-                sql, Long::class.java,
-                entry.tenantId, entry.employeeName, entry.project, entry.activity,
-                entry.entryDate, entry.hours, entry.comments, entry.completed
-            )
-            entry.id = id
+            // Check if an entry already exists for this combination
+            val existingEntry = findByUniqueKey(entry.tenantId, entry.employeeName, entry.project, entry.activity, entry.entryDate)
+            if (existingEntry != null) {
+                // Update existing entry
+                entry.id = existingEntry.id
+                val sql = """
+                    UPDATE timesheet_entries 
+                    SET hours = ?, comments = ?, completed = ?, updated_at = CURRENT_TIMESTAMP
+                    WHERE id = ? AND tenant_id = ?
+                """
+                jdbcTemplate.update(
+                    sql, entry.hours, entry.comments, entry.completed,
+                    entry.id, entry.tenantId
+                )
+            } else {
+                // Insert new entry
+                val sql = """
+                    INSERT INTO timesheet_entries 
+                    (tenant_id, employee_name, project, activity, entry_date, hours, comments, completed)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    RETURNING id
+                """
+                val id = jdbcTemplate.queryForObject(
+                    sql, Long::class.java,
+                    entry.tenantId, entry.employeeName, entry.project, entry.activity,
+                    entry.entryDate, entry.hours, entry.comments, entry.completed
+                )
+                entry.id = id
+            }
         } else {
             val sql = """
                 UPDATE timesheet_entries 
@@ -88,6 +105,18 @@ class TimesheetJdbcRepository(
         return jdbcTemplate.query(sql, timesheetRowMapper, id).firstOrNull()
     }
     
+    fun findByUniqueKey(tenantId: Long, employeeName: String, project: String, activity: String, entryDate: LocalDate): TimesheetEntry? {
+        val sql = """
+            SELECT * FROM timesheet_entries 
+            WHERE tenant_id = ? AND employee_name = ? AND project = ? AND activity = ? AND entry_date = ?
+        """
+        return try {
+            jdbcTemplate.query(sql, timesheetRowMapper, tenantId, employeeName, project, activity, entryDate).firstOrNull()
+        } catch (e: Exception) {
+            null
+        }
+    }
+    
     fun delete(entry: TimesheetEntry) {
         val sql = "DELETE FROM timesheet_entries WHERE id = ?"
         jdbcTemplate.update(sql, entry.id)
@@ -103,5 +132,17 @@ class TimesheetJdbcRepository(
         } catch (e: Exception) {
             null
         }
+    }
+    
+    fun removeDuplicates(tenantId: Long) {
+        val sql = """
+            DELETE FROM timesheet_entries 
+            WHERE id NOT IN (
+                SELECT MIN(id) FROM timesheet_entries 
+                WHERE tenant_id = ? 
+                GROUP BY tenant_id, employee_name, project, activity, entry_date
+            ) AND tenant_id = ?
+        """
+        jdbcTemplate.update(sql, tenantId, tenantId)
     }
 }

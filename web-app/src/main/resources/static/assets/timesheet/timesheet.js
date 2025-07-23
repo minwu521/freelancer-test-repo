@@ -15,6 +15,18 @@ document.addEventListener('DOMContentLoaded', function() {
 function initializeTimesheet() {
     updateAllRowTotals();
     filterRowsByEmployee();
+    initializeCommentIndicators();
+}
+
+function initializeCommentIndicators() {
+    // Add visual indicators for inputs that have comments
+    const hourInputs = document.querySelectorAll('.hour-input[data-comment]');
+    hourInputs.forEach(input => {
+        const comment = input.getAttribute('data-comment');
+        if (comment && comment.trim() !== '') {
+            input.classList.add('has-comment');
+        }
+    });
 }
 
 function setupEventListeners() {
@@ -189,11 +201,18 @@ function updateCommentRowForDay(commentRow, dayNumber) {
         
         const commentInput = commentCell.querySelector('.comment-input');
         if (commentInput) {
-            // Load existing comment from local storage first, then from server if not found
+            // Try to get existing comment from the hour input's data attribute first
+            const mainRow = commentRow.previousElementSibling;
+            const hourInput = mainRow ? mainRow.querySelector(`.hour-input[data-day="${dayNumber}"]`) : null;
+            const existingComment = hourInput ? hourInput.getAttribute('data-comment') : '';
+            
+            // Load existing comment from local storage first, then from template data
             if (commentStorage[commentKey]) {
                 commentInput.value = commentStorage[commentKey];
-            } else {
-                loadExistingComment(commentRow, dayNumber);
+            } else if (existingComment) {
+                commentInput.value = existingComment;
+                // Store in local storage for future use
+                commentStorage[commentKey] = existingComment;
             }
             
             // Add event listeners
@@ -203,6 +222,18 @@ function updateCommentRowForDay(commentRow, dayNumber) {
             });
             
             commentInput.addEventListener('blur', function() {
+                // Update the hour input's data attribute and visual indicator
+                const mainRow = commentRow.previousElementSibling;
+                const hourInput = mainRow ? mainRow.querySelector(`.hour-input[data-day="${dayNumber}"]`) : null;
+                if (hourInput) {
+                    hourInput.setAttribute('data-comment', this.value);
+                    if (this.value && this.value.trim() !== '') {
+                        hourInput.classList.add('has-comment');
+                    } else {
+                        hourInput.classList.remove('has-comment');
+                    }
+                }
+                
                 // Save to server
                 saveIndividualEntry(this);
             });
@@ -424,7 +455,7 @@ function saveIndividualEntry(input) {
         console.log('DEBUG: Saving comment -', { employeeName, project, activity, dayNumber, hours, comments });
     }
     
-    if (hours === 0 && !comments) return; // Don't save if both are empty
+    if (hours === 0 && (!comments || comments.trim() === '')) return; // Don't save if both are empty
     
     // Calculate the actual date based on current week and day number
     // Try to get the current date from the page context, fallback to today

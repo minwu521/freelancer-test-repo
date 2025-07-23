@@ -10,6 +10,17 @@ import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
 import java.math.BigDecimal
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
+import java.time.temporal.WeekFields
+import java.util.*
+
+data class WeeklyTimesheetRow(
+    val employeeName: String,
+    val project: String,
+    val activity: String,
+    val hours: Array<BigDecimal?> = arrayOfNulls(7), // Mon-Sun
+    val comments: Array<String?> = arrayOfNulls(7) // Mon-Sun comments
+)
 
 @Controller
 @RequestMapping("/timesheet")
@@ -25,12 +36,41 @@ class TimesheetWebController(
     ): String {
         val currentDate = targetDate ?: LocalDate.now()
         val tenantId = user.ctx.currentTenant?.id ?: throw IllegalStateException("No tenant selected")
+        
+        // Clean up any duplicate entries first
+        timesheetService.cleanupDuplicates(tenantId)
+        
         val entries = timesheetService.getWeeklyEntries(tenantId, currentDate)
         val employees = timesheetService.getEmployeeNames(tenantId)
         val projects = timesheetService.getProjects(tenantId)
         val activities = timesheetService.getActivities(tenantId)
         
-        model.addAttribute("entries", entries)
+        // Calculate week start (Monday)
+        val weekStart = currentDate.with(TemporalAdjusters.previousOrSame(
+            WeekFields.of(Locale.getDefault()).firstDayOfWeek))
+        
+        // Group entries by employee/project/activity
+        val groupedEntries = entries.groupBy { 
+            Triple(it.employeeName, it.project, it.activity) 
+        }
+        
+        // Convert to weekly timesheet rows
+        val weeklyRows = groupedEntries.map { (key, entryList) ->
+            val row = WeeklyTimesheetRow(key.first, key.second, key.third)
+            
+            // Populate hours and comments for each day of the week
+            entryList.forEach { entry ->
+                val dayOfWeek = entry.entryDate.dayOfWeek.value // 1=Mon, 2=Tue, ..., 7=Sun
+                val arrayIndex = dayOfWeek - 1 // Convert to 0-6 array index (0=Mon, 6=Sun)
+                if (arrayIndex in 0..6) {
+                    row.hours[arrayIndex] = entry.hours
+                    row.comments[arrayIndex] = entry.comments
+                }
+            }
+            row
+        }
+        
+        model.addAttribute("entries", weeklyRows)
         model.addAttribute("currentDate", currentDate)
         model.addAttribute("employees", employees)
         model.addAttribute("projects", projects)
@@ -42,9 +82,20 @@ class TimesheetWebController(
         
         // Debug logging
         println("DEBUG: Timesheet controller - tenantId: $tenantId")
-        println("DEBUG: Timesheet controller - entries count: ${entries.size}")
+        println("DEBUG: Timesheet controller - raw entries count: ${entries.size}")
+        println("DEBUG: Timesheet controller - grouped rows count: ${weeklyRows.size}")
         println("DEBUG: Timesheet controller - employees count: ${employees.size}")
         println("DEBUG: Timesheet controller - currentDate: $currentDate")
+        
+        entries.forEach { entry ->
+            println("DEBUG: Entry - ${entry.employeeName}/${entry.project}/${entry.activity} on ${entry.entryDate} = ${entry.hours} hours, comments: '${entry.comments}'")
+        }
+        
+        weeklyRows.forEach { row ->
+            println("DEBUG: Row - ${row.employeeName}/${row.project}/${row.activity}")
+            println("  Hours: ${row.hours.contentToString()}")
+            println("  Comments: ${row.comments.contentToString()}")
+        }
         
         return "timesheet/overview"
     }
@@ -61,6 +112,13 @@ class TimesheetWebController(
         @RequestParam(required = false) comments: String?
     ): String {
         val tenantId = user.ctx.currentTenant?.id ?: throw IllegalStateException("No tenant selected")
+        
+        // If hours is 0 and no meaningful comments, delete any existing entry
+        if (hours.compareTo(BigDecimal.ZERO) == 0 && (comments.isNullOrBlank() || comments.trim().isEmpty())) {
+            timesheetService.deleteEntry(tenantId, employeeName, project, activity, entryDate)
+            return "Entry deleted (empty hours)"
+        }
+        
         val entry = TimesheetEntry().apply {
             this.tenantId = tenantId
             this.employeeName = employeeName

@@ -112,17 +112,26 @@ class AuthHTMXController(
         model: Model
     ): String {
         try {
+            println("DEBUG: Starting signup for email: ${signupRequest.email}")
             val result = userService.signupByEmailPassword(
                 signupRequest.email,
                 signupRequest.password
             )
+            println("DEBUG: Signup successful for user ID: ${result.id}")
 
             val token = jwt.generateToken(subject = result.id.toString(), tenantId = result.tenantId)
             setJwtCookie(token, response)
             model.addAttribute("redirectUrl", "/dashboard")
             return "fragments/redirect"
         } catch (e: Exception) {
-            model.addAttribute(errorMessageAttributeName, e.message ?: "An error occurred during registration")
+            println("ERROR: Signup failed for ${signupRequest.email}: ${e.message}")
+            e.printStackTrace()
+            val errorMessage = when {
+                e.message?.contains("EntityManager") == true -> "Database connection error. Please try again later."
+                e.message?.contains("already exists") == true -> "An account with this email already exists."
+                else -> e.message ?: "An error occurred during registration"
+            }
+            model.addAttribute(errorMessageAttributeName, errorMessage)
             return "fragments/error-message"
         }
     }

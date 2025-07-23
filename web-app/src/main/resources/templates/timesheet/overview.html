@@ -95,13 +95,27 @@
                         th:data-activity="${entry.activity}">
                         <td th:text="${entry.project}">Project</td>
                         <td th:text="${entry.activity}">Activity</td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="1"></td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="2"></td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="3"></td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="4"></td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="5"></td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="6"></td>
-                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="7"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="1" 
+                                   th:value="${entry.hours[0] != null ? entry.hours[0] : ''}"
+                                   th:data-comment="${entry.comments[0] != null ? entry.comments[0] : ''}"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="2" 
+                                   th:value="${entry.hours[1] != null ? entry.hours[1] : ''}"
+                                   th:data-comment="${entry.comments[1] != null ? entry.comments[1] : ''}"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="3" 
+                                   th:value="${entry.hours[2] != null ? entry.hours[2] : ''}"
+                                   th:data-comment="${entry.comments[2] != null ? entry.comments[2] : ''}"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="4" 
+                                   th:value="${entry.hours[3] != null ? entry.hours[3] : ''}"
+                                   th:data-comment="${entry.comments[3] != null ? entry.comments[3] : ''}"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="5" 
+                                   th:value="${entry.hours[4] != null ? entry.hours[4] : ''}"
+                                   th:data-comment="${entry.comments[4] != null ? entry.comments[4] : ''}"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="6" 
+                                   th:value="${entry.hours[5] != null ? entry.hours[5] : ''}"
+                                   th:data-comment="${entry.comments[5] != null ? entry.comments[5] : ''}"></td>
+                        <td><input type="number" step="0.25" min="0" max="24" class="hour-input" data-day="7" 
+                                   th:value="${entry.hours[6] != null ? entry.hours[6] : ''}"
+                                   th:data-comment="${entry.comments[6] != null ? entry.comments[6] : ''}"></td>
                         <td class="total-hours">0.00</td>
                         <td>
                             <button class="delete-row" onclick="deleteRow(this)">Delete</button>
