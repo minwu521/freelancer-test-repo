@@ -153,11 +153,29 @@ function addNewRow() {
     if (newProject === '__new__') {
         projectValue = prompt('Enter new project name:');
         if (!projectValue) return;
+        
+        // Add the new project to the select element
+        const projectSelect = document.getElementById('new-project');
+        const newProjectOption = document.createElement('option');
+        newProjectOption.value = projectValue;
+        newProjectOption.textContent = projectValue;
+        // Insert before the "Add New Project" option
+        const addNewOption = projectSelect.querySelector('option[value="__new__"]');
+        projectSelect.insertBefore(newProjectOption, addNewOption);
     }
     
     if (newActivity === '__new__') {
         activityValue = prompt('Enter new activity name:');
         if (!activityValue) return;
+        
+        // Add the new activity to the select element
+        const activitySelect = document.getElementById('new-activity');
+        const newActivityOption = document.createElement('option');
+        newActivityOption.value = activityValue;
+        newActivityOption.textContent = activityValue;
+        // Insert before the "Add New Activity" option
+        const addNewOption = activitySelect.querySelector('option[value="__new__"]');
+        activitySelect.insertBefore(newActivityOption, addNewOption);
     }
     
     const tbody = document.getElementById('timesheet-body');

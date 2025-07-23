@@ -1,46 +1,44 @@
 package com.respiroc.timesheet.domain.model
 
 import jakarta.persistence.*
-import org.hibernate.annotations.TenantId
 import java.math.BigDecimal
 import java.time.LocalDate
-import java.time.ZonedDateTime
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "timesheet_entries")
-data class TimesheetEntry(
+class TimesheetEntry {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long? = null,
+    var id: Long? = null
 
-    @TenantId
     @Column(name = "tenant_id", nullable = false)
-    val tenantId: Long,
+    var tenantId: Long = 0
 
     @Column(name = "employee_name", nullable = false)
-    val employeeName: String,
+    var employeeName: String = ""
 
     @Column(nullable = false)
-    val project: String,
+    var project: String = ""
 
     @Column(nullable = false)
-    val activity: String,
+    var activity: String = ""
 
     @Column(name = "entry_date", nullable = false)
-    val entryDate: LocalDate,
+    var entryDate: LocalDate = LocalDate.now()
 
     @Column(nullable = false, precision = 4, scale = 2)
-    val hours: BigDecimal = BigDecimal.ZERO,
+    var hours: BigDecimal = BigDecimal.ZERO
 
     @Column
-    val comments: String? = null,
+    var comments: String? = null
 
     @Column(nullable = false)
-    val completed: Boolean = false,
+    var completed: Boolean = false
 
-    @Column(name = "created_at", nullable = false)
-    val createdAt: ZonedDateTime = ZonedDateTime.now(),
+    @Column(name = "created_at", nullable = false, updatable = false)
+    var createdAt: LocalDateTime = LocalDateTime.now()
 
     @Column(name = "updated_at", nullable = false)
-    val updatedAt: ZonedDateTime = ZonedDateTime.now()
-)
+    var updatedAt: LocalDateTime = LocalDateTime.now()
+}

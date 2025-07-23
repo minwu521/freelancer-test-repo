@@ -8,12 +8,12 @@ import java.time.LocalDate
 
 interface TimesheetRepository : CustomJpaRepository<TimesheetEntry, Long> {
     
-    @Query("""
-        SELECT te FROM TimesheetEntry te 
-        WHERE te.tenantId = :tenantId 
-        AND te.entryDate BETWEEN :startDate AND :endDate
-        ORDER BY te.employeeName, te.project, te.activity, te.entryDate
-    """)
+    @Query(value = """
+        SELECT * FROM timesheet_entries 
+        WHERE tenant_id = :tenantId 
+        AND entry_date BETWEEN :startDate AND :endDate
+        ORDER BY employee_name, project, activity, entry_date
+    """, nativeQuery = true)
     fun findEntriesByWeek(
         @Param("tenantId") tenantId: Long,
         @Param("startDate") startDate: LocalDate,

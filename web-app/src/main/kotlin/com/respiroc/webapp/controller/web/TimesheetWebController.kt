@@ -61,15 +61,15 @@ class TimesheetWebController(
         @RequestParam(required = false) comments: String?
     ): String {
         val tenantId = user.ctx.currentTenant?.id ?: throw IllegalStateException("No tenant selected")
-        val entry = TimesheetEntry(
-            tenantId = tenantId,
-            employeeName = employeeName,
-            project = project,
-            activity = activity,
-            entryDate = entryDate,
-            hours = hours,
-            comments = comments
-        )
+        val entry = TimesheetEntry().apply {
+            this.tenantId = tenantId
+            this.employeeName = employeeName
+            this.project = project
+            this.activity = activity
+            this.entryDate = entryDate
+            this.hours = hours
+            this.comments = comments
+        }
         
         timesheetService.saveEntry(entry)
         return "Entry saved successfully"

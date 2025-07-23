@@ -31,8 +31,8 @@ class TimesheetService(
     fun updateHours(entryId: Long, tenantId: Long, hours: BigDecimal): TimesheetEntry? {
         val entry = timesheetRepository.findById(entryId).orElse(null)
         if (entry == null || entry.tenantId != tenantId) return null
-        val updatedEntry = entry.copy(hours = hours)
-        return timesheetRepository.save(updatedEntry)
+        entry.hours = hours
+        return timesheetRepository.save(entry)
     }
     
     fun deleteEntry(entryId: Long, tenantId: Long): Boolean {
