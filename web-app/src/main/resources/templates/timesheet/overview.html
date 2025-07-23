@@ -39,13 +39,27 @@
                     <tr>
                         <th>Project</th>
                         <th>Activity</th>
-                        <th>Mon</th>
-                        <th>Tue</th>
-                        <th>Wed</th>
-                        <th>Thu</th>
-                        <th>Fri</th>
-                        <th>Sat</th>
-                        <th>Sun</th>
+                        <th th:with="mondayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY))}">
+                            Mon<br/><span th:text="${#temporals.format(mondayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
+                        <th th:with="tuesdayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY)).plusDays(1)}">
+                            Tue<br/><span th:text="${#temporals.format(tuesdayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
+                        <th th:with="wednesdayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY)).plusDays(2)}">
+                            Wed<br/><span th:text="${#temporals.format(wednesdayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
+                        <th th:with="thursdayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY)).plusDays(3)}">
+                            Thu<br/><span th:text="${#temporals.format(thursdayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
+                        <th th:with="fridayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY)).plusDays(4)}">
+                            Fri<br/><span th:text="${#temporals.format(fridayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
+                        <th th:with="saturdayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY)).plusDays(5)}">
+                            Sat<br/><span th:text="${#temporals.format(saturdayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
+                        <th th:with="sundayDate=${currentDate.with(T(java.time.temporal.TemporalAdjusters).previousOrSame(T(java.time.DayOfWeek).MONDAY)).plusDays(6)}">
+                            Sun<br/><span th:text="${#temporals.format(sundayDate, 'MM/dd')}" class="date-label"></span>
+                        </th>
                         <th>Total</th>
                         <th>Actions</th>
                     </tr>
