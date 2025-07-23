@@ -9,9 +9,10 @@ function initializeTimesheet() {
 }
 
 function setupEventListeners() {
-    const employeeSelect = document.getElementById('employee-select');
-    if (employeeSelect) {
-        employeeSelect.addEventListener('change', filterRowsByEmployee);
+    const employeeInput = document.getElementById('employee-input');
+    if (employeeInput) {
+        employeeInput.addEventListener('input', handleEmployeeInput);
+        employeeInput.addEventListener('change', filterRowsByEmployee);
     }
     
     const hourInputs = document.querySelectorAll('.hour-input');
@@ -26,11 +27,39 @@ function setupEventListeners() {
     });
 }
 
-function filterRowsByEmployee() {
-    const employeeSelect = document.getElementById('employee-select');
-    if (!employeeSelect) return;
+function handleEmployeeInput() {
+    const employeeInput = document.getElementById('employee-input');
+    const addEmployeeBtn = document.getElementById('add-employee-btn');
+    const employeeList = document.getElementById('employee-list');
     
-    const selectedEmployee = employeeSelect.value;
+    if (!employeeInput || !addEmployeeBtn) return;
+    
+    const inputValue = employeeInput.value.trim();
+    
+    // Check if the input value exists in the datalist
+    let exists = false;
+    const options = employeeList.querySelectorAll('option');
+    options.forEach(option => {
+        if (option.value === inputValue) {
+            exists = true;
+        }
+    });
+    
+    // Show "Add New Employee" button if the value doesn't exist and is not empty
+    if (inputValue && !exists) {
+        addEmployeeBtn.style.display = 'inline-block';
+    } else {
+        addEmployeeBtn.style.display = 'none';
+    }
+    
+    filterRowsByEmployee();
+}
+
+function filterRowsByEmployee() {
+    const employeeInput = document.getElementById('employee-input');
+    if (!employeeInput) return;
+    
+    const selectedEmployee = employeeInput.value.trim();
     const rows = document.querySelectorAll('#timesheet-body tr');
     
     rows.forEach(row => {
@@ -63,22 +92,52 @@ function updateAllRowTotals() {
     rows.forEach(updateRowTotal);
 }
 
+function addNewEmployee() {
+    const employeeInput = document.getElementById('employee-input');
+    const employeeList = document.getElementById('employee-list');
+    const addEmployeeBtn = document.getElementById('add-employee-btn');
+    
+    if (!employeeInput || !employeeList) return;
+    
+    const newEmployeeName = employeeInput.value.trim();
+    
+    if (!newEmployeeName) {
+        alert('Please enter an employee name');
+        return;
+    }
+    
+    // Add the new employee to the datalist
+    const newOption = document.createElement('option');
+    newOption.value = newEmployeeName;
+    employeeList.appendChild(newOption);
+    
+    // Hide the add button
+    if (addEmployeeBtn) {
+        addEmployeeBtn.style.display = 'none';
+    }
+    
+    // Filter rows to show only this employee's entries
+    filterRowsByEmployee();
+    
+    alert(`Employee "${newEmployeeName}" has been added. You can now create timesheet entries for them.`);
+}
+
 function addNewRow() {
-    const employeeSelect = document.getElementById('employee-select');
+    const employeeInput = document.getElementById('employee-input');
     const newProjectSelect = document.getElementById('new-project');
     const newActivitySelect = document.getElementById('new-activity');
     
-    if (!employeeSelect || !newProjectSelect || !newActivitySelect) {
+    if (!employeeInput || !newProjectSelect || !newActivitySelect) {
         console.error('Required form elements not found');
         return;
     }
     
-    const selectedEmployee = employeeSelect.value;
+    const selectedEmployee = employeeInput.value.trim();
     const newProject = newProjectSelect.value;
     const newActivity = newActivitySelect.value;
     
     if (!selectedEmployee) {
-        alert('Please select an employee first');
+        alert('Please enter an employee name first');
         return;
     }
     

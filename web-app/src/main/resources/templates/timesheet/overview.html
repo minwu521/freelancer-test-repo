@@ -25,13 +25,12 @@
         </div>
 
         <div class="employee-selector">
-            <label for="employee-select">Employee:</label>
-            <select id="employee-select">
-                <option value="">Select Employee</option>
-                <option th:each="employee : ${employees}" 
-                        th:value="${employee}" 
-                        th:text="${employee}">Employee Name</option>
-            </select>
+            <label for="employee-input">Employee:</label>
+            <input type="text" id="employee-input" list="employee-list" placeholder="Type to search or enter new employee name" />
+            <datalist id="employee-list">
+                <option th:each="employee : ${employees}" th:value="${employee}">
+            </datalist>
+            <button id="add-employee-btn" onclick="addNewEmployee()" style="display: none;">Add New Employee</button>
         </div>
 
         <div class="timesheet-grid">

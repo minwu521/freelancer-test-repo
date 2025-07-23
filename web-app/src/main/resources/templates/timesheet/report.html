@@ -31,13 +31,13 @@
                     
                     <div class="filter-group">
                         <label for="employee-filter">Employee:</label>
-                        <select id="employee-filter" name="employeeName">
-                            <option value="">All Employees</option>
-                            <option th:each="employee : ${employees}" 
-                                    th:value="${employee}" 
-                                    th:text="${employee}"
-                                    th:selected="${employee == selectedEmployee}">Employee</option>
-                        </select>
+                        <input type="text" id="employee-filter" name="employeeName" 
+                               list="employee-list" 
+                               placeholder="All Employees (leave empty for all)" 
+                               th:value="${selectedEmployee}" />
+                        <datalist id="employee-list">
+                            <option th:each="employee : ${employees}" th:value="${employee}">
+                        </datalist>
                     </div>
                     
                     <button type="submit" class="filter-button">Apply Filters</button>
