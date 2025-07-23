@@ -85,6 +85,13 @@
     background-color: #218838;
 }
 
+.project-activity-selector {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
 .timesheet-grid {
     overflow-x: auto;
     margin-bottom: 20px;

@@ -33,6 +33,28 @@
             <button id="add-employee-btn" onclick="addNewEmployee()" style="display: none;">Add New Employee</button>
         </div>
 
+        <div class="project-activity-selector">
+            <div class="form-row">
+                <select id="new-project">
+                    <option value="">Select Project</option>
+                    <option th:each="project : ${projects}" 
+                            th:value="${project}" 
+                            th:text="${project}">Project</option>
+                    <option value="__new__">+ Add New Project</option>
+                </select>
+                
+                <select id="new-activity">
+                    <option value="">Select Activity</option>
+                    <option th:each="activity : ${activities}" 
+                            th:value="${activity}" 
+                            th:text="${activity}">Activity</option>
+                    <option value="__new__">+ Add New Activity</option>
+                </select>
+                
+                <button onclick="addNewRow()">Add Row</button>
+            </div>
+        </div>
+
         <div class="timesheet-grid">
             <table class="timesheet-table">
                 <thead>
@@ -89,27 +111,6 @@
             </table>
         </div>
 
-        <div class="add-row-section">
-            <div class="form-row">
-                <select id="new-project">
-                    <option value="">Select Project</option>
-                    <option th:each="project : ${projects}" 
-                            th:value="${project}" 
-                            th:text="${project}">Project</option>
-                    <option value="__new__">+ Add New Project</option>
-                </select>
-                
-                <select id="new-activity">
-                    <option value="">Select Activity</option>
-                    <option th:each="activity : ${activities}" 
-                            th:value="${activity}" 
-                            th:text="${activity}">Activity</option>
-                    <option value="__new__">+ Add New Activity</option>
-                </select>
-                
-                <button onclick="addNewRow()">Add Row</button>
-            </div>
-        </div>
 
         <div class="actions">
             <button onclick="saveTimesheet()" class="save-button">Save All Changes</button>
