@@ -1,6 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     initializeTimesheet();
     setupEventListeners();
+    
+    // Hide comment rows when clicking outside
+    document.addEventListener('click', function(event) {
+        if (!event.target.closest('.hour-input') && !event.target.closest('.comment-input')) {
+            document.querySelectorAll('.comment-row').forEach(row => {
+                row.style.display = 'none';
+            });
+        }
+    });
 });
 
 function initializeTimesheet() {
@@ -19,6 +28,10 @@ function setupEventListeners() {
     hourInputs.forEach(input => {
         input.addEventListener('input', function() {
             updateRowTotal(this.closest('tr'));
+        });
+        
+        input.addEventListener('focus', function() {
+            showCommentRow(this);
         });
         
         input.addEventListener('blur', function() {
@@ -66,8 +79,22 @@ function filterRowsByEmployee() {
         const rowEmployee = row.getAttribute('data-employee');
         if (!selectedEmployee || rowEmployee === selectedEmployee) {
             row.style.display = '';
+            // Also show/hide associated comment row
+            if (row.classList.contains('main-row')) {
+                const commentRow = row.nextElementSibling;
+                if (commentRow && commentRow.classList.contains('comment-row')) {
+                    commentRow.style.display = commentRow.style.display; // Keep existing visibility
+                }
+            }
         } else {
             row.style.display = 'none';
+            // Also hide associated comment row
+            if (row.classList.contains('main-row')) {
+                const commentRow = row.nextElementSibling;
+                if (commentRow && commentRow.classList.contains('comment-row')) {
+                    commentRow.style.display = 'none';
+                }
+            }
         }
     });
 }
@@ -88,8 +115,58 @@ function updateRowTotal(row) {
 }
 
 function updateAllRowTotals() {
-    const rows = document.querySelectorAll('#timesheet-body tr');
+    const rows = document.querySelectorAll('#timesheet-body tr.main-row');
     rows.forEach(updateRowTotal);
+}
+
+function showCommentRow(hourInput) {
+    // Hide all comment rows first
+    document.querySelectorAll('.comment-row').forEach(row => {
+        row.style.display = 'none';
+    });
+    
+    const mainRow = hourInput.closest('tr');
+    
+    // Check if comment row already exists
+    let commentRow = mainRow.nextElementSibling;
+    if (!commentRow || !commentRow.classList.contains('comment-row')) {
+        // Create comment row
+        commentRow = createCommentRow(mainRow);
+        mainRow.insertAdjacentElement('afterend', commentRow);
+    }
+    
+    // Show the comment row
+    commentRow.style.display = '';
+}
+
+function createCommentRow(mainRow) {
+    const commentRow = document.createElement('tr');
+    commentRow.classList.add('comment-row');
+    commentRow.setAttribute('data-employee', mainRow.getAttribute('data-employee'));
+    commentRow.setAttribute('data-project', mainRow.getAttribute('data-project'));
+    commentRow.setAttribute('data-activity', mainRow.getAttribute('data-activity'));
+    
+    commentRow.innerHTML = `
+        <td colspan="2" class="comment-label">Comments:</td>
+        <td><textarea class="comment-input" data-day="1" placeholder="Mon"></textarea></td>
+        <td><textarea class="comment-input" data-day="2" placeholder="Tue"></textarea></td>
+        <td><textarea class="comment-input" data-day="3" placeholder="Wed"></textarea></td>
+        <td><textarea class="comment-input" data-day="4" placeholder="Thu"></textarea></td>
+        <td><textarea class="comment-input" data-day="5" placeholder="Fri"></textarea></td>
+        <td><textarea class="comment-input" data-day="6" placeholder="Sat"></textarea></td>
+        <td><textarea class="comment-input" data-day="7" placeholder="Sun"></textarea></td>
+        <td colspan="2"></td>
+    `;
+    
+    // Add event listeners to comment inputs
+    const commentInputs = commentRow.querySelectorAll('.comment-input');
+    commentInputs.forEach(input => {
+        input.addEventListener('blur', function() {
+            saveIndividualEntry(this);
+        });
+    });
+    
+    return commentRow;
 }
 
 function addNewEmployee() {
@@ -180,6 +257,7 @@ function addNewRow() {
     
     const tbody = document.getElementById('timesheet-body');
     const newRow = document.createElement('tr');
+    newRow.classList.add('main-row');
     newRow.setAttribute('data-employee', selectedEmployee);
     newRow.setAttribute('data-project', projectValue);
     newRow.setAttribute('data-activity', activityValue);
@@ -205,6 +283,10 @@ function addNewRow() {
     newInputs.forEach(input => {
         input.addEventListener('input', function() {
             updateRowTotal(this.closest('tr'));
+        });
+        
+        input.addEventListener('focus', function() {
+            showCommentRow(this);
         });
         
         input.addEventListener('blur', function() {
@@ -233,9 +315,33 @@ function saveIndividualEntry(input) {
     const project = row.getAttribute('data-project');
     const activity = row.getAttribute('data-activity');
     const dayNumber = input.getAttribute('data-day');
-    const hours = parseFloat(input.value) || 0;
     
-    if (hours === 0) return; // Don't save empty entries
+    let hours = 0;
+    let comments = '';
+    
+    if (input.classList.contains('hour-input')) {
+        hours = parseFloat(input.value) || 0;
+        // Get comment from comment row if it exists
+        const commentRow = row.nextElementSibling;
+        if (commentRow && commentRow.classList.contains('comment-row')) {
+            const commentInput = commentRow.querySelector(`.comment-input[data-day="${dayNumber}"]`);
+            if (commentInput) {
+                comments = commentInput.value || '';
+            }
+        }
+    } else if (input.classList.contains('comment-input')) {
+        // This is a comment input, get hours from main row
+        const mainRow = row.previousElementSibling;
+        if (mainRow && mainRow.classList.contains('main-row')) {
+            const hourInput = mainRow.querySelector(`.hour-input[data-day="${dayNumber}"]`);
+            if (hourInput) {
+                hours = parseFloat(hourInput.value) || 0;
+            }
+        }
+        comments = input.value || '';
+    }
+    
+    if (hours === 0 && !comments) return; // Don't save if both are empty
     
     // Calculate the actual date based on current week and day number
     const currentDate = new Date(); // This should come from the page context
@@ -247,6 +353,7 @@ function saveIndividualEntry(input) {
     formData.append('activity', activity);
     formData.append('entryDate', entryDate);
     formData.append('hours', hours);
+    formData.append('comments', comments);
     
     fetch('/timesheet/entry', {
         method: 'POST',

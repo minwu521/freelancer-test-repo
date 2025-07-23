@@ -116,6 +116,43 @@
     min-width: 120px;
 }
 
+.timesheet-table tr.main-row {
+    border-bottom: none;
+}
+
+.timesheet-table tr.comment-row {
+    background-color: #f8f9fa;
+    border-top: none;
+}
+
+.timesheet-table tr.comment-row td {
+    padding: 5px 8px;
+    border-top: none;
+}
+
+.comment-label {
+    text-align: right;
+    font-weight: bold;
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.comment-input {
+    width: 100%;
+    min-height: 40px;
+    padding: 4px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 12px;
+    resize: vertical;
+}
+
+.comment-input:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+}
+
 .hour-input {
     width: 60px;
     padding: 4px;

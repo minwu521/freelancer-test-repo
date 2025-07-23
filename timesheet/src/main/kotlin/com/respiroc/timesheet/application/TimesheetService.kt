@@ -1,7 +1,7 @@
 package com.respiroc.timesheet.application
 
 import com.respiroc.timesheet.domain.model.TimesheetEntry
-import com.respiroc.timesheet.domain.repository.TimesheetRepository
+import com.respiroc.timesheet.domain.repository.TimesheetJdbcRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.math.BigDecimal
@@ -13,7 +13,7 @@ import java.util.*
 @Service
 @Transactional
 class TimesheetService(
-    private val timesheetRepository: TimesheetRepository
+    private val timesheetRepository: TimesheetJdbcRepository
 ) {
     
     fun getWeeklyEntries(tenantId: Long, targetDate: LocalDate): List<TimesheetEntry> {
@@ -29,14 +29,14 @@ class TimesheetService(
     }
     
     fun updateHours(entryId: Long, tenantId: Long, hours: BigDecimal): TimesheetEntry? {
-        val entry = timesheetRepository.findById(entryId).orElse(null)
+        val entry = timesheetRepository.findById(entryId)
         if (entry == null || entry.tenantId != tenantId) return null
         entry.hours = hours
         return timesheetRepository.save(entry)
     }
     
     fun deleteEntry(entryId: Long, tenantId: Long): Boolean {
-        val entry = timesheetRepository.findById(entryId).orElse(null)
+        val entry = timesheetRepository.findById(entryId)
         if (entry == null || entry.tenantId != tenantId) return false
         timesheetRepository.delete(entry)
         return true

@@ -20,24 +20,24 @@ interface TimesheetRepository : CustomJpaRepository<TimesheetEntry, Long> {
         @Param("endDate") endDate: LocalDate
     ): List<TimesheetEntry>
     
-    @Query("""
-        SELECT DISTINCT te.employeeName FROM TimesheetEntry te 
-        WHERE te.tenantId = :tenantId 
-        ORDER BY te.employeeName
-    """)
+    @Query(value = """
+        SELECT DISTINCT employee_name FROM timesheet_entries 
+        WHERE tenant_id = :tenantId 
+        ORDER BY employee_name
+    """, nativeQuery = true)
     fun findDistinctEmployeeNames(@Param("tenantId") tenantId: Long): List<String>
     
-    @Query("""
-        SELECT DISTINCT te.project FROM TimesheetEntry te 
-        WHERE te.tenantId = :tenantId 
-        ORDER BY te.project
-    """)
+    @Query(value = """
+        SELECT DISTINCT project FROM timesheet_entries 
+        WHERE tenant_id = :tenantId 
+        ORDER BY project
+    """, nativeQuery = true)
     fun findDistinctProjects(@Param("tenantId") tenantId: Long): List<String>
     
-    @Query("""
-        SELECT DISTINCT te.activity FROM TimesheetEntry te 
-        WHERE te.tenantId = :tenantId 
-        ORDER BY te.activity
-    """)
+    @Query(value = """
+        SELECT DISTINCT activity FROM timesheet_entries 
+        WHERE tenant_id = :tenantId 
+        ORDER BY activity
+    """, nativeQuery = true)
     fun findDistinctActivities(@Param("tenantId") tenantId: Long): List<String>
 }

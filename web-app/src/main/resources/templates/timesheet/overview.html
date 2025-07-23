@@ -53,6 +53,7 @@
                 <tbody id="timesheet-body">
                     <!-- Existing entries will be populated here -->
                     <tr th:each="entry : ${entries}" 
+                        class="main-row"
                         th:data-employee="${entry.employeeName}"
                         th:data-project="${entry.project}"
                         th:data-activity="${entry.activity}">
