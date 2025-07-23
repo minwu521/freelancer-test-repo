@@ -14,8 +14,8 @@
             <div id="message-container">
             </div>
             <form hx-post="/htmx/auth/login"
-                  hx-target="#message-container"
-                  hx-swap="innerHTML">
+                  hx-target="body"
+                  hx-swap="outerHTML">
                 <div class="wa-stack">
                     <h2 class="wa-heading-m" th:text="#{login.form.title}" />
                     <wa-input th:label="#{email.label}" type="email" id="email" name="email" required></wa-input>

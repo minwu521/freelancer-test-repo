@@ -150,7 +150,7 @@ class VoucherReceptionWebController(
         addCommonAttributesForCurrentTenant(model, "Voucher Reception")
         model.addAttribute("documents", documents)
         model.addAttribute("pdfDataMap", pdfDataMap)
-        model.addAttribute("tenantSlug", currentUser.ctx.currentTenant?.tenantSlug)
+        model.addAttribute("tenantSlug", currentUser?.ctx?.currentTenant?.tenantSlug)
         return "voucher-reception/overview"
     }
 

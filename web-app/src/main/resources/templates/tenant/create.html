@@ -14,7 +14,9 @@
                       th:object="${createCompanyRequest}"
                       hx-post="/htmx/tenant/create"
                       hx-target="#form-messages"
-                      hx-swap="innerHTML">
+                      hx-swap="innerHTML"
+                      hx-on::before-request="this.querySelector('#submitButton').classList.add('wa-spinner')"
+                      hx-on::after-request="this.querySelector('#submitButton').classList.remove('wa-spinner')">
                     <div class="wa-stack">
                         <div>
                             <wa-input

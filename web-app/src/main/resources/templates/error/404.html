@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Not Found</title>
+    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-beta.3/dist/styles/webawesome.css"/>
+    <link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-beta.3/dist/styles/themes/matter.css"/>
+</head>
+<body class="wa-theme-matter wa-palette-mild wa-brand-purple">
+    <div class="wa-stack wa-align-items-center" style="justify-content: center; height: 100vh">
+        <div style="width: 500px; text-align: center">
+            <h1 class="wa-heading-l">404 - Page Not Found</h1>
+            <p class="wa-body-m">The page you're looking for doesn't exist.</p>
+            <p class="wa-body-s" th:if="${path}" th:text="'Path: ' + ${path}"></p>
+            <div style="margin-top: 2rem">
+                <wa-button onclick="window.location.href='/'" variant="brand">Go to Home</wa-button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+</parameter>
+</invoke>

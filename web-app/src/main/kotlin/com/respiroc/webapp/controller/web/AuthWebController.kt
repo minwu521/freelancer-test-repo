@@ -21,23 +21,39 @@ data class SignupRequest(val email: String, val password: String)
 
 @Controller
 @RequestMapping("/auth")
-class AuthWebController : BaseController() {
+class AuthWebController(
+    private val userService: UserService,
+    private val jwt: JwtService
+) : BaseController() {
 
     @GetMapping("/login")
     fun loginPage(model: Model): String {
-        if (isUserLoggedIn())
-            return "redirect:/"
+        try {
+            if (isUserLoggedIn()) {
+                currentTenant()
+                return "redirect:/"
+            }
+        } catch (e: Exception) {
+            // If there's any issue checking login status, show login page
+        }
         model.addAttribute(titleAttributeName, "Login")
         return "auth/login"
     }
 
     @GetMapping("/signup")
     fun signupPage(model: Model): String {
-        if (isUserLoggedIn())
-            return "redirect:/"
+        try {
+            if (isUserLoggedIn()) {
+                currentTenant()
+                return "redirect:/"
+            }
+        } catch (e: Exception) {
+            // If there's any issue checking login status, show signup page
+        }
         model.addAttribute(titleAttributeName, "Sign Up")
         return "auth/signup"
     }
+
 
     @GetMapping("/logout")
     fun logout(
@@ -77,10 +93,13 @@ class AuthHTMXController(
 
             val token = jwt.generateToken(subject = result.id.toString(), tenantId = result.tenantId)
             setJwtCookie(token, response)
-            return "redirect:htmx:/"
+            response.setHeader("HX-Redirect", "/")
+            return ""
         } catch (e: Exception) {
             e.printStackTrace()
             model.addAttribute(errorMessageAttributeName, "Invalid email or password")
+            response.setHeader("HX-Retarget", "#message-container")
+            response.setHeader("HX-Reswap", "innerHTML")
             return "fragments/error-message"
         }
     }
@@ -100,7 +119,8 @@ class AuthHTMXController(
 
             val token = jwt.generateToken(subject = result.id.toString(), tenantId = result.tenantId)
             setJwtCookie(token, response)
-            return "redirect:htmx:/"
+            model.addAttribute("redirectUrl", "/dashboard")
+            return "fragments/redirect"
         } catch (e: Exception) {
             model.addAttribute(errorMessageAttributeName, e.message ?: "An error occurred during registration")
             return "fragments/error-message"
@@ -111,12 +131,14 @@ class AuthHTMXController(
     @HxRequest
     fun selectTenant(
         @RequestParam(value = "tenantId", required = true) tenantId: Long,
-        response: HttpServletResponse
+        response: HttpServletResponse,
+        model: Model
     ): String {
         val user = user()
         userService.selectTenant(user, tenantId)
         val token = jwt.generateToken(subject = user.id.toString(), tenantId = tenantId)
         setJwtCookie(token, response)
-        return "redirect:htmx:/"
+        model.addAttribute("redirectUrl", "/dashboard")
+        return "fragments/redirect"
     }
 }
