@@ -8,12 +8,20 @@
 .r-chart-of-accounts-table {
     width: 100%;
     border-collapse: collapse;
+<<<<<<< HEAD
     font-size: 0.875rem;
+=======
+    font-size: var(--wa-font-size-s);
+>>>>>>> upstream/main
 }
 
 .r-chart-of-accounts-table th {
     background: var(--wa-color-surface-raised);
+<<<<<<< HEAD
     padding: 1rem 0.75rem;
+=======
+    padding: var(--wa-space-m) var(--wa-space-s);
+>>>>>>> upstream/main
     text-align: left;
     font-weight: 600;
     color: var(--wa-color-gray-30);
@@ -22,7 +30,11 @@
 }
 
 .r-chart-of-accounts-table td {
+<<<<<<< HEAD
     padding: 0.875rem 0.75rem;
+=======
+    padding: var(--wa-space-s) var(--wa-space-s);
+>>>>>>> upstream/main
     border-bottom: 1px solid var(--wa-color-surface-raised);
 }
 
@@ -50,24 +62,41 @@
 
 .r-empty-state {
     text-align: center;
+<<<<<<< HEAD
     padding: 3rem;
+=======
+    padding: var(--wa-space-4xl);
+>>>>>>> upstream/main
     color: var(--wa-color-gray-50);
 }
 
 .r-empty-state-icon {
+<<<<<<< HEAD
     font-size: 3rem;
     margin-bottom: 1rem;
+=======
+    font-size: var(--wa-font-size-4xl);
+    margin-bottom: var(--wa-space-m);
+>>>>>>> upstream/main
     opacity: 0.5;
 }
 
  @media (max-width: 768px) {
 
     .r-chart-of-accounts-table {
+<<<<<<< HEAD
         font-size: 0.75rem;
+=======
+        font-size: var(--wa-font-size-xs);
+>>>>>>> upstream/main
     }
 
     .r-chart-of-accounts-table th,
     .r-chart-of-accounts-table td {
+<<<<<<< HEAD
         padding: 0.5rem 0.375rem;
+=======
+        padding: var(--wa-space-s) var(--wa-space-2xs);
+>>>>>>> upstream/main
     }
 }

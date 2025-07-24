@@ -54,7 +54,7 @@ document.getElementById('createCompanyForm').addEventListener('htmx:afterRequest
             const submitButton = document.getElementById('submitButton');
             if (submitButton && submitButton.disabled) {
                 submitButton.disabled = false;
-                submitButton.innerHTML = '<wa-icon name="plus" style="margin-right: 0.5rem;"></wa-icon>Create Company';
+                submitButton.innerHTML = '<wa-icon name="plus" style="margin-right: var(--wa-space-s);"></wa-icon>Create Company';
             }
         }, 100);
     }

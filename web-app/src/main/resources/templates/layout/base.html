@@ -42,6 +42,18 @@
             </wa-dropdown>
         </div>
         <div class="wa-cluster wa-gap-xs">
+            <wa-dropdown th:if="${not #lists.isEmpty(shortcutAction)}">
+                <wa-button size="small" slot="trigger" with-caret>
+                    <wa-icon name="keyboard" style="margin-right: 0.5rem;"></wa-icon>
+                    Shortcuts
+                </wa-button>
+
+                <wa-dropdown-item th:each="shortcut : ${shortcutAction}" th:value="${shortcut.actionId}">
+                    <span th:text="${shortcut.description}"></span>
+                    <span slot="details" th:text="${shortcut.keyCombination}"></span>
+                </wa-dropdown-item>
+            </wa-dropdown>
+
             <!-- User Menu -->
             <wa-dropdown>
                 <wa-button slot="trigger" size="small" variant="brand" with-caret>
@@ -81,7 +93,9 @@
         <!-- Page content will be inserted here -->
     </main>
 </wa-page>
-
+<script th:inline="javascript">
+    const shortcutAction = [[${shortcutAction}]] || null;
+</script>
 <!-- Custom JS -->
 <script th:src="@{/assets/base/base.js}"></script>
 

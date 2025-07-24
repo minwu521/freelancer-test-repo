@@ -67,6 +67,7 @@ wa-page[data-aside-visible="false"] main {
     max-inline-size: 80rem;
 }
 
+<<<<<<< HEAD
 .r-spinner-button {
     transition: all 0.2s ease-in-out;
     position: relative;
@@ -97,3 +98,29 @@ wa-page[data-aside-visible="false"] main {
 @keyframes spin {
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
+=======
+.r-opacity-25 {
+    opacity: 0.25;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.block {
+    display: block !important;
+}
+
+.htmx-indicator {
+    opacity: 0;
+    transition: opacity 500ms ease-in;
+}
+
+.htmx-request .htmx-indicator {
+    opacity: 1;
+}
+
+.htmx-request.htmx-indicator {
+    opacity: 1;
+}
+>>>>>>> upstream/main

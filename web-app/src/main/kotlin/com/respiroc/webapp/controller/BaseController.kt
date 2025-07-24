@@ -24,13 +24,12 @@ open class BaseController {
         private const val JWT_TOKEN_PERIOD = 24 * 60 * 60
     }
 
-    fun springUser(): SpringUser? {
-        val principal = SecurityContextHolder.getContext().authentication?.principal
-        return if (principal is SpringUser) principal else null
+    fun springUser(): SpringUser {
+        return SecurityContextHolder.getContext().authentication.principal as SpringUser
     }
 
     fun user(): UserContext {
-        return springUser()?.ctx ?: throw IllegalStateException("No authenticated user")
+        return springUser().ctx
     }
 
     fun tenantId(): Long {
@@ -53,7 +52,7 @@ open class BaseController {
         model: Model,
         title: String,
     ) {
-        val springUser = springUser() ?: throw IllegalStateException("User not authenticated")
+        val springUser = springUser()
         val currentTenant = currentTenant()
         val tenants = tenants()
 
@@ -67,7 +66,7 @@ open class BaseController {
         model: Model,
         title: String,
     ) {
-        val springUser = springUser() ?: throw IllegalStateException("User not authenticated")
+        val springUser = springUser()
         val tenants = tenants()
 
         model.addAttribute(userAttributeName, springUser)
@@ -79,8 +78,7 @@ open class BaseController {
         val authentication = SecurityContextHolder.getContext().authentication
         return authentication != null &&
                 authentication.isAuthenticated &&
-                authentication !is AnonymousAuthenticationToken &&
-                authentication.principal is SpringUser
+                authentication !is AnonymousAuthenticationToken
     }
 
     fun setJwtCookie(token: String, response: HttpServletResponse) {

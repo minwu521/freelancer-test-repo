@@ -53,6 +53,13 @@ class NavigationProvider {
                     NavigationSectionItem(label = "Weekly View", url = "/timesheet"),
                     NavigationSectionItem(label = "Monthly Report", url = "/timesheet/monthly-report")
                 )
+            ),
+            
+            NavigationSection(
+                title = "Bank", icon = "bank",
+                items = listOf(
+                    NavigationSectionItem(label = "Bank Accounts Overview", url = "/bank/account"),
+                )
             )
         )
     }

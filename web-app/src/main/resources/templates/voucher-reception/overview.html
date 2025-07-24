@@ -3,10 +3,32 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <link rel="stylesheet" th:href="@{/assets/voucher/voucher-reception.css}">
+<<<<<<< HEAD
 </head>
 <body>
 <main layout:fragment="content">
     <div class="r-voucher-reception-container">
+=======
+    <script src="/assets/voucher/voucher-reception.js"></script>
+</head>
+<body>
+<main layout:fragment="content">
+    <div style="visibility:hidden; opacity:0" id="dropzone">
+        <div id="textnode" th:text="#{Drop_files_anywhere}" />
+    </div>
+
+    <form id="upload-form"
+          hx-post="/voucher-reception/upload"
+          hx-target="#document-table-body"
+          hx-swap="outerHTML"
+          hx-encoding="multipart/form-data"
+          style="display:none">
+        <input type="file" name="files" id="file-input" multiple />
+        <input type="hidden" name="tenantSlug" th:value="${tenantSlug}" />
+    </form>
+
+    <div id="pageContent" class="r-voucher-reception-container">
+>>>>>>> upstream/main
         <wa-callout variant="neutral" class="r-voucher-reception">
             <h1 class="wa-heading-xl" th:text="#{voucher_reception}"/>
             <p class="wa-text">
@@ -23,6 +45,7 @@
                 <thead>
                 <tr>
                     <th th:text="#{filename}"/>
+<<<<<<< HEAD
                     <th th:text="#{sender_email}"/>
                     <th th:text="#{mime_type}"/>
                     <th th:text="#{received}"/>
@@ -30,12 +53,19 @@
                 </tr>
                 </thead>
                 <tbody>
+=======
+                    <th th:text="#{sender_Uploader_email}"/>
+                </tr>
+                </thead>
+                <tbody id="document-table-body" th:fragment="documentTableBody">
+>>>>>>> upstream/main
                 <tr th:each="document : ${documents}"
                     th:hx-get="@{/voucher-reception/document/{id}/pdf(id=${document.id})}"
                     hx-target="#pdf-embed"
                     hx-swap="outerHTML"
                     data-drawer="open drawer-custom-size"
                     hx-trigger="click delay:200ms"
+<<<<<<< HEAD
                     style="cursor: pointer;"
                 >
                     <td th:text="${document.attachment.filename}"/>
@@ -43,15 +73,29 @@
                     <td th:text="${document.attachment.mimetype}"/>
                     <td th:text="${#temporals.format(document.receivedAt, 'dd.MM.yyyy HH:mm')}"/>
                     <td th:text="${#temporals.format(document.attachment.createdAt, 'dd.MM.yyyy HH:mm')}"/>
+=======
+                    style="cursor: pointer;">
+                    <td th:text="${document.attachment.filename}"></td>
+                    <td th:text="${document.senderEmail ?: '-'}"></td>
+>>>>>>> upstream/main
                 </tr>
                 </tbody>
             </table>
 
+<<<<<<< HEAD
             <div class="wa-center" th:if="${#lists.isEmpty(documents)}">
                 <div class="wa-stack wa-center wa-gap-m">
                     <wa-icon name="document-text" style="font-size: 3rem; opacity: 0.5;"></wa-icon>
                     <h2 class="wa-heading-m" th:text="#{no_voucher_reception_found}"/>
                 </div>
+=======
+            <div class="r-empty-state" th:if="${#lists.isEmpty(documents)}">
+                <div class="r-empty-state-icon">
+                    <wa-icon name="table"></wa-icon>
+                </div>
+                <h3 th:text="#{no_Data_available}"/>
+                <p th:text="#{no_voucher_reception_found}"/>
+>>>>>>> upstream/main
             </div>
         </div>
 
@@ -61,6 +105,13 @@
             </div>
         </wa-drawer>
     </div>
+<<<<<<< HEAD
 </main>
 </body>
 </html>
+=======
+
+</main>
+</body>
+</html>
+>>>>>>> upstream/main
