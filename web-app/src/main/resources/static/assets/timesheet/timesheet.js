@@ -278,7 +278,7 @@ function loadExistingComment(commentRow, dayNumber) {
             }
         })
         .catch(error => {
-            console.log('No existing comment found:', error);
+            // No existing comment found
         });
 }
 
@@ -452,7 +452,6 @@ function saveIndividualEntry(input) {
             }
         }
         comments = input.value || '';
-        console.log('DEBUG: Saving comment -', { employeeName, project, activity, dayNumber, hours, comments });
     }
     
     if (hours === 0 && (!comments || comments.trim() === '')) return; // Don't save if both are empty
@@ -473,18 +472,13 @@ function saveIndividualEntry(input) {
     formData.append('hours', hours);
     formData.append('comments', comments);
     
-    console.log('DEBUG: Sending to server -', { employeeName, project, activity, entryDate, hours, comments });
-    
     fetch('/timesheet/entry', {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        console.log('DEBUG: Response status:', response.status);
-        return response.text();
-    })
+    .then(response => response.text())
     .then(data => {
-        console.log('DEBUG: Server response:', data);
+        // Entry saved successfully
     })
     .catch(error => {
         console.error('Error saving entry:', error);

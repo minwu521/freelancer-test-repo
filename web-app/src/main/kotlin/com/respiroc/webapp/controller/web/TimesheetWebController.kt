@@ -127,23 +127,6 @@ class TimesheetWebController(
         model.addAttribute("currentTenant", user.ctx.currentTenant)
         model.addAttribute("tenants", user.ctx.tenants)
         
-        // Debug logging
-        println("DEBUG: Timesheet controller - tenantId: $tenantId")
-        println("DEBUG: Timesheet controller - raw entries count: ${entries.size}")
-        println("DEBUG: Timesheet controller - grouped rows count: ${weeklyRows.size}")
-        println("DEBUG: Timesheet controller - employees count: ${employees.size}")
-        println("DEBUG: Timesheet controller - currentDate: $currentDate")
-        
-        entries.forEach { entry ->
-            println("DEBUG: Entry - ${entry.employeeName}/${entry.project}/${entry.activity} on ${entry.entryDate} = ${entry.hours} hours, comments: '${entry.comments}'")
-        }
-        
-        weeklyRows.forEach { row ->
-            println("DEBUG: Row - ${row.employeeName}/${row.project}/${row.activity}")
-            println("  Hours: ${row.hours.contentToString()}")
-            println("  Comments: ${row.comments.contentToString()}")
-        }
-        
         return "timesheet/overview"
     }
     
