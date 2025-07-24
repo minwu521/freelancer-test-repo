@@ -79,8 +79,7 @@ class TenantHTMXController(
             userService.selectTenant(user, tenant.id)
             val token = jwt.generateToken(subject = user.id.toString(), tenantId = tenant.id)
             setJwtCookie(token, response)
-            response.setHeader("HX-Redirect", "/dashboard")
-            return ""
+            return "redirect:htmx:/"
 
         } catch (e: Exception) {
             model.addAttribute(

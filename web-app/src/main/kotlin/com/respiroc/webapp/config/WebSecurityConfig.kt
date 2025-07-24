@@ -45,7 +45,6 @@ class WebSecurityConfig(
         "/auth/signup",
         "/htmx/auth/login",
         "/htmx/auth/signup",
-        "/error",
         "/error/**",
         "/actuator/**",
         "/api/voucher-reception"
@@ -73,9 +72,6 @@ class WebSecurityConfig(
                     }
                     .bearerTokenResolver(JwtCookieBearerTokenResolver())
                     .authenticationEntryPoint(JwtAuthenticationEntryPoint())
-            }
-            .exceptionHandling { exceptions ->
-                exceptions.authenticationEntryPoint(JwtAuthenticationEntryPoint())
             }
             .build()
     }
@@ -128,25 +124,12 @@ class WebSecurityConfig(
         private val userService: UserService
     ) : Converter<Jwt, AbstractAuthenticationToken> {
 
-        override fun convert(source: Jwt): AbstractAuthenticationToken {
-            return try {
-                val userId = source.subject.toLongOrNull()
-                val tenantId = source.getClaim<Long>("tenantId")
-                
-                if (userId == null) {
-                    UsernamePasswordAuthenticationToken(null, source.tokenValue, emptyList())
-                } else {
-                    val ctx = userService.findByIdAndTenantId(userId, tenantId)
-                    if (ctx != null) {
-                        val principal = SpringUser(ctx)
-                        UsernamePasswordAuthenticationToken(principal, source.tokenValue, principal.authorities)
-                    } else {
-                        UsernamePasswordAuthenticationToken(null, source.tokenValue, emptyList())
-                    }
-                }
-            } catch (e: Exception) {
-                UsernamePasswordAuthenticationToken(null, source.tokenValue, emptyList())
-            }
+        override fun convert(source: Jwt): AbstractAuthenticationToken? {
+            val userId = source.subject.toLong()
+            val tenantId = source.getClaim<Long>("tenantId")
+            val ctx = userService.findByIdAndTenantId(userId, tenantId) ?: return null
+            val principal = SpringUser(ctx)
+            return UsernamePasswordAuthenticationToken(principal, source.tokenValue, principal.authorities)
         }
     }
 
