@@ -23,20 +23,12 @@ wa-copy-button::part(button) {
 .r-voucher-reception-table {
     width: 100%;
     border-collapse: collapse;
-<<<<<<< HEAD
-    font-size: 0.875rem;
-=======
     font-size: var(--wa-font-size-s);
->>>>>>> upstream/main
 }
 
 .r-voucher-reception-table th {
     background: var(--wa-color-surface-raised);
-<<<<<<< HEAD
-    padding: 1rem 0.75rem;
-=======
     padding: var(--wa-space-m) var(--wa-space-s);
->>>>>>> upstream/main
     text-align: left;
     font-weight: 600;
     color: var(--wa-color-gray-30);
@@ -45,11 +37,7 @@ wa-copy-button::part(button) {
 }
 
 .r-voucher-reception-table td {
-<<<<<<< HEAD
-    padding: 0.875rem 0.75rem;
-=======
     padding: var(--wa-space-s) var(--wa-space-xs);
->>>>>>> upstream/main
     border-bottom: 1px solid var(--wa-color-surface-raised);
 }
 
@@ -57,8 +45,6 @@ wa-copy-button::part(button) {
     background-color: var(--wa-color-surface-raised);
 }
 
-<<<<<<< HEAD
-=======
 div#dropzone {
     position: fixed;
     top: 0;
@@ -81,6 +67,7 @@ div#textnode {
     transition: font-size 175ms;
 }
 
+
 .r-empty-state {
     text-align: center;
     padding: var(--wa-space-4xl);
@@ -93,25 +80,14 @@ div#textnode {
     opacity: 0.5;
 }
 
->>>>>>> upstream/main
-
-
 @media (max-width: 768px) {
 
     .r-voucher-reception-table {
-<<<<<<< HEAD
-        font-size: 0.75rem;
-=======
         font-size: var(--wa-font-size-xs);
->>>>>>> upstream/main
     }
 
     .r-voucher-reception-table th,
     .r-voucher-reception-table td {
-<<<<<<< HEAD
-        padding: 0.5rem 0.375rem;
-=======
         padding: var(--wa-space-s) var(--wa-space-2xs);
->>>>>>> upstream/main
     }
 }
